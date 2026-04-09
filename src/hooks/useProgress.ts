@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
 import type { ProgressData } from '../types';
 
-const STORAGE_KEY = 'mathscroll-progress';
+const STORAGE_KEY = 'numpals-progress';
 const SCHEMA_VERSION = 1;
 
 interface StoredProgress {

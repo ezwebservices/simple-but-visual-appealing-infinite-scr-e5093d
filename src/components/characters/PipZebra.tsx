@@ -1,19 +1,19 @@
 import type { CharacterMood } from '../../types';
 
-interface ZiggyZebraProps {
+interface PipZebraProps {
   mood?: CharacterMood;
   className?: string;
   isSpeaking?: boolean;
 }
 
 /**
- * ZiggyZebra — Robot-head SVG character.
+ * PipZebra — Robot-head SVG character.
  *
  * Metallic zebra-shaped robot head with elongated face panel, pointy ear
  * fins, rainbow LED stripes, glowing eyes, single antenna, and sound-wave
  * bars for speech. Preserves all 5 mood states and existing transformOrigin.
  */
-export default function ZiggyZebra({ mood = 'happy', className, isSpeaking }: ZiggyZebraProps) {
+export default function PipZebra({ mood = 'happy', className, isSpeaking }: PipZebraProps) {
   return (
     <svg
       viewBox="0 0 200 200"

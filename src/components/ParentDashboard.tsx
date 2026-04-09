@@ -5,7 +5,7 @@ import { SUB_CONCEPT_ORDER } from '../types';
 import { colors, fontStack, dashboard } from '../styles/theme';
 import CharacterDisplay from './characters/CharacterDisplay';
 
-const PIN_STORAGE_KEY = 'mathscroll-parent-pin';
+const PIN_STORAGE_KEY = 'numpals-parent-pin';
 
 interface ParentDashboardProps {
   children: ChildProfile[];
@@ -55,13 +55,13 @@ const CONCEPT_GROUPS: ConceptGroup[] = [
   { label: 'Subtraction', color: '#FF6B6B', concepts: ['subtraction-small', 'subtraction-10'] },
 ];
 
-const AVATAR_OPTIONS: CharacterName[] = ['benny', 'lulu', 'ollie', 'fifi', 'ziggy', 'rex', 'robo'];
+const AVATAR_OPTIONS: CharacterName[] = ['bloo', 'sunny', 'rosie', 'milo', 'pip', 'rex', 'robo'];
 const AVATAR_LABELS: Record<CharacterName, string> = {
-  benny: 'Benny Bear',
-  lulu: 'Lulu Ladybug',
-  ollie: 'Ollie Owl',
-  fifi: 'Fifi Frog',
-  ziggy: 'Ziggy Zebra',
+  bloo: 'Bloo Bear',
+  sunny: 'Sunny Bug',
+  rosie: 'Rosie Owl',
+  milo: 'Milo Frog',
+  pip: 'Pip Zebra',
   rex: 'Rex Robot',
   robo: 'Robo Rocket',
 };
@@ -174,7 +174,7 @@ function SubConceptRow({ concept, child }: { concept: SubConcept; child: ChildPr
 /** Add child form */
 function AddChildForm({ onAdd, onCancel }: { onAdd: (name: string, avatar: CharacterName) => void; onCancel: () => void }) {
   const [name, setName] = useState('');
-  const [avatar, setAvatar] = useState<CharacterName>('benny');
+  const [avatar, setAvatar] = useState<CharacterName>('bloo');
 
   return (
     <motion.div

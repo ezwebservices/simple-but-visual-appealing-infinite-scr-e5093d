@@ -1,19 +1,19 @@
 import type { CharacterMood } from '../../types';
 
-interface BennyBearProps {
+interface BlooBearProps {
   mood?: CharacterMood;
   className?: string;
   isSpeaking?: boolean;
 }
 
 /**
- * BennyBear — Robot-head SVG character.
+ * BlooBear — Robot-head SVG character.
  *
  * Metallic bear-shaped robot head with round ear panels, glowing amber eyes,
  * panel lines, single antenna, and sound-wave bars for speech.
  * Preserves all 5 mood states and existing transformOrigin layout.
  */
-export default function BennyBear({ mood = 'happy', className, isSpeaking }: BennyBearProps) {
+export default function BlooBear({ mood = 'happy', className, isSpeaking }: BlooBearProps) {
   const eyeLeft = getEyes(mood, 'left');
   const eyeRight = getEyes(mood, 'right');
   const mouth = getMouth(mood);

@@ -1,19 +1,19 @@
 import type { CharacterMood } from '../../types';
 
-interface LuluLadybugProps {
+interface SunnyBugProps {
   mood?: CharacterMood;
   className?: string;
   isSpeaking?: boolean;
 }
 
 /**
- * LuluLadybug — Robot-head SVG character.
+ * SunnyBug — Robot-head SVG character.
  *
  * Metallic ladybug-shaped robot head with dome shell, red accent panels,
  * glowing red eyes, single antenna, and sound-wave bars for speech.
  * Preserves all 5 mood states and existing transformOrigin layout.
  */
-export default function LuluLadybug({ mood = 'happy', className, isSpeaking }: LuluLadybugProps) {
+export default function SunnyBug({ mood = 'happy', className, isSpeaking }: SunnyBugProps) {
   return (
     <svg
       viewBox="0 0 200 200"

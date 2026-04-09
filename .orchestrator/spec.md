@@ -1,4 +1,4 @@
-# MathScroll — TikTok-Style Math for 4-Year-Olds
+# NumPals — TikTok-Style Math for 4-Year-Olds
 
 ## Overview
 An infinite vertical scroll app where each full-screen card is a math lesson featuring an adorable animal character. Children swipe up (like TikTok) to get a new problem. Addition and subtraction within 10. Audio narration reads problems aloud. Everything is designed for tiny fingers and short attention spans.

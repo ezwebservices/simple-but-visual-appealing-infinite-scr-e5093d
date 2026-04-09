@@ -2,7 +2,7 @@ import { useState, useCallback } from 'react';
 import type { ChildProfile, SubConcept, SubConceptProgress, CharacterName } from '../types';
 import { SUB_CONCEPT_ORDER } from '../types';
 
-const STORAGE_KEY = 'mathscroll-children';
+const STORAGE_KEY = 'numpals-children';
 const SCHEMA_VERSION = 2;
 
 interface StoredChildren {

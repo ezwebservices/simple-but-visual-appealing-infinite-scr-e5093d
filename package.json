@@ -1,5 +1,5 @@
 {
-  "name": "amplify-vite-react-template",
+  "name": "numpals",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@aws-amplify/ui-react": "~6.13.2",
+    "@stripe/stripe-js": "^9.1.0",
     "@tailwindcss/vite": "^4.2.2",
     "aws-amplify": "~6.15.10",
     "framer-motion": "^12.38.0",

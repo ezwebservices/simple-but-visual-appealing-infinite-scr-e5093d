@@ -4,7 +4,7 @@ import { renderHook } from '@testing-library/react';
 import useAudio from '../hooks/useAudio';
 import SoundWaveOverlay from '../components/characters/SoundWaveOverlay';
 import RexRobot from '../components/characters/RexRobot';
-import BennyBear from '../components/characters/BennyBear';
+import BlooBear from '../components/characters/BlooBear';
 import CharacterDisplay from '../components/characters/CharacterDisplay';
 import LessonCard from '../components/LessonCard';
 
@@ -187,8 +187,8 @@ describe('Sound Wave Animation Feature', () => {
       expect(waveGroup).toBeNull();
     });
 
-    it('BennyBear shows sound wave bars when isSpeaking=true', () => {
-      const { container } = render(<BennyBear mood="happy" isSpeaking={true} />);
+    it('BlooBear shows sound wave bars when isSpeaking=true', () => {
+      const { container } = render(<BlooBear mood="happy" isSpeaking={true} />);
       const waveGroup = container.querySelector('.sound-waves');
       expect(waveGroup).toBeInTheDocument();
 
@@ -196,8 +196,8 @@ describe('Sound Wave Animation Feature', () => {
       expect(waveBars.length).toBe(3);
     });
 
-    it('BennyBear hides sound wave bars when isSpeaking=false', () => {
-      const { container } = render(<BennyBear mood="happy" isSpeaking={false} />);
+    it('BlooBear hides sound wave bars when isSpeaking=false', () => {
+      const { container } = render(<BlooBear mood="happy" isSpeaking={false} />);
       const waveGroup = container.querySelector('.sound-waves');
       expect(waveGroup).toBeNull();
     });

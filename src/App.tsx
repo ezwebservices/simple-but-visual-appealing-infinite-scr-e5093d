@@ -1,10 +1,13 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { AnimatePresence } from 'framer-motion';
+import { getCurrentUser } from 'aws-amplify/auth';
 import { colors, fontStack } from './styles/theme';
 import InfiniteScroll from './components/InfiniteScroll';
 import StreakCounter from './components/StreakCounter';
 import ParentDashboard from './components/ParentDashboard';
 import ProfileSwitcher from './components/ProfileSwitcher';
+import AuthFlow from './components/AuthFlow';
+import SubscriptionGate from './components/SubscriptionGate';
 import useProgress from './hooks/useProgress';
 import useAudio from './hooks/useAudio';
 import useChildProfiles from './hooks/useChildProfiles';
@@ -14,6 +17,48 @@ import type { MathProblem, SubConcept } from './types';
 type AppView = 'game' | 'dashboard';
 
 export default function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+
+  // Check auth state on mount
+  useEffect(() => {
+    getCurrentUser()
+      .then(() => setIsAuthenticated(true))
+      .catch(() => setIsAuthenticated(false));
+  }, []);
+
+  // Show nothing while checking auth
+  if (isAuthenticated === null) {
+    return (
+      <div style={{
+        position: 'fixed',
+        inset: 0,
+        backgroundColor: colors.cream,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontFamily: fontStack,
+        fontSize: '1.2rem',
+        color: 'rgba(0,0,0,0.4)',
+      }}>
+        Loading...
+      </div>
+    );
+  }
+
+  // Unauthenticated → show auth flow
+  if (!isAuthenticated) {
+    return <AuthFlow onAuthenticated={() => setIsAuthenticated(true)} />;
+  }
+
+  // Authenticated → gate behind subscription, then show game
+  return (
+    <SubscriptionGate>
+      <GameView />
+    </SubscriptionGate>
+  );
+}
+
+function GameView() {
   const { progress, recordCorrect, recordWrong } = useProgress();
   const { speak, isSpeaking } = useAudio();
   const { children, activeChild, activeChildId, addChild, switchChild, updateChild, removeChild, resetChild } = useChildProfiles();
@@ -22,7 +67,7 @@ export default function App() {
 
   // If no children exist, auto-create a default one
   if (children.length === 0) {
-    addChild('Player 1', 'benny');
+    addChild('Player 1', 'bloo');
   }
 
   const currentConcept: SubConcept = activeChild ? getActiveConcept(activeChild) : 'rote-counting-5';

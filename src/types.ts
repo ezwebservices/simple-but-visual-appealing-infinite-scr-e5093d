@@ -2,7 +2,7 @@ export type Operator = 'plus' | 'minus';
 
 export type ObjectType = 'apple' | 'star' | 'heart' | 'balloon' | 'fish';
 
-export type CharacterName = 'benny' | 'lulu' | 'ollie' | 'fifi' | 'ziggy' | 'rex' | 'robo';
+export type CharacterName = 'bloo' | 'sunny' | 'rosie' | 'milo' | 'pip' | 'rex' | 'robo';
 
 export type CharacterMood = 'happy' | 'excited' | 'thinking' | 'encouraging' | 'headShake';
 

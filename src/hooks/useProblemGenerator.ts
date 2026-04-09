@@ -3,7 +3,7 @@ import type { MathProblem, Operator, ObjectType, CharacterName, SubConcept } fro
 import { gradients } from '../styles/theme';
 
 const objectTypes: ObjectType[] = ['apple', 'star', 'heart', 'balloon', 'fish'];
-const characters: CharacterName[] = ['benny', 'lulu', 'ollie', 'fifi', 'ziggy', 'rex'];
+const characters: CharacterName[] = ['bloo', 'sunny', 'rosie', 'milo', 'pip', 'rex'];
 
 function pickRandom<T>(arr: readonly T[]): T {
   return arr[Math.floor(Math.random() * arr.length)];

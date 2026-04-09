@@ -69,7 +69,7 @@ export default function QuickLessonCard({
   correctAnswer,
   explanation,
   objectType,
-  character = 'benny',
+  character = 'bloo',
   concept,
   onDismiss,
 }: QuickLessonCardProps) {

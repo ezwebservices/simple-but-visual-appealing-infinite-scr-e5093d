@@ -279,7 +279,7 @@ describe('Robot in CharacterDisplay', () => {
     expect(c1.querySelector('svg')).toBeInTheDocument();
     expect(c2.querySelector('svg')).toBeInTheDocument();
 
-    // Rex uses rr- prefixed gradients, Benny uses bb- prefixed
+    // Rex uses rr- prefixed gradients, Bloo uses bb- prefixed
     expect(c1.querySelector('#rr-metal')).toBeInTheDocument();
     expect(c2.querySelector('#bb-metal')).toBeInTheDocument();
   });
@@ -340,7 +340,7 @@ describe('Robot in CharacterDisplay', () => {
 describe('TypeScript type safety', () => {
   it('CharacterName type includes rex and robo', () => {
     // This test verifies at compile time that rex and robo are valid CharacterName values
-    const names: import('../types').CharacterName[] = ['benny', 'lulu', 'ollie', 'fifi', 'ziggy', 'rex', 'robo'];
+    const names: import('../types').CharacterName[] = ['bloo', 'sunny', 'rosie', 'milo', 'pip', 'rex', 'robo'];
     expect(names).toHaveLength(7);
   });
 
@@ -357,7 +357,7 @@ describe('TypeScript type safety', () => {
 });
 
 describe('No visual regressions on existing characters', () => {
-  const existingCharacters = ['benny', 'lulu', 'ollie', 'fifi', 'ziggy'] as const;
+  const existingCharacters = ['bloo', 'sunny', 'rosie', 'milo', 'pip'] as const;
 
   existingCharacters.forEach((char) => {
     it(`${char} still renders SVG correctly`, () => {

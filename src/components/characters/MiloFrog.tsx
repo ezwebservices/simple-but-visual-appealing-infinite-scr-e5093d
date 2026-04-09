@@ -1,19 +1,19 @@
 import type { CharacterMood } from '../../types';
 
-interface FifiFrogProps {
+interface MiloFrogProps {
   mood?: CharacterMood;
   className?: string;
   isSpeaking?: boolean;
 }
 
 /**
- * FifiFrog — Robot-head SVG character.
+ * MiloFrog — Robot-head SVG character.
  *
  * Metallic frog-shaped robot head with bulging sensor domes for eyes,
  * wide head panel, glowing green eyes, single antenna, and sound-wave
  * bars for speech. Preserves all 5 mood states and existing transformOrigin.
  */
-export default function FifiFrog({ mood = 'happy', className, isSpeaking }: FifiFrogProps) {
+export default function MiloFrog({ mood = 'happy', className, isSpeaking }: MiloFrogProps) {
   return (
     <svg
       viewBox="0 0 200 200"

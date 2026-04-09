@@ -1,10 +1,10 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import type { CharacterName, CharacterMood } from '../../types';
-import BennyBear from './BennyBear';
-import LuluLadybug from './LuluLadybug';
-import OllieOwl from './OllieOwl';
-import FifiFrog from './FifiFrog';
-import ZiggyZebra from './ZiggyZebra';
+import BlooBear from './BlooBear';
+import SunnyBug from './SunnyBug';
+import RosieOwl from './RosieOwl';
+import MiloFrog from './MiloFrog';
+import PipZebra from './PipZebra';
 import RexRobot from './RexRobot';
 
 interface CharacterDisplayProps {
@@ -14,12 +14,12 @@ interface CharacterDisplayProps {
   isSpeaking?: boolean;
 }
 
-const characterMap: Record<CharacterName, typeof BennyBear> = {
-  benny: BennyBear,
-  lulu: LuluLadybug,
-  ollie: OllieOwl,
-  fifi: FifiFrog,
-  ziggy: ZiggyZebra,
+const characterMap: Record<CharacterName, typeof BlooBear> = {
+  bloo: BlooBear,
+  sunny: SunnyBug,
+  rosie: RosieOwl,
+  milo: MiloFrog,
+  pip: PipZebra,
   rex: RexRobot,
   robo: RexRobot,
 };

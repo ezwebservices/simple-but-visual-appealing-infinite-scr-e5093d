@@ -11,7 +11,7 @@ const mockProblem: MathProblem = {
   answer: 5,
   wrongAnswers: [4, 6],
   objectType: 'apple',
-  character: 'benny',
+  character: 'bloo',
   backgroundColor: '#FFF8F0',
   explanation: '3 plus 2 equals 5',
   concept: 'addition',

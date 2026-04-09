@@ -1,19 +1,19 @@
 import type { CharacterMood } from '../../types';
 
-interface OllieOwlProps {
+interface RosieOwlProps {
   mood?: CharacterMood;
   className?: string;
   isSpeaking?: boolean;
 }
 
 /**
- * OllieOwl — Robot-head SVG character.
+ * RosieOwl — Robot-head SVG character.
  *
  * Metallic owl-shaped robot head with ear-tuft antennae panels, glowing purple
  * sensor eyes behind glasses frames, single antenna, and sound-wave bars for speech.
  * Preserves all 5 mood states and existing transformOrigin layout.
  */
-export default function OllieOwl({ mood = 'happy', className, isSpeaking }: OllieOwlProps) {
+export default function RosieOwl({ mood = 'happy', className, isSpeaking }: RosieOwlProps) {
   return (
     <svg
       viewBox="0 0 200 200"

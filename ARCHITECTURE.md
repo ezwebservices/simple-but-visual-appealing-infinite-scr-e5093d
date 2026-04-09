@@ -1,4 +1,4 @@
-# MathScroll — Architecture Document
+# NumPals — Architecture Document
 
 > TikTok-style infinite scroll math app for 4-year-olds.
 > Addition & subtraction within 10. Inline SVG characters. Audio narration. Zero external assets.
@@ -402,7 +402,7 @@ Near end of cards (currentIndex >= cards.length - 2)
 
 ### localStorage Persistence
 
-**Key:** `mathscroll_progress`
+**Key:** `numpals-progress`
 **Value:** JSON-serialized `ProgressData`
 
 Read on app mount with try-catch (corrupted data → reset to defaults). Write after every answer submission.
@@ -481,7 +481,7 @@ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 
 ```
 ├── ARCHITECTURE.md                          ← this file
-├── index.html                               ← update <title> to "MathScroll"
+├── index.html                               ← update <title> to "NumPals"
 ├── package.json                             ← add tailwindcss, @tailwindcss/vite, framer-motion
 ├── vite.config.ts                           ← add tailwindcss plugin
 ├── tsconfig.json                            ← no changes needed
@@ -544,7 +544,7 @@ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 
 ## 10. Amplify Integration Notes
 
-The Amplify backend (`amplify/`) is **not used** by MathScroll's core functionality. The app is entirely client-side with localStorage persistence.
+The Amplify backend (`amplify/`) is **not used** by NumPals's core functionality. The app is entirely client-side with localStorage persistence.
 
 However, `src/main.tsx` must still import and configure Amplify (the template expects `amplify_outputs.json`). To avoid build errors when `amplify_outputs.json` doesn't exist locally:
 
