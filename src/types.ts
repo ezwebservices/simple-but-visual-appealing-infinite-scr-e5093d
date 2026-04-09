@@ -6,6 +6,8 @@ export type CharacterName = 'bloo' | 'sunny' | 'rosie' | 'milo' | 'pip' | 'rex' 
 
 export type CharacterMood = 'happy' | 'excited' | 'thinking' | 'encouraging' | 'headShake';
 
+export type CharacterAnimation = 'idle' | 'dance' | 'spin' | 'none';
+
 /** Fine-grained sub-concepts in learning progression order */
 export type SubConcept =
   | 'rote-counting-5'

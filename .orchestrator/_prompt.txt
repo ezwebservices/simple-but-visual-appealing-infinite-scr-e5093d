@@ -1,7 +1,7 @@
-You are Installer (Build Engineer). Make this specific change:
+You are Engineer (Full-Stack Engineer). Make this specific change:
 
-Stage all pending changes (.orchestrator/_prompt.txt, .orchestrator/_whiteboard.md, .orchestrator/build.json, src/App.tsx, src/main.tsx), commit with an appropriate message summarizing the changes, and push to the remote main branch.
+Stage all modified files, create a descriptive commit summarizing the changes (character SVG redesigns, CharacterDisplay component updates, LessonCard changes, landing page enhancements, build config and type updates), and push to the main branch.
 
-Context: The user asked for: commit and push changes
+Context: The user asked for: commit and push
 
 Read the relevant source files, make targeted edits, and run `npm run build` to verify.

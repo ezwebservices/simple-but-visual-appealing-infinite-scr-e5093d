@@ -7,312 +7,199 @@ interface SunnyBugProps {
 }
 
 /**
- * SunnyBug — Robot-head SVG character.
+ * SunnyBug — Kawaii plush stuffed ladybug character.
  *
- * Metallic ladybug-shaped robot head with dome shell, red accent panels,
- * glowing red eyes, single antenna, and sound-wave bars for speech.
- * Preserves all 5 mood states and existing transformOrigin layout.
+ * Big round shell body, stubby plush limbs, visible seam lines, button details.
+ * Red/dark palette with shell spots. Named limb groups for animation.
+ * viewBox 0 0 200 300.
  */
 export default function SunnyBug({ mood = 'happy', className, isSpeaking }: SunnyBugProps) {
   return (
     <svg
-      viewBox="0 0 200 200"
+      viewBox="0 0 200 300"
       xmlns="http://www.w3.org/2000/svg"
       className={className}
       style={{ width: '100%', height: '100%' }}
     >
       <defs>
-        <style>{`
-          @keyframes ll-wave1 { 0%,100%{transform:scaleY(0.3)} 50%{transform:scaleY(1)} }
-          @keyframes ll-wave2 { 0%,100%{transform:scaleY(0.5)} 50%{transform:scaleY(0.8)} }
-          @keyframes ll-wave3 { 0%,100%{transform:scaleY(0.4)} 50%{transform:scaleY(1)} }
-          @keyframes ll-antenna-pulse { 0%,100%{opacity:0.6} 50%{opacity:1} }
-        `}</style>
-
-        {/* Shell metallic red */}
-        <radialGradient id="ll-shell-metal" cx="38%" cy="28%" r="65%" fx="35%" fy="26%">
-          <stop offset="0%" stopColor="#FF8878" />
-          <stop offset="30%" stopColor="#E05848" />
-          <stop offset="65%" stopColor="#C83830" />
-          <stop offset="100%" stopColor="#A02820" />
+        <radialGradient id="sb-shell" cx="50%" cy="30%" r="70%">
+          <stop offset="0%" stopColor="#F07060" />
+          <stop offset="100%" stopColor="#E05848" />
         </radialGradient>
-
-        {/* Head metallic dark */}
-        <radialGradient id="ll-head-metal" cx="42%" cy="32%" r="58%" fx="40%" fy="30%">
-          <stop offset="0%" stopColor="#808898" />
-          <stop offset="35%" stopColor="#5A6678" />
-          <stop offset="70%" stopColor="#3A4A5C" />
-          <stop offset="100%" stopColor="#2A3648" />
+        <radialGradient id="sb-head" cx="45%" cy="35%" r="65%">
+          <stop offset="0%" stopColor="#5A6A7C" />
+          <stop offset="60%" stopColor="#3A4A5C" />
+          <stop offset="100%" stopColor="#2A3848" />
         </radialGradient>
-
-        {/* Spot — dark metallic indent */}
-        <radialGradient id="ll-spot-metal" cx="45%" cy="40%" r="55%">
-          <stop offset="0%" stopColor="#4A4A5A" />
-          <stop offset="100%" stopColor="#2A2A38" />
-        </radialGradient>
-
-        {/* Wing panel — translucent metallic */}
-        <radialGradient id="ll-wing-metal" cx="50%" cy="40%" r="55%">
-          <stop offset="0%" stopColor="#C8D0E0" stopOpacity="0.4" />
-          <stop offset="50%" stopColor="#90A0B8" stopOpacity="0.25" />
-          <stop offset="100%" stopColor="#607080" stopOpacity="0.15" />
-        </radialGradient>
-
-        {/* Antenna tip glow */}
-        <radialGradient id="ll-antenna-glow" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stopColor="#FF6860" />
-          <stop offset="50%" stopColor="#E84040" />
-          <stop offset="100%" stopColor="#C02020" />
-        </radialGradient>
-
-        {/* Eye glow */}
-        <radialGradient id="ll-eye-glow" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stopColor="#FF8080" />
-          <stop offset="60%" stopColor="#FF4040" />
-          <stop offset="100%" stopColor="#E02020" />
-        </radialGradient>
-
-        {/* Shadow */}
-        <linearGradient id="ll-shadow" x1="0.5" y1="0" x2="0.5" y2="1">
-          <stop offset="0%" stopColor="rgba(0,0,0,0.15)" />
-          <stop offset="100%" stopColor="rgba(0,0,0,0)" />
-        </linearGradient>
-
-        {/* Limb metallic */}
-        <linearGradient id="ll-limb-metal" x1="0" y1="0" x2="0.5" y2="1">
-          <stop offset="0%" stopColor="#5A6678" />
-          <stop offset="100%" stopColor="#2A3648" />
-        </linearGradient>
-
-        {/* Speaker grille */}
-        <linearGradient id="ll-grille" x1="0.5" y1="0" x2="0.5" y2="1">
-          <stop offset="0%" stopColor="#3A4A5A" />
-          <stop offset="100%" stopColor="#2A3648" />
-        </linearGradient>
       </defs>
 
-      {/* ════════════════════════════════════════════
-          WINGS — metallic panels behind body
-          ════════════════════════════════════════════ */}
-      <g className="wings">
-        <g className="wing-left" style={{ transformOrigin: '80px 110px' }}>
-          <ellipse cx="68" cy="110" rx="30" ry="40" fill="url(#ll-wing-metal)" transform="rotate(-15 68 110)" stroke="rgba(100,120,140,0.3)" strokeWidth="0.5" />
-          <path d="M52,90 Q62,105 58,130" fill="none" stroke="rgba(100,120,140,0.15)" strokeWidth="0.5" transform="rotate(-15 68 110)" />
-        </g>
-        <g className="wing-right" style={{ transformOrigin: '120px 110px' }}>
-          <ellipse cx="132" cy="110" rx="30" ry="40" fill="url(#ll-wing-metal)" transform="rotate(15 132 110)" stroke="rgba(100,120,140,0.3)" strokeWidth="0.5" />
-          <path d="M148,90 Q138,105 142,130" fill="none" stroke="rgba(100,120,140,0.15)" strokeWidth="0.5" transform="rotate(15 132 110)" />
-        </g>
+      {/* ── LEFT LEG ── stubby plush leg */}
+      <g id="left-leg" className="char-left-leg" style={{ transformOrigin: '82px 218px' }}>
+        <ellipse cx="82" cy="234" rx="20" ry="16" fill="url(#sb-shell)" />
+        {/* Shoe */}
+        <ellipse cx="82" cy="248" rx="16" ry="7" fill="#2A2A38" />
+        {/* Seam */}
+        <path d="M82,220 Q84,234 82,250" fill="none" stroke="#C83830" strokeWidth="0.7" strokeDasharray="2,3" opacity="0.3" />
       </g>
 
-      {/* ════════════════════════════════════════════
-          LEGS — metallic struts
-          ════════════════════════════════════════════ */}
-      <g className="leg-left" style={{ transformOrigin: '77px 170px' }}>
-        <path d="M72,168 Q64,178 58,184" fill="none" stroke="url(#ll-limb-metal)" strokeWidth="3.5" strokeLinecap="round" />
-        <path d="M82,172 Q77,182 73,188" fill="none" stroke="url(#ll-limb-metal)" strokeWidth="3.5" strokeLinecap="round" />
-        <circle cx="57" cy="185" r="2.5" fill="#3A4A5A" />
-        <circle cx="72" cy="189" r="2.5" fill="#3A4A5A" />
-      </g>
-      <g className="leg-right" style={{ transformOrigin: '123px 170px' }}>
-        <path d="M128,168 Q136,178 142,184" fill="none" stroke="url(#ll-limb-metal)" strokeWidth="3.5" strokeLinecap="round" />
-        <path d="M118,172 Q123,182 127,188" fill="none" stroke="url(#ll-limb-metal)" strokeWidth="3.5" strokeLinecap="round" />
-        <circle cx="143" cy="185" r="2.5" fill="#3A4A5A" />
-        <circle cx="128" cy="189" r="2.5" fill="#3A4A5A" />
+      {/* ── RIGHT LEG ── */}
+      <g id="right-leg" className="char-right-leg" style={{ transformOrigin: '118px 218px' }}>
+        <ellipse cx="118" cy="234" rx="20" ry="16" fill="url(#sb-shell)" />
+        <ellipse cx="118" cy="248" rx="16" ry="7" fill="#2A2A38" />
+        <path d="M118,220 Q120,234 118,250" fill="none" stroke="#C83830" strokeWidth="0.7" strokeDasharray="2,3" opacity="0.3" />
       </g>
 
-      {/* ════════════════════════════════════════════
-          BODY — metallic shell dome
-          ════════════════════════════════════════════ */}
-      <g className="body" style={{ transformOrigin: '100px 130px' }}>
-        <path
-          d="M55,90 Q45,110 50,140 Q55,165 72,178
-             Q85,185 100,186 Q115,185 128,178
-             Q145,165 150,140 Q155,110 145,90
-             Q130,78 100,76 Q70,78 55,90 Z"
-          fill="url(#ll-shell-metal)" stroke="#A02820" strokeWidth="0.8"
-        />
-        {/* Center ridge line */}
-        <path d="M100,78 L100,184" stroke="#801818" strokeWidth="2" />
-        <path d="M99,78 L99,184" stroke="rgba(255,255,255,0.08)" strokeWidth="0.8" />
-        {/* Metallic spots */}
-        <circle cx="78" cy="108" r="9" fill="url(#ll-spot-metal)" stroke="#2A2A38" strokeWidth="0.5" />
-        <circle cx="122" cy="104" r="8" fill="url(#ll-spot-metal)" stroke="#2A2A38" strokeWidth="0.5" />
-        <circle cx="83" cy="142" r="10" fill="url(#ll-spot-metal)" stroke="#2A2A38" strokeWidth="0.5" />
-        <circle cx="117" cy="146" r="8.5" fill="url(#ll-spot-metal)" stroke="#2A2A38" strokeWidth="0.5" />
-        {/* ── Display Screen ── */}
-        <rect x="80" y="152" width="40" height="24" rx="5" fill="#1A1020" stroke="#FF4040" strokeWidth="0.8" opacity="0.9" />
-        <rect x="82" y="154" width="36" height="20" rx="4" fill="#0D0818" />
-        {isSpeaking && (
-          <g className="screen-waves">
-            <rect x="87" y="164" width="4" height="8" rx="2" fill="#FF4040" opacity="0.9"
-              style={{ transformOrigin: '89px 168px', animation: 'll-wave1 0.4s ease-in-out infinite' }} />
-            <rect x="94" y="160" width="4" height="12" rx="2" fill="#FF6060" opacity="0.8"
-              style={{ transformOrigin: '96px 166px', animation: 'll-wave2 0.35s ease-in-out infinite 0.1s' }} />
-            <rect x="101" y="162" width="4" height="10" rx="2" fill="#FF4040" opacity="0.85"
-              style={{ transformOrigin: '103px 167px', animation: 'll-wave3 0.45s ease-in-out infinite 0.2s' }} />
-            <rect x="108" y="164" width="4" height="8" rx="2" fill="#FF6060" opacity="0.75"
-              style={{ transformOrigin: '110px 168px', animation: 'll-wave1 0.38s ease-in-out infinite 0.15s' }} />
-          </g>
-        )}
-        {!isSpeaking && (
-          <g className="screen-idle">
-            <line x1="86" y1="164" x2="114" y2="164" stroke="#FF4040" strokeWidth="0.5" opacity="0.2" />
-          </g>
-        )}
-        {/* Specular highlight */}
-        <path d="M62,86 Q100,72 138,86" fill="none" stroke="rgba(255,255,255,0.2)" strokeWidth="2.5" strokeLinecap="round" />
-        {/* Panel seams */}
-        <path d="M75,82 Q72,130 78,178" fill="none" stroke="rgba(0,0,0,0.08)" strokeWidth="0.5" />
-        <path d="M125,82 Q128,130 122,178" fill="none" stroke="rgba(0,0,0,0.08)" strokeWidth="0.5" />
+      {/* ── TORSO ── big round shell dome */}
+      <g id="torso" className="char-torso" style={{ transformOrigin: '100px 195px' }}>
+        <ellipse cx="100" cy="195" rx="54" ry="44" fill="url(#sb-shell)" />
+        {/* Center ridge seam */}
+        <line x1="100" y1="155" x2="100" y2="236" stroke="#C83830" strokeWidth="1.2" strokeLinecap="round" strokeDasharray="4,3" opacity="0.35" />
+        {/* Spots */}
+        <circle cx="78" cy="180" r="9" fill="#2A2A38" opacity="0.55" />
+        <circle cx="122" cy="180" r="9" fill="#2A2A38" opacity="0.55" />
+        <circle cx="76" cy="208" r="8" fill="#2A2A38" opacity="0.5" />
+        <circle cx="124" cy="208" r="8" fill="#2A2A38" opacity="0.5" />
+        {/* Button detail */}
+        <circle cx="100" cy="195" r="4" fill="#2A2A38" stroke="#1A1A28" strokeWidth="0.8" />
+        <line x1="98" y1="193" x2="102" y2="197" stroke="#1A1A28" strokeWidth="0.6" opacity="0.6" />
+        <line x1="102" y1="193" x2="98" y2="197" stroke="#1A1A28" strokeWidth="0.6" opacity="0.6" />
       </g>
 
-      {/* ════════════════════════════════════════════
-          HEAD — robot ladybug head
-          ════════════════════════════════════════════ */}
-      <g className="head" style={{ transformOrigin: '100px 68px' }}>
-        {/* Neck shadow */}
-        <ellipse cx="100" cy="82" rx="22" ry="6" fill="url(#ll-shadow)" />
+      {/* ── LEFT ARM ── stubby plush arm */}
+      <g id="left-arm" className="char-left-arm" style={{ transformOrigin: '58px 188px' }}>
+        <ellipse cx="50" cy="192" rx="16" ry="10" fill="url(#sb-shell)" />
+        {/* Mitten hand */}
+        <circle cx="38" cy="192" r="9" fill="#2A2A38" />
+        <path d="M62,192 Q50,190 36,192" fill="none" stroke="#C83830" strokeWidth="0.7" strokeDasharray="2,3" opacity="0.25" />
+      </g>
 
-        {/* ── Single Robot Antenna ── */}
-        <g className="antenna" style={{ transformOrigin: '100px 20px' }}>
-          <line x1="100" y1="42" x2="100" y2="16" stroke="#5A6678" strokeWidth="3" strokeLinecap="round" />
-          <circle cx="100" cy="14" r="6" fill="url(#ll-antenna-glow)" style={{ animation: 'll-antenna-pulse 2s ease-in-out infinite' }} />
-          <circle cx="99" cy="12" r="2" fill="rgba(255,255,255,0.5)" />
+      {/* ── RIGHT ARM ── */}
+      <g id="right-arm" className="char-right-arm" style={{ transformOrigin: '142px 188px' }}>
+        <ellipse cx="150" cy="192" rx="16" ry="10" fill="url(#sb-shell)" />
+        <circle cx="162" cy="192" r="9" fill="#2A2A38" />
+        <path d="M138,192 Q150,190 164,192" fill="none" stroke="#C83830" strokeWidth="0.7" strokeDasharray="2,3" opacity="0.25" />
+      </g>
+
+      {/* ── HEAD ── */}
+      <g id="head" className="char-head" style={{ transformOrigin: '100px 88px' }}>
+        {/* Antennae */}
+        <g className="char-accessory">
+          <line x1="78" y1="42" x2="62" y2="14" stroke="#2A2A38" strokeWidth="2.5" strokeLinecap="round" />
+          <circle cx="60" cy="12" r="6" fill="#2A2A38" />
+          <circle cx="60" cy="12" r="3.5" fill="#E05848" opacity="0.6" />
+          <line x1="122" y1="42" x2="138" y2="14" stroke="#2A2A38" strokeWidth="2.5" strokeLinecap="round" />
+          <circle cx="140" cy="12" r="6" fill="#2A2A38" />
+          <circle cx="140" cy="12" r="3.5" fill="#E05848" opacity="0.6" />
         </g>
 
-        {/* ── Head sphere — metallic ── */}
-        <circle cx="100" cy="68" r="30" fill="url(#ll-head-metal)" stroke="#2A3648" strokeWidth="0.8" />
+        {/* Big round head */}
+        <ellipse cx="100" cy="88" rx="58" ry="54" fill="url(#sb-head)" />
 
-        {/* Specular rim */}
-        <path d="M78,46 Q92,38 112,42" fill="none" stroke="rgba(255,255,255,0.18)" strokeWidth="2.5" strokeLinecap="round" />
+        {/* Soft highlight */}
+        <ellipse cx="82" cy="55" rx="24" ry="11" fill="white" opacity="0.08" />
 
-        {/* Panel lines */}
-        <path d="M74,55 Q100,50 126,55" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="0.6" />
-        <path d="M72,68 Q100,64 128,68" fill="none" stroke="rgba(255,255,255,0.04)" strokeWidth="0.6" />
-        {/* Side bolts */}
-        <circle cx="72" cy="68" r="1.5" fill="#4A5568" />
-        <circle cx="128" cy="68" r="1.5" fill="#4A5568" />
+        {/* Head seam */}
+        <path d="M100,36 Q102,60 100,88 Q98,116 100,140" fill="none" stroke="#2A3848" strokeWidth="0.7" strokeDasharray="3,4" opacity="0.2" />
 
-        {/* ── Cheek LEDs ── */}
-        <circle cx="78" cy="76" r="4" fill="#FF4040" opacity="0.25" />
-        <circle cx="122" cy="76" r="4" fill="#FF4040" opacity="0.25" />
+        {/* Rosy cheeks */}
+        <circle cx="60" cy="98" r="9" fill="#E05848" opacity="0.4" />
+        <circle cx="140" cy="98" r="9" fill="#E05848" opacity="0.4" />
 
-        {/* ── Eyes ── */}
+        {/* Eyes */}
         <g className="eyes">
-          <Eyes mood={mood} />
+          <BugEyes mood={mood} />
         </g>
 
-        {/* ── Speaker grille mouth area ── */}
-        <ellipse cx="100" cy="80" rx="14" ry="8" fill="url(#ll-grille)" stroke="#2A3648" strokeWidth="0.4" />
-        <line x1="88" y1="78" x2="112" y2="78" stroke="rgba(255,255,255,0.06)" strokeWidth="0.4" />
-        <line x1="87" y1="81" x2="113" y2="81" stroke="rgba(255,255,255,0.06)" strokeWidth="0.4" />
-        <line x1="88" y1="84" x2="112" y2="84" stroke="rgba(255,255,255,0.06)" strokeWidth="0.4" />
-
-        {/* ── Mouth ── */}
+        {/* Mouth */}
         <g className="mouth">
-          <Mouth mood={mood} />
+          <BugMouth mood={mood} isSpeaking={isSpeaking} />
         </g>
-
-
       </g>
     </svg>
   );
 }
 
-/* ─── Eye rendering per mood — big cute anime eyes ─── */
-function Eyes({ mood }: { mood: CharacterMood }) {
-  const scleraL = <ellipse cx="88" cy="64" rx="10" ry="11" fill="white" stroke="#C83830" strokeWidth="0.8" />;
-  const scleraR = <ellipse cx="112" cy="64" rx="10" ry="11" fill="white" stroke="#C83830" strokeWidth="0.8" />;
+function BugEyes({ mood }: { mood: CharacterMood }) {
+  const lx = 80, rx = 120, baseY = 78;
 
-  const eyePair = (irisY: number, irisR = 7, pupilR = 3) => (
-    <>
-      {scleraL}
-      <circle cx="88" cy={irisY} r={irisR} fill="url(#ll-eye-glow)" />
-      <circle cx="88" cy={irisY} r={pupilR} fill="#1A0808" />
-      <circle cx="91" cy={irisY - 4} r="2.8" fill="white" opacity="0.9" />
-      <circle cx="87" cy={irisY + 3} r="1.3" fill="white" opacity="0.6" />
-      {scleraR}
-      <circle cx="112" cy={irisY} r={irisR} fill="url(#ll-eye-glow)" />
-      <circle cx="112" cy={irisY} r={pupilR} fill="#1A0808" />
-      <circle cx="115" cy={irisY - 4} r="2.8" fill="white" opacity="0.9" />
-      <circle cx="111" cy={irisY + 3} r="1.3" fill="white" opacity="0.6" />
-    </>
+  const eye = (cx: number, irisY: number, irisR = 11, pupilR = 5) => (
+    <g>
+      <ellipse cx={cx} cy={baseY} rx="13" ry="14" fill="white" />
+      <circle cx={cx} cy={irisY} r={irisR} fill="#FF6050" />
+      <circle cx={cx} cy={irisY} r={pupilR} fill="#1A0808" />
+      <circle cx={cx + 3.5} cy={irisY - 5} r="3.5" fill="white" opacity="0.95" />
+      <circle cx={cx - 2} cy={irisY + 4} r="1.8" fill="white" opacity="0.6" />
+      <circle cx={cx + 6} cy={irisY - 1} r="1.2" fill="white" opacity="0.7" />
+    </g>
   );
 
   switch (mood) {
     case 'excited':
       return (
         <>
-          {eyePair(63, 8)}
-          {/* Sparkle stars */}
-          <path d="M78,54 l1.5,-4 l1.5,4 l-3,0 Z" fill="#FFE66D" />
-          <path d="M120,53 l1,-3 l1,3 l-2,0 Z" fill="#FFE66D" opacity="0.8" />
+          {eye(lx, 77, 12, 4.5)}
+          {eye(rx, 77, 12, 4.5)}
+          <path d={`M${lx - 14},${66} l2,-5 l2,5 l-4,0 Z`} fill="#FFE66D" />
+          <path d={`M${rx + 11},${64} l1.5,-4 l1.5,4 l-3,0 Z`} fill="#FFE66D" opacity="0.8" />
         </>
       );
     case 'thinking':
       return (
         <>
-          {scleraL}
-          <circle cx="90" cy="65" r="6.5" fill="url(#ll-eye-glow)" />
-          <circle cx="90" cy="65" r="2.8" fill="#1A0808" />
-          <circle cx="92" cy="61" r="2.5" fill="white" opacity="0.9" />
-          {scleraR}
-          <circle cx="114" cy="65" r="6.5" fill="url(#ll-eye-glow)" />
-          <circle cx="114" cy="65" r="2.8" fill="#1A0808" />
-          <circle cx="116" cy="61" r="2.5" fill="white" opacity="0.9" />
+          {eye(lx + 2, baseY + 2, 10, 4.5)}
+          {eye(rx + 2, baseY + 2, 10, 4.5)}
         </>
       );
     case 'encouraging':
       return (
         <>
-          {scleraL}
-          <circle cx="88" cy="66" r="7" fill="url(#ll-eye-glow)" />
-          <circle cx="88" cy="66" r="3" fill="#1A0808" />
-          <circle cx="91" cy="62" r="2.8" fill="white" opacity="0.9" />
-          <path d="M79,60 Q88,55 97,60" fill="white" stroke="#C83830" strokeWidth="0.5" />
-          {scleraR}
-          <circle cx="112" cy="66" r="7" fill="url(#ll-eye-glow)" />
-          <circle cx="112" cy="66" r="3" fill="#1A0808" />
-          <circle cx="115" cy="62" r="2.8" fill="white" opacity="0.9" />
-          <path d="M103,60 Q112,55 121,60" fill="white" stroke="#C83830" strokeWidth="0.5" />
+          {eye(lx, baseY + 1, 11, 5)}
+          {eye(rx, baseY + 1, 11, 5)}
+          <path d={`M${lx - 11},${baseY - 14} Q${lx},${baseY - 20} ${lx + 11},${baseY - 14}`} fill="none" stroke="#3A4A5C" strokeWidth="1.5" strokeLinecap="round" opacity="0.4" />
+          <path d={`M${rx - 11},${baseY - 14} Q${rx},${baseY - 20} ${rx + 11},${baseY - 14}`} fill="none" stroke="#3A4A5C" strokeWidth="1.5" strokeLinecap="round" opacity="0.4" />
         </>
       );
     case 'headShake':
       return (
         <>
-          {eyePair(65, 7)}
-          <path d="M80,55 Q88,57 96,55" fill="none" stroke="#C83830" strokeWidth="1.5" strokeLinecap="round" opacity="0.5" />
-          <path d="M104,55 Q112,53 120,55" fill="none" stroke="#C83830" strokeWidth="1.5" strokeLinecap="round" opacity="0.5" />
+          {eye(lx, 80, 10, 5)}
+          {eye(rx, 80, 10, 5)}
+          <path d={`M${lx - 9},${baseY - 14} Q${lx},${baseY - 11} ${lx + 9},${baseY - 14}`} fill="none" stroke="#3A4A5C" strokeWidth="1.8" strokeLinecap="round" opacity="0.5" />
+          <path d={`M${rx - 9},${baseY - 14} Q${rx},${baseY - 17} ${rx + 9},${baseY - 14}`} fill="none" stroke="#3A4A5C" strokeWidth="1.8" strokeLinecap="round" opacity="0.5" />
         </>
       );
-    default: // happy
-      return eyePair(64);
+    default:
+      return (
+        <>
+          {eye(lx, 77)}
+          {eye(rx, 77)}
+        </>
+      );
   }
 }
 
-/* ─── Mouth rendering per mood — LED mouth ─── */
-function Mouth({ mood }: { mood: CharacterMood }) {
+function BugMouth({ mood, isSpeaking }: { mood: CharacterMood; isSpeaking?: boolean }) {
+  const glow = isSpeaking ? 1 : 0;
   switch (mood) {
     case 'excited':
       return (
-        <path d="M90,81 Q100,88 110,81" fill="none" stroke="#FF4040" strokeWidth="2.5" strokeLinecap="round" opacity="0.9" />
+        <g>
+          <path d="M92,108 Q100,115 108,108" fill="none" stroke="#FF4040" strokeWidth="2.2" strokeLinecap="round" />
+          {glow > 0 && <path d="M94,110 Q100,113 106,110" fill="none" stroke="#FF8080" strokeWidth="1.2" opacity="0.5" />}
+        </g>
       );
     case 'thinking':
-      return (
-        <ellipse cx="102" cy="82" rx="3" ry="2.5" fill="#FF4040" opacity="0.5" />
-      );
+      return <ellipse cx="101" cy="109" rx="3.5" ry="2.8" fill="#FF4040" opacity="0.5" />;
     case 'encouraging':
-      return (
-        <path d="M92,80 Q100,85 108,80" fill="none" stroke="#FF4040" strokeWidth="2" strokeLinecap="round" opacity="0.7" />
-      );
+      return <path d="M93,108 Q100,113 107,108" fill="none" stroke="#FF4040" strokeWidth="2" strokeLinecap="round" opacity="0.8" />;
     case 'headShake':
+      return <path d="M96,109 Q100,107 104,109" fill="none" stroke="#FF4040" strokeWidth="1.8" strokeLinecap="round" opacity="0.6" />;
+    default:
       return (
-        <path d="M94,82 Q100,80 106,82" fill="none" stroke="#FF4040" strokeWidth="1.8" strokeLinecap="round" opacity="0.6" />
-      );
-    default: // happy
-      return (
-        <path d="M88,80 Q100,88 112,80" fill="none" stroke="#FF4040" strokeWidth="2.5" strokeLinecap="round" opacity="0.8" />
+        <g>
+          <path d="M92,108 Q100,114 108,108" fill="none" stroke="#FF4040" strokeWidth="2.2" strokeLinecap="round" opacity="0.85" />
+          {glow > 0 && <path d="M95,110 Q100,112 105,110" fill="none" stroke="#FF8080" strokeWidth="1" opacity="0.4" />}
+        </g>
       );
   }
 }

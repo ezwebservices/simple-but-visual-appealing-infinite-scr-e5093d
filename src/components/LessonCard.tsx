@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
-import type { MathProblem, CharacterMood } from '../types';
+import type { MathProblem, CharacterMood, CharacterAnimation } from '../types';
 import { fontStack, colors } from '../styles/theme';
 import CharacterDisplay from './characters/CharacterDisplay';
 import ObjectGroup from './objects/ObjectGroup';
@@ -146,6 +146,13 @@ export default function LessonCard({ problem, isActive, onCorrect, onWrong, onAd
         ? 'thinking'
         : 'happy';
 
+  // Animation: spin on correct, dance while actively playing, idle otherwise
+  const charAnimation: CharacterAnimation = isCorrect === true
+    ? 'spin'
+    : isActive
+      ? 'dance'
+      : 'idle';
+
   const questionText = getQuestionText(problem);
   const concept = problem.concept;
   const isNumberRecognition = concept.startsWith('number-recognition');
@@ -182,7 +189,7 @@ export default function LessonCard({ problem, isActive, onCorrect, onWrong, onAd
         transition={{ delay: 0.1, duration: 0.4 }}
         style={{ flex: '0 0 auto', width: 160, height: 160 }}
       >
-        <CharacterDisplay character={problem.character} mood={mood} isSpeaking={isSpeaking} />
+        <CharacterDisplay character={problem.character} mood={mood} isSpeaking={isSpeaking} animation={charAnimation} />
       </motion.div>
 
       {/* Question text */}

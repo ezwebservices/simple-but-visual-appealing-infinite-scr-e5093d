@@ -1,10 +1,10 @@
 # Iteration Whiteboard
 
-**Change request:** commit and push changes
+**Change request:** commit and push
 
 **Subtasks planned:** 1
 
-1. **Installer**: Stage all pending changes (.orchestrator/_prompt.txt, .orchestrator/_whiteboard.md, .orchestrator/build.json, src/App.tsx, src/main.tsx), commit with an appropriate message summarizing the changes, and push to the remote main branch.
+1. **Engineer**: Stage all modified files, create a descriptive commit summarizing the changes (character SVG redesigns, CharacterDisplay component updates, LessonCard changes, landing page enhancements, build config and type updates), and push to the main branch.
 
 ---
 
