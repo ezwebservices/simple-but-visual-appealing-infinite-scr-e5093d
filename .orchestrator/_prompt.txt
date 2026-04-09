@@ -1,0 +1,3 @@
+Create financial plan at finance/financial-plan.md:
+Pricing strategy, revenue projections (12mo), cost analysis.
+PROJECT: simple but visual appealing infinite scroll app design for a 4 year old counting addition subtraction. evrything ui should be designed for a 4 year old. audio playback. think like tiktok lessons combined with animal character. visuals are everything

@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <defs>
+    <!-- Soft shadow for depth -->
+    <filter id="shadow" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#00000020"/>
+    </filter>
+    <!-- Gradient for the circle bg -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#4FC3F7"/>
+      <stop offset="100%" stop-color="#81D4FA"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background circle -->
+  <circle cx="200" cy="200" r="190" fill="url(#bgGrad)" filter="url(#shadow)"/>
+
+  <!-- Bear face (Bloo) — main mascot -->
+  <!-- Ears -->
+  <circle cx="130" cy="110" r="42" fill="#3BA8D8"/>
+  <circle cx="130" cy="110" r="26" fill="#FFD54F"/>
+  <circle cx="270" cy="110" r="42" fill="#3BA8D8"/>
+  <circle cx="270" cy="110" r="26" fill="#FFD54F"/>
+
+  <!-- Head -->
+  <circle cx="200" cy="190" r="100" fill="#3BA8D8"/>
+
+  <!-- Face / muzzle -->
+  <ellipse cx="200" cy="215" rx="55" ry="42" fill="#E1F5FE"/>
+
+  <!-- Eyes -->
+  <circle cx="165" cy="175" r="16" fill="#4A4A4A"/>
+  <circle cx="235" cy="175" r="16" fill="#4A4A4A"/>
+  <!-- Eye shine -->
+  <circle cx="170" cy="169" r="5" fill="#FFFFFF"/>
+  <circle cx="240" cy="169" r="5" fill="#FFFFFF"/>
+
+  <!-- Nose -->
+  <ellipse cx="200" cy="205" rx="12" ry="9" fill="#4A4A4A"/>
+
+  <!-- Smile -->
+  <path d="M180 222 Q200 245 220 222" stroke="#4A4A4A" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+
+  <!-- Cheek blush -->
+  <ellipse cx="148" cy="210" rx="16" ry="10" fill="#FF8A80" opacity="0.5"/>
+  <ellipse cx="252" cy="210" rx="16" ry="10" fill="#FF8A80" opacity="0.5"/>
+
+  <!-- "123" floating above/around the bear -->
+  <text x="112" y="310" font-family="Fredoka One, Baloo 2, Arial Rounded MT Bold, sans-serif" font-size="56" font-weight="800" fill="#FFD54F" transform="rotate(-12, 112, 310)">1</text>
+  <text x="177" y="320" font-family="Fredoka One, Baloo 2, Arial Rounded MT Bold, sans-serif" font-size="64" font-weight="800" fill="#FFFFFF">2</text>
+  <text x="248" y="310" font-family="Fredoka One, Baloo 2, Arial Rounded MT Bold, sans-serif" font-size="56" font-weight="800" fill="#FF8A80" transform="rotate(12, 248, 310)">3</text>
+
+  <!-- Small stars -->
+  <polygon points="85,65 89,55 93,65 83,59 97,59" fill="#FFD54F"/>
+  <polygon points="320,70 324,60 328,70 318,64 332,64" fill="#FFD54F"/>
+  <polygon points="330,160 333,153 336,160 328,156 338,156" fill="#FFD54F" opacity="0.7"/>
+
+  <!-- Plus sign accent -->
+  <text x="60" y="200" font-family="Arial Rounded MT Bold, sans-serif" font-size="28" font-weight="800" fill="#81C784" opacity="0.8">+</text>
+
+  <!-- Minus sign accent -->
+  <text x="330" y="245" font-family="Arial Rounded MT Bold, sans-serif" font-size="28" font-weight="800" fill="#CE93D8" opacity="0.8">−</text>
+</svg>

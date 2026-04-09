@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NumPals — Swipe, Count, Roar! | Math App for Preschoolers</title>
+
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="NumPals is a TikTok-style infinite scroll math app for preschoolers ages 3-5. Lovable animal characters teach counting, addition & subtraction through play. No reading required!">
+  <meta name="keywords" content="preschool math app, kids counting app, toddler math game, learn to count, addition subtraction preschool, educational app kids">
+  <meta name="author" content="NumPals">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://numpals.app">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="NumPals — Swipe, Count, Roar!">
+  <meta property="og:description" content="A TikTok-style math app where preschoolers swipe through bite-sized lessons with adorable animal pals. Counting, addition & subtraction — all through play.">
+  <meta property="og:image" content="../brand/og-image.svg">
+  <meta property="og:url" content="https://numpals.app">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="NumPals">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="NumPals — Swipe, Count, Roar!">
+  <meta name="twitter:description" content="Adorable animal pals teach your preschooler math through swipe-to-learn cards. No reading required!">
+  <meta name="twitter:image" content="../brand/og-image.svg">
+
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "MobileApplication",
+    "name": "NumPals",
+    "operatingSystem": "iOS, Android",
+    "applicationCategory": "EducationalApplication",
+    "description": "TikTok-style infinite scroll math app for preschoolers ages 3-5. Lovable animal characters teach counting, addition and subtraction through animated visuals, sounds, and tap-to-interact moments.",
+    "audience": {
+      "@type": "EducationalAudience",
+      "educationalRole": "student",
+      "suggestedMinAge": 3,
+      "suggestedMaxAge": 5
+    },
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    }
+  }
+  </script>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            sky_blue: '#4FC3F7',
+            sky_light: '#81D4FA',
+            sunny: '#FFD54F',
+            coral: '#FF8A80',
+            mint: '#81C784',
+            orange: '#FFB74D',
+            teal: '#4DD0E1',
+            cloud: '#FAFAFA',
+            warmgray: '#F5F0EB',
+            charcoal: '#4A4A4A',
+            gold: '#FFC107',
+            purple: '#CE93D8',
+          },
+          fontFamily: {
+            display: ['Baloo 2', 'Arial Rounded MT Bold', 'sans-serif'],
+            body: ['Nunito', 'sans-serif'],
+          },
+        }
+      }
+    }
+  </script>
+
+  <style>
+    html { scroll-behavior: smooth; }
+
+    /* Bouncy float animation for characters */
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-14px); }
+    }
+    @keyframes floatSlow {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+    @keyframes wiggle {
+      0%, 100% { transform: rotate(-3deg); }
+      50% { transform: rotate(3deg); }
+    }
+    @keyframes pop {
+      0% { transform: scale(0.6); opacity: 0; }
+      70% { transform: scale(1.1); }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    @keyframes sparkle {
+      0%, 100% { opacity: 0.3; transform: scale(0.8); }
+      50% { opacity: 1; transform: scale(1.2); }
+    }
+    @keyframes slideUp {
+      from { transform: translateY(40px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    @keyframes scrollHint {
+      0%, 100% { transform: translateY(0); opacity: 0.6; }
+      50% { transform: translateY(10px); opacity: 1; }
+    }
+    @keyframes cardSwipe {
+      0% { transform: translateY(100%) scale(0.9); opacity: 0; }
+      100% { transform: translateY(0) scale(1); opacity: 1; }
+    }
+
+    .float { animation: float 3s ease-in-out infinite; }
+    .float-delay { animation: float 3s ease-in-out 0.5s infinite; }
+    .float-slow { animation: floatSlow 4s ease-in-out infinite; }
+    .wiggle { animation: wiggle 2s ease-in-out infinite; }
+    .pop { animation: pop 0.5s ease-out forwards; }
+    .sparkle { animation: sparkle 2s ease-in-out infinite; }
+    .sparkle-delay { animation: sparkle 2s ease-in-out 0.7s infinite; }
+    .sparkle-delay2 { animation: sparkle 2s ease-in-out 1.4s infinite; }
+
+    .animate-on-scroll {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: all 0.6s ease-out;
+    }
+    .animate-on-scroll.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Phone mockup card swipe effect */
+    .card-stack .card { animation: cardSwipe 0.6s ease-out forwards; }
+    .card-stack .card:nth-child(2) { animation-delay: 0.15s; }
+    .card-stack .card:nth-child(3) { animation-delay: 0.3s; }
+
+    /* Bubbly button hover */
+    .btn-bubbly {
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .btn-bubbly:hover {
+      transform: scale(1.05) translateY(-2px);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    }
+    .btn-bubbly:active {
+      transform: scale(0.97);
+    }
+
+    /* Grass hill shapes */
+    .grass-hill {
+      position: absolute;
+      bottom: 0;
+      border-radius: 50% 50% 0 0;
+    }
+
+    /* Star decorations */
+    .star-deco {
+      position: absolute;
+      width: 24px;
+      height: 24px;
+      color: #FFD54F;
+    }
+
+    /* Scroll down indicator */
+    .scroll-hint { animation: scrollHint 2s ease-in-out infinite; }
+  </style>
+</head>
+<body class="font-body text-charcoal bg-warmgray overflow-x-hidden">
+
+  <!-- ============================================ -->
+  <!--  NAVIGATION                                   -->
+  <!-- ============================================ -->
+  <nav class="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-md shadow-sm">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+      <a href="#" class="flex items-center gap-2">
+        <img src="../brand/logo.svg" alt="NumPals Logo" class="w-10 h-10">
+        <span class="font-display font-800 text-2xl text-sky_blue">Num<span class="text-sunny">Pals</span></span>
+      </a>
+      <div class="hidden md:flex items-center gap-8 font-display font-600 text-sm">
+        <a href="#features" class="text-charcoal/70 hover:text-sky_blue transition-colors">Features</a>
+        <a href="#how-it-works" class="text-charcoal/70 hover:text-sky_blue transition-colors">How It Works</a>
+        <a href="#characters" class="text-charcoal/70 hover:text-sky_blue transition-colors">Meet the Pals</a>
+      </div>
+      <a href="#cta" class="btn-bubbly bg-sunny text-charcoal font-display font-700 px-5 py-2 rounded-full text-sm shadow-md">
+        Get NumPals Free
+      </a>
+    </div>
+  </nav>
+
+  <!-- ============================================ -->
+  <!--  HERO SECTION                                 -->
+  <!-- ============================================ -->
+  <section class="relative min-h-screen flex items-center justify-center overflow-hidden pt-16"
+    style="background: linear-gradient(180deg, #81D4FA 0%, #4FC3F7 50%, #B2EBF2 100%);">
+
+    <!-- Decorative clouds -->
+    <div class="absolute top-16 left-[5%] opacity-50">
+      <svg width="180" height="80" viewBox="0 0 180 80" fill="white">
+        <ellipse cx="90" cy="50" rx="80" ry="30"/>
+        <ellipse cx="60" cy="35" rx="50" ry="25"/>
+        <ellipse cx="120" cy="38" rx="55" ry="22"/>
+      </svg>
+    </div>
+    <div class="absolute top-28 right-[8%] opacity-40 float-slow">
+      <svg width="140" height="60" viewBox="0 0 140 60" fill="white">
+        <ellipse cx="70" cy="35" rx="65" ry="25"/>
+        <ellipse cx="45" cy="22" rx="40" ry="20"/>
+        <ellipse cx="100" cy="25" rx="38" ry="18"/>
+      </svg>
+    </div>
+    <div class="absolute top-48 left-[30%] opacity-30 float">
+      <svg width="100" height="45" viewBox="0 0 100 45" fill="white">
+        <ellipse cx="50" cy="28" rx="48" ry="17"/>
+        <ellipse cx="35" cy="18" rx="30" ry="14"/>
+      </svg>
+    </div>
+
+    <!-- Sparkle stars -->
+    <svg class="absolute top-24 left-[15%] sparkle" width="28" height="28" viewBox="0 0 28 28" fill="#FFD54F">
+      <polygon points="14,0 17,10 28,10 19,17 22,28 14,21 6,28 9,17 0,10 11,10"/>
+    </svg>
+    <svg class="absolute top-40 right-[12%] sparkle-delay" width="22" height="22" viewBox="0 0 28 28" fill="#FFD54F">
+      <polygon points="14,0 17,10 28,10 19,17 22,28 14,21 6,28 9,17 0,10 11,10"/>
+    </svg>
+    <svg class="absolute bottom-[35%] left-[8%] sparkle-delay2" width="18" height="18" viewBox="0 0 28 28" fill="#FFFFFF">
+      <polygon points="14,0 17,10 28,10 19,17 22,28 14,21 6,28 9,17 0,10 11,10"/>
+    </svg>
+    <svg class="absolute top-[30%] right-[5%] sparkle" width="16" height="16" viewBox="0 0 28 28" fill="#FFFFFF">
+      <polygon points="14,0 17,10 28,10 19,17 22,28 14,21 6,28 9,17 0,10 11,10"/>
+    </svg>
+
+    <!-- Grass hills at bottom -->
+    <div class="absolute bottom-0 w-full">
+      <svg viewBox="0 0 1440 200" class="w-full" preserveAspectRatio="none">
+        <ellipse cx="350" cy="200" rx="600" ry="160" fill="#81C784"/>
+        <ellipse cx="1100" cy="200" rx="650" ry="140" fill="#72B876"/>
+        <rect x="0" y="140" width="1440" height="60" fill="#81C784"/>
+        <!-- Flowers -->
+        <circle cx="200" cy="150" r="8" fill="#FFD54F"/><circle cx="200" cy="150" r="3" fill="#FFB74D"/>
+        <circle cx="500" cy="160" r="7" fill="#FF8A80"/><circle cx="500" cy="160" r="2.5" fill="#EF5350"/>
+        <circle cx="800" cy="155" r="6" fill="#CE93D8"/><circle cx="800" cy="155" r="2" fill="#AB47BC"/>
+        <circle cx="1100" cy="148" r="8" fill="#FFD54F"/><circle cx="1100" cy="148" r="3" fill="#FFB74D"/>
+        <circle cx="1350" cy="158" r="7" fill="#FF8A80"/><circle cx="1350" cy="158" r="2.5" fill="#EF5350"/>
+      </svg>
+    </div>
+
+    <!-- Hero Content -->
+    <div class="relative z-10 max-w-6xl mx-auto px-4 grid lg:grid-cols-2 gap-8 items-center">
+      <!-- Text -->
+      <div class="text-center lg:text-left">
+        <div class="inline-block bg-white/25 backdrop-blur-sm rounded-full px-4 py-1.5 mb-6 font-display font-600 text-white text-sm">
+          Free for preschoolers ages 3-5
+        </div>
+        <h1 class="font-display font-800 text-5xl sm:text-6xl lg:text-7xl text-white leading-tight mb-4"
+          style="text-shadow: 0 3px 12px rgba(0,0,0,0.12);">
+          Swipe.<br>
+          Count.<br>
+          <span class="text-sunny" style="text-shadow: 0 2px 8px rgba(255,213,79,0.4);">Roar!</span>
+        </h1>
+        <p class="text-white/90 text-lg sm:text-xl max-w-md mx-auto lg:mx-0 mb-8 font-body leading-relaxed">
+          Adorable animal pals teach your preschooler math through TikTok-style swipe cards. No reading required — just play!
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+          <a href="#cta" class="btn-bubbly bg-sunny text-charcoal font-display font-700 text-lg px-8 py-4 rounded-full shadow-lg inline-flex items-center justify-center gap-2">
+            <svg class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/></svg>
+            Download Free
+          </a>
+          <a href="#how-it-works" class="btn-bubbly bg-white/25 backdrop-blur-sm text-white font-display font-700 text-lg px-8 py-4 rounded-full border-2 border-white/40 inline-flex items-center justify-center gap-2">
+            See How It Works
+            <svg class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- Phone Mockup -->
+      <div class="relative flex justify-center lg:justify-end">
+        <div class="relative float">
+          <!-- Phone frame -->
+          <div class="w-[280px] sm:w-[300px] h-[560px] sm:h-[600px] bg-charcoal rounded-[3rem] p-3 shadow-2xl relative">
+            <!-- Screen -->
+            <div class="w-full h-full rounded-[2.4rem] overflow-hidden relative"
+              style="background: linear-gradient(180deg, #4FC3F7, #81D4FA);">
+              <!-- Notch -->
+              <div class="absolute top-0 left-1/2 -translate-x-1/2 w-28 h-6 bg-charcoal rounded-b-2xl z-10"></div>
+
+              <!-- Card content - a lesson card -->
+              <div class="absolute inset-0 flex flex-col items-center justify-center px-6 text-center">
+                <!-- Character: Bloo -->
+                <div class="wiggle mb-4">
+                  <svg width="100" height="110" viewBox="0 0 170 200">
+                    <circle cx="30" cy="15" r="28" fill="#3BA8D8"/>
+                    <circle cx="30" cy="15" r="16" fill="#FFD54F"/>
+                    <circle cx="140" cy="15" r="28" fill="#3BA8D8"/>
+                    <circle cx="140" cy="15" r="16" fill="#FFD54F"/>
+                    <circle cx="85" cy="70" r="65" fill="#3BA8D8"/>
+                    <ellipse cx="85" cy="88" rx="36" ry="26" fill="#E1F5FE"/>
+                    <circle cx="62" cy="58" r="10" fill="#4A4A4A"/>
+                    <circle cx="108" cy="58" r="10" fill="#4A4A4A"/>
+                    <circle cx="65" cy="54" r="3" fill="#FFF"/>
+                    <circle cx="111" cy="54" r="3" fill="#FFF"/>
+                    <ellipse cx="85" cy="80" rx="7" ry="5" fill="#4A4A4A"/>
+                    <path d="M72 93 Q85 108 98 93" stroke="#4A4A4A" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+                    <ellipse cx="45" cy="82" rx="10" ry="6" fill="#FF8A80" opacity="0.45"/>
+                    <ellipse cx="125" cy="82" rx="10" ry="6" fill="#FF8A80" opacity="0.45"/>
+                  </svg>
+                </div>
+
+                <!-- Math problem -->
+                <div class="flex items-center gap-3 mb-4">
+                  <span class="w-14 h-14 rounded-2xl bg-white/90 flex items-center justify-center font-display font-800 text-3xl text-sky_blue shadow-md">2</span>
+                  <span class="font-display font-800 text-2xl text-mint">+</span>
+                  <span class="w-14 h-14 rounded-2xl bg-white/90 flex items-center justify-center font-display font-800 text-3xl text-coral shadow-md">1</span>
+                  <span class="font-display font-800 text-2xl text-purple">=</span>
+                  <span class="w-14 h-14 rounded-2xl bg-sunny/90 flex items-center justify-center font-display font-800 text-3xl text-charcoal shadow-md">?</span>
+                </div>
+
+                <!-- Answer options -->
+                <div class="flex gap-3">
+                  <button class="w-16 h-16 rounded-full bg-white/80 font-display font-800 text-2xl text-charcoal/60 shadow-md">2</button>
+                  <button class="w-16 h-16 rounded-full bg-sunny font-display font-800 text-2xl text-charcoal shadow-lg ring-4 ring-sunny/40">3</button>
+                  <button class="w-16 h-16 rounded-full bg-white/80 font-display font-800 text-2xl text-charcoal/60 shadow-md">4</button>
+                </div>
+
+                <!-- Swipe hint -->
+                <div class="absolute bottom-8 flex flex-col items-center text-white/60">
+                  <svg class="w-5 h-5 scroll-hint" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                  </svg>
+                  <span class="text-xs font-display font-600 mt-1">swipe for more</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Floating elements around phone -->
+          <div class="absolute -top-4 -right-8 float-delay">
+            <div class="bg-sunny rounded-2xl px-3 py-2 shadow-lg font-display font-800 text-charcoal text-lg">
+              +1
+            </div>
+          </div>
+          <div class="absolute top-20 -left-10 float-slow">
+            <div class="bg-coral rounded-2xl px-3 py-2 shadow-lg font-display font-800 text-white text-lg">
+              -2
+            </div>
+          </div>
+          <div class="absolute bottom-32 -right-6 float">
+            <div class="bg-mint rounded-full w-12 h-12 flex items-center justify-center shadow-lg font-display font-800 text-white text-xl">
+              5
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scroll hint -->
+    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 scroll-hint">
+      <svg class="w-8 h-8 text-white/70" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/>
+      </svg>
+    </div>
+  </section>
+
+  <!-- ============================================ -->
+  <!--  SOCIAL PROOF BAR                             -->
+  <!-- ============================================ -->
+  <section class="bg-white py-8 border-b border-gray-100">
+    <div class="max-w-5xl mx-auto px-4 flex flex-wrap justify-center gap-8 sm:gap-16 items-center">
+      <div class="text-center">
+        <div class="font-display font-800 text-3xl text-sky_blue">50K+</div>
+        <div class="text-charcoal/50 text-sm font-600">Happy Kids</div>
+      </div>
+      <div class="text-center">
+        <div class="font-display font-800 text-3xl text-sunny flex items-center justify-center gap-1">
+          4.9
+          <svg class="w-6 h-6 text-gold" viewBox="0 0 20 20" fill="currentColor"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+        </div>
+        <div class="text-charcoal/50 text-sm font-600">App Store Rating</div>
+      </div>
+      <div class="text-center">
+        <div class="font-display font-800 text-3xl text-coral">0 Ads</div>
+        <div class="text-charcoal/50 text-sm font-600">Ever. Promise.</div>
+      </div>
+      <div class="text-center">
+        <div class="font-display font-800 text-3xl text-mint">100%</div>
+        <div class="text-charcoal/50 text-sm font-600">Screen Time Parents Love</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================ -->
+  <!--  FEATURES SECTION                             -->
+  <!-- ============================================ -->
+  <section id="features" class="py-20 sm:py-28 bg-warmgray relative overflow-hidden">
+    <!-- Background blobs -->
+    <div class="absolute top-10 right-0 w-64 h-64 bg-sky_blue/10 rounded-full blur-3xl"></div>
+    <div class="absolute bottom-10 left-0 w-80 h-80 bg-sunny/10 rounded-full blur-3xl"></div>
+
+    <div class="max-w-6xl mx-auto px-4 relative z-10">
+      <div class="text-center mb-16 animate-on-scroll">
+        <h2 class="font-display font-800 text-4xl sm:text-5xl text-charcoal mb-4">
+          Why Kids <span class="text-coral">Love</span> NumPals
+        </h2>
+        <p class="text-charcoal/60 text-lg max-w-xl mx-auto">
+          Built for tiny fingers, big imaginations, and zero reading required.
+        </p>
+      </div>
+
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Feature 1 -->
+        <div class="animate-on-scroll bg-white rounded-3xl p-8 shadow-sm hover:shadow-lg transition-shadow group">
+          <div class="w-16 h-16 bg-sky_blue/15 rounded-2xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
+            <svg class="w-8 h-8 text-sky_blue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2v20M2 12h20"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+          </div>
+          <h3 class="font-display font-700 text-xl text-charcoal mb-2">Infinite Scroll Lessons</h3>
+          <p class="text-charcoal/60 text-sm leading-relaxed">
+            TikTok-style swipe cards create a flow state. Each swipe = a new bite-sized math lesson in 10-15 seconds.
+          </p>
+        </div>
+
+        <!-- Feature 2 -->
+        <div class="animate-on-scroll bg-white rounded-3xl p-8 shadow-sm hover:shadow-lg transition-shadow group">
+          <div class="w-16 h-16 bg-sunny/20 rounded-2xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
+            <svg class="w-8 h-8 text-orange" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+            </svg>
+          </div>
+          <h3 class="font-display font-700 text-xl text-charcoal mb-2">No Wrong Answers</h3>
+          <p class="text-charcoal/60 text-sm leading-relaxed">
+            Every attempt gets celebrated. Gentle "Almost! Try again!" encouragement — never harsh error screens.
+          </p>
+        </div>
+
+        <!-- Feature 3 -->
+        <div class="animate-on-scroll bg-white rounded-3xl p-8 shadow-sm hover:shadow-lg transition-shadow group">
+          <div class="w-16 h-16 bg-coral/15 rounded-2xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
+            <svg class="w-8 h-8 text-coral" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+            </svg>
+          </div>
+          <h3 class="font-display font-700 text-xl text-charcoal mb-2">Sound-First Design</h3>
+          <p class="text-charcoal/60 text-sm leading-relaxed">
+            Every number is spoken aloud. Xylophone melodies, character voices, and playful sound effects on every tap.
+          </p>
+        </div>
+
+        <!-- Feature 4 -->
+        <div class="animate-on-scroll bg-white rounded-3xl p-8 shadow-sm hover:shadow-lg transition-shadow group">
+          <div class="w-16 h-16 bg-mint/20 rounded-2xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
+            <svg class="w-8 h-8 text-mint" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M14.5 10c-1.11 0-2 .89-2 2s.89 2 2 2 2-.89 2-2-.89-2-2-2zm0-6C9.53 4 4.75 6.07 2 9.5 4.75 12.93 9.53 15 14.5 15s9.75-2.07 12.5-5.5C24.25 6.07 19.47 4 14.5 4zm0 9c-1.93 0-3.5-1.57-3.5-3.5S12.57 6 14.5 6 18 7.57 18 9.5 16.43 13 14.5 13z"/>
+            </svg>
+          </div>
+          <h3 class="font-display font-700 text-xl text-charcoal mb-2">100% Visual</h3>
+          <p class="text-charcoal/60 text-sm leading-relaxed">
+            No reading needed! Big icons, chunky buttons, and colorful animations guide every interaction.
+          </p>
+        </div>
+
+        <!-- Feature 5 -->
+        <div class="animate-on-scroll bg-white rounded-3xl p-8 shadow-sm hover:shadow-lg transition-shadow group">
+          <div class="w-16 h-16 bg-purple/20 rounded-2xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
+            <svg class="w-8 h-8 text-purple" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+            </svg>
+          </div>
+          <h3 class="font-display font-700 text-xl text-charcoal mb-2">Celebrate Everything</h3>
+          <p class="text-charcoal/60 text-sm leading-relaxed">
+            Confetti, bouncing animals, gold stars, and cheerful sounds. Joy is the metric we optimize for.
+          </p>
+        </div>
+
+        <!-- Feature 6 -->
+        <div class="animate-on-scroll bg-white rounded-3xl p-8 shadow-sm hover:shadow-lg transition-shadow group">
+          <div class="w-16 h-16 bg-teal/15 rounded-2xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
+            <svg class="w-8 h-8 text-teal" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/>
+            </svg>
+          </div>
+          <h3 class="font-display font-700 text-xl text-charcoal mb-2">Safe & Ad-Free</h3>
+          <p class="text-charcoal/60 text-sm leading-relaxed">
+            No ads, no external links, no text input, no social features. A completely contained, safe experience.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================ -->
+  <!--  CHARACTERS SECTION                           -->
+  <!-- ============================================ -->
+  <section id="characters" class="py-20 sm:py-28 bg-white relative overflow-hidden">
+    <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-sky_blue via-sunny to-coral"></div>
+
+    <div class="max-w-6xl mx-auto px-4">
+      <div class="text-center mb-16 animate-on-scroll">
+        <h2 class="font-display font-800 text-4xl sm:text-5xl text-charcoal mb-4">
+          Meet the <span class="text-sky_blue">Pals</span>
+        </h2>
+        <p class="text-charcoal/60 text-lg max-w-lg mx-auto">
+          Five lovable animal friends, each with a math superpower.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-5">
+        <!-- Bloo -->
+        <div class="animate-on-scroll text-center group">
+          <div class="bg-sky_blue/10 rounded-3xl p-6 mb-3 group-hover:bg-sky_blue/20 transition-colors">
+            <svg class="mx-auto w-24 h-24 group-hover:scale-110 transition-transform" viewBox="0 0 170 160">
+              <circle cx="30" cy="15" r="24" fill="#3BA8D8"/>
+              <circle cx="30" cy="15" r="14" fill="#FFD54F"/>
+              <circle cx="140" cy="15" r="24" fill="#3BA8D8"/>
+              <circle cx="140" cy="15" r="14" fill="#FFD54F"/>
+              <circle cx="85" cy="70" r="58" fill="#3BA8D8"/>
+              <ellipse cx="85" cy="85" rx="32" ry="24" fill="#E1F5FE"/>
+              <circle cx="65" cy="58" r="9" fill="#4A4A4A"/>
+              <circle cx="105" cy="58" r="9" fill="#4A4A4A"/>
+              <circle cx="67" cy="55" r="3" fill="#FFF"/>
+              <circle cx="107" cy="55" r="3" fill="#FFF"/>
+              <ellipse cx="85" cy="78" rx="6" ry="4.5" fill="#4A4A4A"/>
+              <path d="M74 90 Q85 103 96 90" stroke="#4A4A4A" stroke-width="2" fill="none" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="font-display font-700 text-lg text-sky_blue">Bloo</div>
+          <div class="text-charcoal/50 text-xs font-600">Bear &middot; Counting</div>
+        </div>
+
+        <!-- Sunny -->
+        <div class="animate-on-scroll text-center group">
+          <div class="bg-sunny/10 rounded-3xl p-6 mb-3 group-hover:bg-sunny/20 transition-colors">
+            <svg class="mx-auto w-24 h-24 group-hover:scale-110 transition-transform" viewBox="0 0 170 160">
+              <circle cx="85" cy="60" r="68" fill="#FFB74D"/>
+              <g fill="#FF9800">
+                <ellipse cx="85" cy="-5" rx="14" ry="18"/>
+                <ellipse cx="145" cy="20" rx="14" ry="18" transform="rotate(55, 85, 60)"/>
+                <ellipse cx="150" cy="75" rx="14" ry="18" transform="rotate(90, 85, 60)"/>
+                <ellipse cx="25" cy="20" rx="14" ry="18" transform="rotate(-55, 85, 60)"/>
+                <ellipse cx="20" cy="75" rx="14" ry="18" transform="rotate(-90, 85, 60)"/>
+              </g>
+              <circle cx="85" cy="62" r="48" fill="#FFD54F"/>
+              <ellipse cx="85" cy="76" rx="25" ry="18" fill="#FFF9C4"/>
+              <circle cx="67" cy="52" r="8" fill="#4A4A4A"/>
+              <circle cx="103" cy="52" r="8" fill="#4A4A4A"/>
+              <circle cx="69" cy="49" r="2.5" fill="#FFF"/>
+              <circle cx="105" cy="49" r="2.5" fill="#FFF"/>
+              <ellipse cx="85" cy="70" rx="5.5" ry="4" fill="#4A4A4A"/>
+              <path d="M74 82 Q85 96 96 82" stroke="#4A4A4A" stroke-width="2" fill="none" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="font-display font-700 text-lg text-orange">Sunny</div>
+          <div class="text-charcoal/50 text-xs font-600">Lion &middot; Addition</div>
+        </div>
+
+        <!-- Rosie -->
+        <div class="animate-on-scroll text-center group">
+          <div class="bg-coral/10 rounded-3xl p-6 mb-3 group-hover:bg-coral/20 transition-colors">
+            <svg class="mx-auto w-24 h-24 group-hover:scale-110 transition-transform" viewBox="0 0 170 160">
+              <ellipse cx="60" cy="15" rx="16" ry="42" fill="#FF8A80" transform="rotate(-15, 60, 15)"/>
+              <ellipse cx="60" cy="15" rx="9" ry="32" fill="#FFCDD2" transform="rotate(-15, 60, 15)"/>
+              <ellipse cx="110" cy="15" rx="16" ry="42" fill="#FF8A80" transform="rotate(15, 110, 15)"/>
+              <ellipse cx="110" cy="15" rx="9" ry="32" fill="#FFCDD2" transform="rotate(15, 110, 15)"/>
+              <circle cx="85" cy="85" r="50" fill="#FF8A80"/>
+              <ellipse cx="85" cy="98" rx="28" ry="20" fill="#FFCDD2"/>
+              <circle cx="67" cy="75" r="8" fill="#4A4A4A"/>
+              <circle cx="103" cy="75" r="8" fill="#4A4A4A"/>
+              <circle cx="69" cy="72" r="2.5" fill="#FFF"/>
+              <circle cx="105" cy="72" r="2.5" fill="#FFF"/>
+              <ellipse cx="85" cy="92" rx="5" ry="3.5" fill="#E57373"/>
+              <path d="M78 100 Q85 108 92 100" stroke="#4A4A4A" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="font-display font-700 text-lg text-coral">Rosie</div>
+          <div class="text-charcoal/50 text-xs font-600">Bunny &middot; Subtraction</div>
+        </div>
+
+        <!-- Milo -->
+        <div class="animate-on-scroll text-center group">
+          <div class="bg-orange/10 rounded-3xl p-6 mb-3 group-hover:bg-orange/20 transition-colors">
+            <svg class="mx-auto w-24 h-24 group-hover:scale-110 transition-transform" viewBox="0 0 170 160">
+              <circle cx="30" cy="50" r="22" fill="#FFB74D"/>
+              <circle cx="30" cy="50" r="14" fill="#FFE0B2"/>
+              <circle cx="140" cy="50" r="22" fill="#FFB74D"/>
+              <circle cx="140" cy="50" r="14" fill="#FFE0B2"/>
+              <circle cx="85" cy="75" r="52" fill="#FFB74D"/>
+              <ellipse cx="85" cy="88" rx="30" ry="22" fill="#FFE0B2"/>
+              <circle cx="67" cy="65" r="9" fill="#4A4A4A"/>
+              <circle cx="103" cy="65" r="9" fill="#4A4A4A"/>
+              <circle cx="69" cy="62" r="3" fill="#FFF"/>
+              <circle cx="105" cy="62" r="3" fill="#FFF"/>
+              <ellipse cx="85" cy="83" rx="5.5" ry="4" fill="#4A4A4A"/>
+              <path d="M72 95 Q85 110 98 95" stroke="#4A4A4A" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="font-display font-700 text-lg text-orange">Milo</div>
+          <div class="text-charcoal/50 text-xs font-600">Monkey &middot; Challenges</div>
+        </div>
+
+        <!-- Pip -->
+        <div class="animate-on-scroll text-center group col-span-2 sm:col-span-1">
+          <div class="bg-teal/10 rounded-3xl p-6 mb-3 group-hover:bg-teal/20 transition-colors">
+            <svg class="mx-auto w-24 h-24 group-hover:scale-110 transition-transform" viewBox="0 0 170 160">
+              <circle cx="85" cy="65" r="55" fill="#4DD0E1"/>
+              <ellipse cx="85" cy="80" rx="32" ry="28" fill="#E0F7FA"/>
+              <circle cx="67" cy="55" r="9" fill="#4A4A4A"/>
+              <circle cx="103" cy="55" r="9" fill="#4A4A4A"/>
+              <circle cx="69" cy="52" r="3" fill="#FFF"/>
+              <circle cx="105" cy="52" r="3" fill="#FFF"/>
+              <polygon points="85,68 78,78 92,78" fill="#FFB74D"/>
+              <path d="M76 88 Q85 95 94 88" stroke="#4A4A4A" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+              <!-- Bow tie -->
+              <polygon points="75,110 85,118 95,110 85,125" fill="#FFD54F"/>
+            </svg>
+          </div>
+          <div class="font-display font-700 text-lg text-teal">Pip</div>
+          <div class="text-charcoal/50 text-xs font-600">Penguin &middot; Numbers</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================ -->
+  <!--  HOW IT WORKS                                 -->
+  <!-- ============================================ -->
+  <section id="how-it-works" class="py-20 sm:py-28 relative overflow-hidden"
+    style="background: linear-gradient(180deg, #F5F0EB 0%, #FAFAFA 100%);">
+
+    <div class="max-w-6xl mx-auto px-4">
+      <div class="text-center mb-16 animate-on-scroll">
+        <h2 class="font-display font-800 text-4xl sm:text-5xl text-charcoal mb-4">
+          How <span class="text-mint">NumPals</span> Works
+        </h2>
+        <p class="text-charcoal/60 text-lg max-w-lg mx-auto">
+          Three simple steps. Zero setup. Pure play.
+        </p>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-8 lg:gap-12">
+        <!-- Step 1 -->
+        <div class="animate-on-scroll text-center">
+          <div class="relative mx-auto w-32 h-32 mb-6">
+            <div class="w-full h-full rounded-full bg-sky_blue/15 flex items-center justify-center">
+              <svg class="w-16 h-16 text-sky_blue" viewBox="0 0 64 64" fill="none">
+                <!-- Swipe up gesture -->
+                <rect x="20" y="12" rx="10" ry="10" width="24" height="42" stroke="currentColor" stroke-width="3" fill="none"/>
+                <path d="M32 38 L32 26" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+                <path d="M27 31 L32 26 L37 31" stroke="currentColor" stroke-width="3" stroke-linecap="round" fill="none"/>
+              </svg>
+            </div>
+            <div class="absolute -top-2 -right-2 w-10 h-10 rounded-full bg-sky_blue text-white font-display font-800 text-lg flex items-center justify-center shadow-md">1</div>
+          </div>
+          <h3 class="font-display font-700 text-xl text-charcoal mb-2">Swipe Up</h3>
+          <p class="text-charcoal/60 text-sm leading-relaxed max-w-xs mx-auto">
+            Each swipe reveals a new math card starring an animal pal. Just like scrolling their favorite videos!
+          </p>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="animate-on-scroll text-center">
+          <div class="relative mx-auto w-32 h-32 mb-6">
+            <div class="w-full h-full rounded-full bg-sunny/15 flex items-center justify-center">
+              <svg class="w-16 h-16 text-orange" viewBox="0 0 64 64" fill="none">
+                <!-- Tap gesture -->
+                <circle cx="32" cy="28" r="14" stroke="currentColor" stroke-width="3" fill="none"/>
+                <circle cx="32" cy="28" r="5" fill="currentColor"/>
+                <path d="M32 42 L32 56" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+                <path d="M26 50 L32 56 L38 50" stroke="currentColor" stroke-width="3" stroke-linecap="round" fill="none"/>
+              </svg>
+            </div>
+            <div class="absolute -top-2 -right-2 w-10 h-10 rounded-full bg-sunny text-charcoal font-display font-800 text-lg flex items-center justify-center shadow-md">2</div>
+          </div>
+          <h3 class="font-display font-700 text-xl text-charcoal mb-2">Tap to Answer</h3>
+          <p class="text-charcoal/60 text-sm leading-relaxed max-w-xs mx-auto">
+            Big, chunky buttons make it easy for tiny fingers. Tap the answer and hear the animal pal cheer!
+          </p>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="animate-on-scroll text-center">
+          <div class="relative mx-auto w-32 h-32 mb-6">
+            <div class="w-full h-full rounded-full bg-coral/15 flex items-center justify-center">
+              <svg class="w-16 h-16 text-gold" viewBox="0 0 64 64" fill="currentColor">
+                <!-- Star / celebration -->
+                <path d="M32 4 L38 22 L56 22 L42 33 L47 52 L32 41 L17 52 L22 33 L8 22 L26 22 Z" opacity="0.9"/>
+                <circle cx="14" cy="12" r="3" fill="#CE93D8"/>
+                <circle cx="52" cy="10" r="2.5" fill="#4FC3F7"/>
+                <circle cx="8" cy="42" r="2" fill="#FF8A80"/>
+                <circle cx="56" cy="44" r="2.5" fill="#81C784"/>
+              </svg>
+            </div>
+            <div class="absolute -top-2 -right-2 w-10 h-10 rounded-full bg-coral text-white font-display font-800 text-lg flex items-center justify-center shadow-md">3</div>
+          </div>
+          <h3 class="font-display font-700 text-xl text-charcoal mb-2">Celebrate!</h3>
+          <p class="text-charcoal/60 text-sm leading-relaxed max-w-xs mx-auto">
+            Confetti, bouncing animals, and gold stars! Every answer earns a celebration. Then swipe for more.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================ -->
+  <!--  PARENT TRUST SECTION                         -->
+  <!-- ============================================ -->
+  <section class="py-20 bg-white">
+    <div class="max-w-6xl mx-auto px-4">
+      <div class="text-center mb-14 animate-on-scroll">
+        <h2 class="font-display font-800 text-4xl sm:text-5xl text-charcoal mb-4">
+          Parents <span class="text-sunny">Trust</span> NumPals
+        </h2>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-6">
+        <div class="animate-on-scroll bg-warmgray rounded-3xl p-8">
+          <div class="flex gap-1 mb-3">
+            <svg class="w-5 h-5 text-gold" viewBox="0 0 20 20" fill="currentColor"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <svg class="w-5 h-5 text-gold" viewBox="0 0 20 20" fill="currentColor"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <svg class="w-5 h-5 text-gold" viewBox="0 0 20 20" fill="currentColor"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <svg class="w-5 h-5 text-gold" viewBox="0 0 20 20" fill="currentColor"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <svg class="w-5 h-5 text-gold" viewBox="0 0 20 20" fill="currentColor"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+          </div>
+          <p class="text-charcoal/70 text-sm leading-relaxed mb-4">
+            "My daughter asks for 'the bear game' every morning. She went from not knowing numbers to counting to 20 in three weeks. I genuinely can't believe it."
+          </p>
+          <div class="font-display font-600 text-sm text-charcoal">Sarah M.</div>
+          <div class="text-charcoal/40 text-xs">Mom of Lily, age 4</div>
+        </div>
+
+        <div class="animate-on-scroll bg-warmgray rounded-3xl p-8">
+          <div class="flex gap-1 mb-3">
+            <svg class="w-5 h-5 text-gold" viewBox="0 0 20 20" fill="currentColor"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <svg class="w-5 h-5 text-gold" viewBox="0 0 20 20" fill="currentColor"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <svg class="w-5 h-5 text-gold" viewBox="0 0 20 20" fill="currentColor"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <svg class="w-5 h-5 text-gold" viewBox="0 0 20 20" fill="currentColor"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <svg class="w-5 h-5 text-gold" viewBox="0 0 20 20" fill="currentColor"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+          </div>
+          <p class="text-charcoal/70 text-sm leading-relaxed mb-4">
+            "Finally, screen time I don't feel guilty about. No ads, no in-app purchases, and my son is actually learning. The sound effects make him giggle every time."
+          </p>
+          <div class="font-display font-600 text-sm text-charcoal">James T.</div>
+          <div class="text-charcoal/40 text-xs">Dad of Noah, age 3</div>
+        </div>
+
+        <div class="animate-on-scroll bg-warmgray rounded-3xl p-8">
+          <div class="flex gap-1 mb-3">
+            <svg class="w-5 h-5 text-gold" viewBox="0 0 20 20" fill="currentColor"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <svg class="w-5 h-5 text-gold" viewBox="0 0 20 20" fill="currentColor"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <svg class="w-5 h-5 text-gold" viewBox="0 0 20 20" fill="currentColor"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <svg class="w-5 h-5 text-gold" viewBox="0 0 20 20" fill="currentColor"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <svg class="w-5 h-5 text-gold" viewBox="0 0 20 20" fill="currentColor"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+          </div>
+          <p class="text-charcoal/70 text-sm leading-relaxed mb-4">
+            "As a preschool teacher, I recommend NumPals to every parent. The animal characters keep kids engaged and the gradual difficulty is perfectly paced."
+          </p>
+          <div class="font-display font-600 text-sm text-charcoal">Maria L.</div>
+          <div class="text-charcoal/40 text-xs">Preschool Teacher, 12 years</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================ -->
+  <!--  CTA SECTION                                  -->
+  <!-- ============================================ -->
+  <section id="cta" class="relative py-24 sm:py-32 overflow-hidden"
+    style="background: linear-gradient(135deg, #4FC3F7 0%, #81D4FA 40%, #B2EBF2 100%);">
+
+    <!-- Decorative elements -->
+    <div class="absolute top-8 left-[10%] opacity-20">
+      <svg width="60" height="60" viewBox="0 0 28 28" fill="#FFD54F"><polygon points="14,0 17,10 28,10 19,17 22,28 14,21 6,28 9,17 0,10 11,10"/></svg>
+    </div>
+    <div class="absolute bottom-12 right-[8%] opacity-20">
+      <svg width="45" height="45" viewBox="0 0 28 28" fill="#FFD54F"><polygon points="14,0 17,10 28,10 19,17 22,28 14,21 6,28 9,17 0,10 11,10"/></svg>
+    </div>
+    <div class="absolute top-1/2 right-[20%] opacity-10">
+      <svg width="35" height="35" viewBox="0 0 28 28" fill="#FFFFFF"><polygon points="14,0 17,10 28,10 19,17 22,28 14,21 6,28 9,17 0,10 11,10"/></svg>
+    </div>
+
+    <!-- Floating characters -->
+    <div class="absolute bottom-0 left-[5%] opacity-30 hidden lg:block">
+      <svg width="120" height="130" viewBox="0 0 170 200">
+        <circle cx="30" cy="15" r="28" fill="#3BA8D8"/>
+        <circle cx="30" cy="15" r="16" fill="#FFD54F"/>
+        <circle cx="140" cy="15" r="28" fill="#3BA8D8"/>
+        <circle cx="140" cy="15" r="16" fill="#FFD54F"/>
+        <circle cx="85" cy="70" r="65" fill="#3BA8D8"/>
+        <ellipse cx="85" cy="88" rx="36" ry="26" fill="#E1F5FE"/>
+        <circle cx="62" cy="58" r="10" fill="#4A4A4A"/>
+        <circle cx="108" cy="58" r="10" fill="#4A4A4A"/>
+        <circle cx="65" cy="54" r="3" fill="#FFF"/>
+        <circle cx="111" cy="54" r="3" fill="#FFF"/>
+        <ellipse cx="85" cy="80" rx="7" ry="5" fill="#4A4A4A"/>
+        <path d="M72 93 Q85 108 98 93" stroke="#4A4A4A" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div class="absolute bottom-0 right-[5%] opacity-30 hidden lg:block">
+      <svg width="120" height="130" viewBox="0 0 170 160">
+        <circle cx="85" cy="60" r="68" fill="#FFB74D"/>
+        <circle cx="85" cy="62" r="48" fill="#FFD54F"/>
+        <ellipse cx="85" cy="76" rx="25" ry="18" fill="#FFF9C4"/>
+        <circle cx="67" cy="52" r="8" fill="#4A4A4A"/>
+        <circle cx="103" cy="52" r="8" fill="#4A4A4A"/>
+        <circle cx="69" cy="49" r="2.5" fill="#FFF"/>
+        <circle cx="105" cy="49" r="2.5" fill="#FFF"/>
+        <ellipse cx="85" cy="70" rx="5.5" ry="4" fill="#4A4A4A"/>
+        <path d="M74 82 Q85 96 96 82" stroke="#4A4A4A" stroke-width="2" fill="none" stroke-linecap="round"/>
+      </svg>
+    </div>
+
+    <div class="relative z-10 max-w-2xl mx-auto px-4 text-center">
+      <div class="animate-on-scroll">
+        <div class="wiggle inline-block mb-6">
+          <img src="../brand/logo.svg" alt="NumPals" class="w-24 h-24 mx-auto drop-shadow-lg">
+        </div>
+        <h2 class="font-display font-800 text-4xl sm:text-5xl text-white mb-4"
+          style="text-shadow: 0 2px 8px rgba(0,0,0,0.12);">
+          Ready to Count<br>With Your Pals?
+        </h2>
+        <p class="text-white/85 text-lg mb-10 max-w-md mx-auto">
+          Download NumPals free and watch your little one fall in love with math. No ads, no catches.
+        </p>
+
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <!-- App Store -->
+          <a href="#" class="btn-bubbly bg-charcoal text-white font-display font-600 px-8 py-4 rounded-2xl shadow-xl inline-flex items-center justify-center gap-3 text-left">
+            <svg class="w-8 h-8 flex-shrink-0" viewBox="0 0 24 24" fill="currentColor"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/></svg>
+            <div>
+              <div class="text-white/60 text-xs leading-none">Download on the</div>
+              <div class="text-lg leading-tight">App Store</div>
+            </div>
+          </a>
+          <!-- Google Play -->
+          <a href="#" class="btn-bubbly bg-charcoal text-white font-display font-600 px-8 py-4 rounded-2xl shadow-xl inline-flex items-center justify-center gap-3 text-left">
+            <svg class="w-8 h-8 flex-shrink-0" viewBox="0 0 24 24" fill="currentColor"><path d="M3.609 1.814L13.792 12 3.61 22.186a.996.996 0 01-.61-.92V2.734a1 1 0 01.609-.92zm10.89 10.893l2.302 2.302-10.937 6.333 8.635-8.635zm3.199-3.199l2.302 2.302-2.302 2.302L15.396 12l2.302-2.492zM5.864 2.658L16.8 8.99l-2.302 2.302L5.864 2.658z"/></svg>
+            <div>
+              <div class="text-white/60 text-xs leading-none">Get it on</div>
+              <div class="text-lg leading-tight">Google Play</div>
+            </div>
+          </a>
+        </div>
+
+        <p class="text-white/50 text-sm mt-6 font-body">
+          Free forever. Ages 3-5. No account required to start.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================ -->
+  <!--  FOOTER                                       -->
+  <!-- ============================================ -->
+  <footer class="bg-charcoal text-white/60 py-12">
+    <div class="max-w-6xl mx-auto px-4">
+      <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+        <div class="flex items-center gap-2">
+          <img src="../brand/logo.svg" alt="NumPals" class="w-8 h-8">
+          <span class="font-display font-700 text-lg text-white">Num<span class="text-sunny">Pals</span></span>
+        </div>
+        <div class="flex gap-8 text-sm font-body">
+          <a href="#" class="hover:text-white transition-colors">Privacy</a>
+          <a href="#" class="hover:text-white transition-colors">Terms</a>
+          <a href="#" class="hover:text-white transition-colors">Support</a>
+          <a href="#" class="hover:text-white transition-colors">Parents</a>
+        </div>
+        <div class="text-sm">
+          &copy; 2026 NumPals. Made with love for tiny mathematicians.
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ============================================ -->
+  <!--  SCROLL ANIMATION JS                          -->
+  <!-- ============================================ -->
+  <script>
+    // Intersection Observer for scroll animations
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry, index) => {
+        if (entry.isIntersecting) {
+          // Stagger children slightly
+          const delay = entry.target.dataset.delay || 0;
+          setTimeout(() => {
+            entry.target.classList.add('visible');
+          }, delay);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+    // Observe all animate-on-scroll elements with stagger
+    document.querySelectorAll('.animate-on-scroll').forEach((el, i) => {
+      el.dataset.delay = (i % 6) * 80; // stagger within groups
+      observer.observe(el);
+    });
+
+    // Smooth scroll for nav links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          e.preventDefault();
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+
+    // Navbar background on scroll
+    const nav = document.querySelector('nav');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 50) {
+        nav.classList.add('shadow-md');
+        nav.classList.remove('shadow-sm');
+      } else {
+        nav.classList.remove('shadow-md');
+        nav.classList.add('shadow-sm');
+      }
+    });
+  </script>
+</body>
+</html>

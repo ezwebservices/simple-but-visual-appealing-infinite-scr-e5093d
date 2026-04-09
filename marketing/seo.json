@@ -1,0 +1,217 @@
+{
+  "meta": {
+    "project": "NumPals",
+    "updated": "2026-04-08",
+    "target_audience": "Parents of children aged 3-5"
+  },
+  "primary_keywords": [
+    {
+      "keyword": "math app for preschoolers",
+      "intent": "transactional",
+      "priority": "high",
+      "monthly_search_estimate": "2400",
+      "difficulty": "medium",
+      "target_pages": ["homepage", "app-store-listing"]
+    },
+    {
+      "keyword": "counting app for toddlers",
+      "intent": "transactional",
+      "priority": "high",
+      "monthly_search_estimate": "1900",
+      "difficulty": "medium",
+      "target_pages": ["homepage", "app-store-listing"]
+    },
+    {
+      "keyword": "math games for 4 year olds",
+      "intent": "transactional",
+      "priority": "high",
+      "monthly_search_estimate": "3600",
+      "difficulty": "high",
+      "target_pages": ["homepage", "landing-page"]
+    },
+    {
+      "keyword": "addition and subtraction app for kids",
+      "intent": "transactional",
+      "priority": "high",
+      "monthly_search_estimate": "1300",
+      "difficulty": "medium",
+      "target_pages": ["homepage", "features-page"]
+    },
+    {
+      "keyword": "educational app for preschoolers",
+      "intent": "informational/transactional",
+      "priority": "high",
+      "monthly_search_estimate": "4400",
+      "difficulty": "high",
+      "target_pages": ["homepage", "blog"]
+    }
+  ],
+  "secondary_keywords": [
+    {
+      "keyword": "learn to count app",
+      "intent": "transactional",
+      "priority": "medium",
+      "monthly_search_estimate": "880",
+      "target_pages": ["homepage"]
+    },
+    {
+      "keyword": "no ads kids math app",
+      "intent": "transactional",
+      "priority": "medium",
+      "monthly_search_estimate": "590",
+      "target_pages": ["homepage", "features-page"]
+    },
+    {
+      "keyword": "preschool math games free",
+      "intent": "transactional",
+      "priority": "medium",
+      "monthly_search_estimate": "2900",
+      "target_pages": ["landing-page"]
+    },
+    {
+      "keyword": "screen time educational apps toddlers",
+      "intent": "informational",
+      "priority": "medium",
+      "monthly_search_estimate": "720",
+      "target_pages": ["blog"]
+    },
+    {
+      "keyword": "best math app for 3 year old",
+      "intent": "informational/transactional",
+      "priority": "medium",
+      "monthly_search_estimate": "1600",
+      "target_pages": ["homepage", "landing-page"]
+    },
+    {
+      "keyword": "interactive counting games for kids",
+      "intent": "informational",
+      "priority": "medium",
+      "monthly_search_estimate": "1100",
+      "target_pages": ["features-page"]
+    },
+    {
+      "keyword": "animal math game for kids",
+      "intent": "transactional",
+      "priority": "medium",
+      "monthly_search_estimate": "480",
+      "target_pages": ["homepage"]
+    }
+  ],
+  "long_tail_keywords": [
+    "tiktok style learning app for kids",
+    "infinite scroll educational app toddler",
+    "math app that uses animal characters",
+    "counting app no reading required",
+    "preschool math app no ads safe",
+    "swipe math game for preschoolers",
+    "learn addition subtraction age 4",
+    "toddler math app with sounds",
+    "math app for kids who cant read",
+    "play based math app preschool",
+    "audio math app for young children",
+    "number recognition app 3 year old",
+    "guilt free screen time toddler",
+    "educational scroll app for kids"
+  ],
+  "page_seo": {
+    "homepage": {
+      "title": "NumPals — Swipe, Count, Roar! Math App for Preschoolers",
+      "meta_description": "NumPals is a TikTok-style math app for ages 3-5. Kids swipe through bite-sized lessons with animal characters to learn counting, addition & subtraction. No ads, no reading required.",
+      "h1": "Math That Feels Like Play",
+      "h2_suggestions": [
+        "Swipe Through Math Adventures",
+        "Meet Your Child's New Animal Friends",
+        "Built for Tiny Fingers, Big Imaginations",
+        "Counting, Addition & Subtraction — No Reading Required",
+        "Screen Time You Won't Feel Guilty About"
+      ],
+      "og_title": "NumPals — Swipe, Count, Roar!",
+      "og_description": "A TikTok-style math app where preschoolers learn counting, addition & subtraction by swiping through animal adventures. No ads. No reading required.",
+      "og_image_alt": "NumPals app showing Sunny the Lion teaching addition with colorful numbers"
+    },
+    "features_page": {
+      "title": "How NumPals Works — Animal Characters Teach Math Through Play",
+      "meta_description": "NumPals uses infinite scroll, sound-first design, and 5 lovable animal characters to teach preschoolers math. 64px touch targets, zero negative feedback, and full audio narration.",
+      "h1": "Every Swipe Is a Mini Math Adventure",
+      "h2_suggestions": [
+        "Sound-First Design — Every Number Speaks",
+        "5 Animal Pals, 5 Math Skills",
+        "No Wrong Answers, Only Encouragement",
+        "Built for Kids Who Can't Read Yet",
+        "Parent Dashboard for Peace of Mind"
+      ]
+    },
+    "app_store_listing": {
+      "title": "NumPals: Math App for Preschoolers — Counting, Addition & Subtraction",
+      "subtitle": "Swipe, Count, Roar! Learn math with animal friends.",
+      "short_description": "TikTok-style math for ages 3-5. Swipe through animal adventures to learn counting, addition & subtraction. No ads, no reading required, sound-first design.",
+      "keywords_ios": "math,preschool,counting,addition,subtraction,toddler,kids,educational,animals,learning,numbers,kindergarten",
+      "category": "Education > Early Learning"
+    }
+  },
+  "structured_data": {
+    "type": "SoftwareApplication",
+    "name": "NumPals",
+    "applicationCategory": "EducationalApplication",
+    "operatingSystem": "Web",
+    "offers": {
+      "type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "audience": {
+      "type": "EducationalAudience",
+      "educationalRole": "student",
+      "suggestedMinAge": 3,
+      "suggestedMaxAge": 5
+    },
+    "description": "A TikTok-style infinite scroll math app for preschoolers featuring animal characters, audio narration, and play-based learning for counting, addition, and subtraction."
+  },
+  "content_strategy": {
+    "blog_topics": [
+      {
+        "title": "Why Play-Based Math Beats Flashcards for Preschoolers",
+        "target_keyword": "play based math preschool",
+        "intent": "informational",
+        "funnel_stage": "awareness"
+      },
+      {
+        "title": "The Best Educational Apps for 3-5 Year Olds (2026 Guide)",
+        "target_keyword": "best educational apps preschoolers",
+        "intent": "informational/transactional",
+        "funnel_stage": "consideration"
+      },
+      {
+        "title": "How Much Screen Time Is OK for a 4 Year Old?",
+        "target_keyword": "screen time 4 year old",
+        "intent": "informational",
+        "funnel_stage": "awareness"
+      },
+      {
+        "title": "Teaching Your Toddler to Count: A Parent's Guide",
+        "target_keyword": "teach toddler to count",
+        "intent": "informational",
+        "funnel_stage": "awareness"
+      },
+      {
+        "title": "Why Sound Design Matters More Than Graphics in Kids' Apps",
+        "target_keyword": "sound design kids apps",
+        "intent": "informational",
+        "funnel_stage": "awareness"
+      },
+      {
+        "title": "Addition and Subtraction Activities for Preschoolers",
+        "target_keyword": "addition subtraction preschool activities",
+        "intent": "informational",
+        "funnel_stage": "awareness"
+      }
+    ],
+    "link_building_targets": [
+      "parenting blogs and review sites",
+      "edtech directories and roundup posts",
+      "early childhood education publications",
+      "app review sites (Common Sense Media, etc.)",
+      "mommy/daddy blogger product reviews"
+    ]
+  }
+}

@@ -1,0 +1,95 @@
+{
+  "brand": "NumPals",
+  "palette": {
+    "primary": {
+      "skyBlue": {
+        "hex": "#4FC3F7",
+        "rgb": "79, 195, 247",
+        "usage": "Main brand color, backgrounds, Bloo the Bear"
+      },
+      "sunnyYellow": {
+        "hex": "#FFD54F",
+        "rgb": "255, 213, 79",
+        "usage": "Accents, stars, correct-answer celebrations, Sunny the Lion"
+      },
+      "coralPink": {
+        "hex": "#FF8A80",
+        "rgb": "255, 138, 128",
+        "usage": "Hearts, Rosie the Bunny, subtraction cards"
+      }
+    },
+    "secondary": {
+      "mintGreen": {
+        "hex": "#81C784",
+        "rgb": "129, 199, 132",
+        "usage": "Success states, nature/grass scenes, progress bars"
+      },
+      "playfulOrange": {
+        "hex": "#FFB74D",
+        "rgb": "255, 183, 77",
+        "usage": "Milo the Monkey, mixed challenges, warm accents"
+      },
+      "softTeal": {
+        "hex": "#4DD0E1",
+        "rgb": "77, 208, 225",
+        "usage": "Pip the Penguin, number recognition cards, water scenes"
+      }
+    },
+    "neutrals": {
+      "cloudWhite": {
+        "hex": "#FAFAFA",
+        "rgb": "250, 250, 250",
+        "usage": "Card backgrounds, speech bubbles"
+      },
+      "warmGray": {
+        "hex": "#F5F0EB",
+        "rgb": "245, 240, 235",
+        "usage": "App background, subtle depth"
+      },
+      "softCharcoal": {
+        "hex": "#4A4A4A",
+        "rgb": "74, 74, 74",
+        "usage": "Text (parent UI only), outlines"
+      }
+    },
+    "feedback": {
+      "starGold": {
+        "hex": "#FFC107",
+        "rgb": "255, 193, 7",
+        "usage": "Star rewards, achievement badges"
+      },
+      "confettiPurple": {
+        "hex": "#CE93D8",
+        "rgb": "206, 147, 216",
+        "usage": "Celebration confetti, bonus rounds"
+      },
+      "gentleRed": {
+        "hex": "#EF9A9A",
+        "rgb": "239, 154, 154",
+        "usage": "Try-again nudge (never harsh — always soft)"
+      }
+    }
+  },
+  "gradients": {
+    "daySky": {
+      "from": "#4FC3F7",
+      "to": "#81D4FA",
+      "usage": "Default card background gradient"
+    },
+    "sunset": {
+      "from": "#FFB74D",
+      "to": "#FFD54F",
+      "usage": "Warm/celebration scenes"
+    },
+    "meadow": {
+      "from": "#81C784",
+      "to": "#A5D6A7",
+      "usage": "Nature/counting scenes"
+    }
+  },
+  "accessibility": {
+    "note": "All primary colors meet WCAG AA contrast against cloudWhite for large text (24px+). Since the audience is pre-readers, large bold visuals are used exclusively — no small text for children.",
+    "highContrastOutlines": true,
+    "minimumTouchTarget": "64x64px"
+  }
+}
