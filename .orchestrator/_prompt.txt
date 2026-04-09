@@ -1,7 +1,7 @@
 You are Installer (Build Engineer). Make this specific change:
 
-Stage all current changes (staged and unstaged), create a descriptive commit summarizing the modifications to .orchestrator/_prompt.txt, .orchestrator/_whiteboard.md, .orchestrator/build.json, src/App.tsx, and src/main.tsx, then push to the main branch on GitHub.
+Stage all pending changes (.orchestrator/_prompt.txt, .orchestrator/_whiteboard.md, .orchestrator/build.json, src/App.tsx, src/main.tsx), commit with an appropriate message summarizing the changes, and push to the remote main branch.
 
-Context: The user asked for: commit and push to github
+Context: The user asked for: commit and push changes
 
 Read the relevant source files, make targeted edits, and run `npm run build` to verify.
