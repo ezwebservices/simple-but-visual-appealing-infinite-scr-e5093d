@@ -11,6 +11,12 @@ const hasAuthConfig = Boolean(
 );
 if (hasAuthConfig) {
   Amplify.configure(outputs);
+} else {
+  console.warn(
+    '[NumPals] Auth is DISABLED — amplify_outputs.json is empty.\n' +
+    'Run "npx ampx sandbox" or deploy the Amplify backend to enable authentication.\n' +
+    'All users can access the app without signing in.'
+  );
 }
 
 export { hasAuthConfig };

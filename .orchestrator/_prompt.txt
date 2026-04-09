@@ -1,7 +1,7 @@
 You are Installer (Build Engineer). Make this specific change:
 
-Stage the 4 modified files (.orchestrator/_prompt.txt, .orchestrator/_whiteboard.md, .orchestrator/build.json, amplify.yml), commit with message summarizing the changes (update build config, prompt, and whiteboard), and push to origin/main.
+Stage all current changes (staged and unstaged), create a descriptive commit summarizing the modifications to .orchestrator/_prompt.txt, .orchestrator/_whiteboard.md, .orchestrator/build.json, src/App.tsx, and src/main.tsx, then push to the main branch on GitHub.
 
-Context: The user asked for: commit and push changes
+Context: The user asked for: commit and push to github
 
 Read the relevant source files, make targeted edits, and run `npm run build` to verify.

@@ -56,7 +56,28 @@ export default function App() {
 
   // Authenticated (or auth not configured) → gate behind subscription if auth available, else go straight to game
   if (!hasAuthConfig) {
-    return <GameView />;
+    return (
+      <>
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          zIndex: 9999,
+          background: '#ff6b35',
+          color: '#fff',
+          textAlign: 'center',
+          padding: '8px 12px',
+          fontSize: '0.8rem',
+          fontFamily: fontStack,
+          fontWeight: 700,
+          letterSpacing: '0.02em',
+        }}>
+          DEV MODE — Auth disabled (amplify_outputs.json is empty). Run &quot;npx ampx sandbox&quot; to enable.
+        </div>
+        <GameView />
+      </>
+    );
   }
 
   return (
