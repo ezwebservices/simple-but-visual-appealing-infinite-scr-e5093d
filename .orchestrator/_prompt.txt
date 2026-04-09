@@ -1,7 +1,7 @@
-You are Engineer (Full-Stack Engineer). Make this specific change:
+You are Installer (Build Engineer). Make this specific change:
 
-Stage all modified files, create a descriptive commit summarizing the changes (character SVG redesigns, CharacterDisplay component updates, LessonCard changes, landing page enhancements, build config and type updates), and push to the main branch.
+Commit all pending changes (.orchestrator/_prompt.txt, .orchestrator/_whiteboard.md, .orchestrator/build.json, amplify.yml) with an appropriate commit message summarizing the updates, then push to the remote main branch.
 
-Context: The user asked for: commit and push
+Context: The user asked for: commot and push
 
 Read the relevant source files, make targeted edits, and run `npm run build` to verify.
