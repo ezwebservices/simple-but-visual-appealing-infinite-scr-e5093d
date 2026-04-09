@@ -32,74 +32,74 @@ const shakeTimes = [0, 0.15, 0.3, 0.45, 0.6, 0.8, 1];
 /** CSS keyframes for dance, spin, and idle animations */
 const animationCSS = `
 /* ══════════════════════════════════════════
-   DANCE — Happy Bounce (1.2s) with exaggerated motion
+   DANCE — Gentle Happy Sway (~2.0s) with soft motion
    ══════════════════════════════════════════ */
 
-/* Arms wave wide (±40deg), staggered L/R timing */
+/* Arms wave gently (±12deg), staggered L/R timing */
 @keyframes char-arm-wave-l {
   0%, 100% { transform: rotate(0deg); }
-  12% { transform: rotate(40deg); }
-  28% { transform: rotate(-20deg); }
-  44% { transform: rotate(35deg); }
-  60% { transform: rotate(-15deg); }
-  76% { transform: rotate(40deg); }
-  90% { transform: rotate(-10deg); }
+  12% { transform: rotate(12deg); }
+  28% { transform: rotate(-6deg); }
+  44% { transform: rotate(10deg); }
+  60% { transform: rotate(-5deg); }
+  76% { transform: rotate(12deg); }
+  90% { transform: rotate(-3deg); }
 }
 @keyframes char-arm-wave-r {
   0%, 100% { transform: rotate(0deg); }
-  8% { transform: rotate(-35deg); }
-  24% { transform: rotate(25deg); }
-  40% { transform: rotate(-40deg); }
-  56% { transform: rotate(20deg); }
-  72% { transform: rotate(-40deg); }
-  88% { transform: rotate(15deg); }
+  8% { transform: rotate(-10deg); }
+  24% { transform: rotate(8deg); }
+  40% { transform: rotate(-12deg); }
+  56% { transform: rotate(6deg); }
+  72% { transform: rotate(-12deg); }
+  88% { transform: rotate(4deg); }
 }
 
-/* Legs bounce with offset stomp */
+/* Legs with gentle offset sway */
 @keyframes char-leg-stomp-l {
   0%, 100% { transform: rotate(0deg) translateY(0px); }
-  20% { transform: rotate(12deg) translateY(-4px); }
-  40% { transform: rotate(-8deg) translateY(2px); }
-  60% { transform: rotate(10deg) translateY(-3px); }
-  80% { transform: rotate(-5deg) translateY(1px); }
+  20% { transform: rotate(4deg) translateY(-1px); }
+  40% { transform: rotate(-3deg) translateY(0px); }
+  60% { transform: rotate(3deg) translateY(-1px); }
+  80% { transform: rotate(-2deg) translateY(0px); }
 }
 @keyframes char-leg-stomp-r {
   0%, 100% { transform: rotate(0deg) translateY(0px); }
-  15% { transform: rotate(-10deg) translateY(-3px); }
-  35% { transform: rotate(12deg) translateY(2px); }
-  55% { transform: rotate(-12deg) translateY(-4px); }
-  75% { transform: rotate(7deg) translateY(1px); }
+  15% { transform: rotate(-3deg) translateY(-1px); }
+  35% { transform: rotate(4deg) translateY(0px); }
+  55% { transform: rotate(-4deg) translateY(-1px); }
+  75% { transform: rotate(2deg) translateY(0px); }
 }
 
-/* Body: exaggerated vertical bounce (-12px to -18px) with scaleY(0.97) squish on landings */
+/* Body: gentle vertical bounce (±6px), no squash/stretch */
 @keyframes char-body-bounce {
-  0%, 100% { transform: rotate(0deg) translateY(0px) scaleY(1); }
-  10% { transform: rotate(3deg) translateY(-14px) scaleY(1.04); }
-  20% { transform: rotate(0deg) translateY(-2px) scaleY(0.97); }
-  30% { transform: rotate(-3deg) translateY(-18px) scaleY(1.05); }
-  40% { transform: rotate(0deg) translateY(-1px) scaleY(0.97); }
-  50% { transform: rotate(2deg) translateY(-16px) scaleY(1.04); }
-  60% { transform: rotate(0deg) translateY(-2px) scaleY(0.97); }
-  70% { transform: rotate(-2deg) translateY(-15px) scaleY(1.03); }
-  80% { transform: rotate(0deg) translateY(-1px) scaleY(0.97); }
-  90% { transform: rotate(1deg) translateY(-12px) scaleY(1.02); }
+  0%, 100% { transform: rotate(0deg) translateY(0px); }
+  10% { transform: rotate(1deg) translateY(-5px); }
+  20% { transform: rotate(0deg) translateY(-1px); }
+  30% { transform: rotate(-1deg) translateY(-6px); }
+  40% { transform: rotate(0deg) translateY(0px); }
+  50% { transform: rotate(1deg) translateY(-5px); }
+  60% { transform: rotate(0deg) translateY(-1px); }
+  70% { transform: rotate(-1deg) translateY(-5px); }
+  80% { transform: rotate(0deg) translateY(0px); }
+  90% { transform: rotate(0.5deg) translateY(-4px); }
 }
 
-/* Head bobs with personality — tilts on each bounce */
+/* Head bobs gently — small tilts on each bounce */
 @keyframes char-head-bop {
   0%, 100% { transform: rotate(0deg) translateY(0px); }
-  10% { transform: rotate(-5deg) translateY(-10px); }
-  20% { transform: rotate(2deg) translateY(-1px); }
-  30% { transform: rotate(6deg) translateY(-12px); }
-  40% { transform: rotate(-2deg) translateY(0px); }
-  50% { transform: rotate(-4deg) translateY(-11px); }
-  60% { transform: rotate(2deg) translateY(-1px); }
-  70% { transform: rotate(4deg) translateY(-9px); }
-  80% { transform: rotate(-1deg) translateY(0px); }
-  90% { transform: rotate(-3deg) translateY(-7px); }
+  10% { transform: rotate(-2deg) translateY(-3px); }
+  20% { transform: rotate(1deg) translateY(0px); }
+  30% { transform: rotate(3deg) translateY(-4px); }
+  40% { transform: rotate(-1deg) translateY(0px); }
+  50% { transform: rotate(-2deg) translateY(-3px); }
+  60% { transform: rotate(1deg) translateY(0px); }
+  70% { transform: rotate(2deg) translateY(-3px); }
+  80% { transform: rotate(0deg) translateY(0px); }
+  90% { transform: rotate(-1deg) translateY(-2px); }
 }
 
-/* Secondary: ears wiggle ±5deg at 1.5x dance speed (0.8s = 1.2/1.5) */
+/* Secondary: ears wiggle ±5deg */
 @keyframes char-ears {
   0%, 100% { transform: rotate(0deg); }
   16% { transform: rotate(-5deg); }
@@ -117,35 +117,35 @@ const animationCSS = `
   75% { transform: translateY(-3px); }
 }
 
-/* DANCE selectors — varied timing per limb for organic motion */
+/* DANCE selectors — gentle timing (~2s) per limb for organic motion */
 .char-dance .char-left-arm {
-  animation: char-arm-wave-l 1.1s ease-in-out infinite;
+  animation: char-arm-wave-l 1.8s ease-in-out infinite;
 }
 .char-dance .char-right-arm {
-  animation: char-arm-wave-r 1.3s ease-in-out infinite;
-  animation-delay: 0.08s;
+  animation: char-arm-wave-r 2.2s ease-in-out infinite;
+  animation-delay: 0.1s;
 }
 .char-dance .char-left-leg {
-  animation: char-leg-stomp-l 1.0s ease-in-out infinite;
-  animation-delay: 0.04s;
-}
-.char-dance .char-right-leg {
-  animation: char-leg-stomp-r 1.15s ease-in-out infinite;
-  animation-delay: 0.12s;
-}
-.char-dance .char-torso {
-  animation: char-body-bounce 1.2s ease-in-out infinite;
-}
-.char-dance .char-head {
-  animation: char-head-bop 1.2s ease-in-out infinite;
+  animation: char-leg-stomp-l 1.7s ease-in-out infinite;
   animation-delay: 0.06s;
 }
+.char-dance .char-right-leg {
+  animation: char-leg-stomp-r 1.9s ease-in-out infinite;
+  animation-delay: 0.15s;
+}
+.char-dance .char-torso {
+  animation: char-body-bounce 2.0s ease-in-out infinite;
+}
+.char-dance .char-head {
+  animation: char-head-bop 2.0s ease-in-out infinite;
+  animation-delay: 0.08s;
+}
 .char-dance .char-ears {
-  animation: char-ears 0.8s ease-in-out infinite;
+  animation: char-ears 1.3s ease-in-out infinite;
   animation-delay: 0.1s;
 }
 .char-dance .char-accessory {
-  animation: char-accessory 0.8s ease-in-out infinite;
+  animation: char-accessory 1.3s ease-in-out infinite;
   animation-delay: 0.05s;
 }
 
@@ -166,48 +166,48 @@ const animationCSS = `
    ══════════════════════════════════════════ */
 @keyframes char-spin {
   0%   { transform: rotate(0deg) scaleX(1) scaleY(1); }
-  20%  { transform: rotate(80deg) scaleX(1.05) scaleY(0.95); }
-  50%  { transform: rotate(180deg) scaleX(1.15) scaleY(0.9); }
-  75%  { transform: rotate(300deg) scaleX(0.95) scaleY(1.05); }
-  90%  { transform: rotate(350deg) scaleX(0.9) scaleY(1.1); }
-  95%  { transform: rotate(358deg) scaleX(1.03) scaleY(0.98); }
+  20%  { transform: rotate(80deg) scaleX(1.02) scaleY(0.98); }
+  50%  { transform: rotate(180deg) scaleX(1.04) scaleY(0.97); }
+  75%  { transform: rotate(300deg) scaleX(0.98) scaleY(1.02); }
+  90%  { transform: rotate(350deg) scaleX(0.97) scaleY(1.03); }
+  95%  { transform: rotate(358deg) scaleX(1.01) scaleY(0.99); }
   100% { transform: rotate(360deg) scaleX(1) scaleY(1); }
 }
 .char-spin {
   animation: char-spin 0.8s cubic-bezier(0.16, 1, 0.3, 1);
   will-change: transform;
 }
-/* Keep limbs + secondary motion during spin (varied timing) */
+/* Keep limbs + secondary motion during spin (gentle timing) */
 .char-spin .char-left-arm {
-  animation: char-arm-wave-l 1.1s ease-in-out infinite;
+  animation: char-arm-wave-l 1.8s ease-in-out infinite;
   will-change: transform;
 }
 .char-spin .char-right-arm {
-  animation: char-arm-wave-r 1.3s ease-in-out infinite;
+  animation: char-arm-wave-r 2.2s ease-in-out infinite;
   will-change: transform;
 }
 .char-spin .char-left-leg {
-  animation: char-leg-stomp-l 1.0s ease-in-out infinite;
+  animation: char-leg-stomp-l 1.7s ease-in-out infinite;
   will-change: transform;
 }
 .char-spin .char-right-leg {
-  animation: char-leg-stomp-r 1.15s ease-in-out infinite;
+  animation: char-leg-stomp-r 1.9s ease-in-out infinite;
   will-change: transform;
 }
 .char-spin .char-torso {
-  animation: char-body-bounce 1.2s ease-in-out infinite;
+  animation: char-body-bounce 2.0s ease-in-out infinite;
   will-change: transform;
 }
 .char-spin .char-head {
-  animation: char-head-bop 1.2s ease-in-out infinite;
+  animation: char-head-bop 2.0s ease-in-out infinite;
   will-change: transform;
 }
 .char-spin .char-ears {
-  animation: char-ears 0.8s ease-in-out infinite;
+  animation: char-ears 1.3s ease-in-out infinite;
   will-change: transform;
 }
 .char-spin .char-accessory {
-  animation: char-accessory 0.8s ease-in-out infinite;
+  animation: char-accessory 1.3s ease-in-out infinite;
   will-change: transform;
 }
 

@@ -132,14 +132,12 @@ export default function MiloFrog({ mood = 'happy', className, isSpeaking }: Milo
 function FrogEyes({ mood }: { mood: CharacterMood }) {
   const lx = 68, rx = 132, baseY = 50;
 
-  const eye = (cx: number, irisY: number, irisR = 13, pupilR = 5.5) => (
+  const eye = (cx: number, irisY: number, irisR = 14, pupilR = 5) => (
     <g>
-      <ellipse cx={cx} cy={baseY} rx="15" ry="16" fill="white" />
+      <ellipse cx={cx} cy={baseY} rx="15" ry="16" fill="#F0FFF5" />
       <circle cx={cx} cy={irisY} r={irisR} fill="#40E060" />
-      <circle cx={cx} cy={irisY} r={pupilR} fill="#082010" />
-      <circle cx={cx + 4} cy={irisY - 6} r="4.5" fill="white" opacity="0.95" />
-      <circle cx={cx - 2} cy={irisY + 5} r="2" fill="white" opacity="0.6" />
-      <circle cx={cx + 7} cy={irisY - 2} r="1.3" fill="white" opacity="0.7" />
+      <circle cx={cx} cy={irisY} r={pupilR} fill="#1A5028" />
+      <circle cx={cx + 3} cy={irisY - 4} r="3.5" fill="white" opacity="0.9" />
     </g>
   );
 
@@ -147,8 +145,8 @@ function FrogEyes({ mood }: { mood: CharacterMood }) {
     case 'excited':
       return (
         <>
-          {eye(lx, 49, 14, 5)}
-          {eye(rx, 49, 14, 5)}
+          {eye(lx, 49, 15, 4.5)}
+          {eye(rx, 49, 15, 4.5)}
           <path d={`M${lx - 17},${37} l2,-5 l2,5 l-4,0 Z`} fill="#FFE66D" />
           <path d={`M${rx + 14},${35} l1.5,-4 l1.5,4 l-3,0 Z`} fill="#FFE66D" opacity="0.8" />
         </>
@@ -156,15 +154,15 @@ function FrogEyes({ mood }: { mood: CharacterMood }) {
     case 'thinking':
       return (
         <>
-          {eye(lx + 3, baseY + 2, 12, 5)}
-          {eye(rx + 3, baseY + 2, 12, 5)}
+          {eye(lx + 3, baseY + 2, 13, 4.5)}
+          {eye(rx + 3, baseY + 2, 13, 4.5)}
         </>
       );
     case 'encouraging':
       return (
         <>
-          {eye(lx, baseY + 1, 13, 5.5)}
-          {eye(rx, baseY + 1, 13, 5.5)}
+          {eye(lx, baseY + 1, 14, 5)}
+          {eye(rx, baseY + 1, 14, 5)}
           <path d={`M${lx - 13},${baseY - 16} Q${lx},${baseY - 22} ${lx + 13},${baseY - 16}`} fill="none" stroke="#208848" strokeWidth="1.5" strokeLinecap="round" opacity="0.4" />
           <path d={`M${rx - 13},${baseY - 16} Q${rx},${baseY - 22} ${rx + 13},${baseY - 16}`} fill="none" stroke="#208848" strokeWidth="1.5" strokeLinecap="round" opacity="0.4" />
         </>
@@ -172,8 +170,8 @@ function FrogEyes({ mood }: { mood: CharacterMood }) {
     case 'headShake':
       return (
         <>
-          {eye(lx, 52, 12, 5.5)}
-          {eye(rx, 52, 12, 5.5)}
+          {eye(lx, 52, 13, 5)}
+          {eye(rx, 52, 13, 5)}
           <path d={`M${lx - 10},${baseY - 14} Q${lx},${baseY - 11} ${lx + 10},${baseY - 14}`} fill="none" stroke="#208848" strokeWidth="1.8" strokeLinecap="round" opacity="0.5" />
           <path d={`M${rx - 10},${baseY - 14} Q${rx},${baseY - 17} ${rx + 10},${baseY - 14}`} fill="none" stroke="#208848" strokeWidth="1.8" strokeLinecap="round" opacity="0.5" />
         </>
@@ -194,21 +192,21 @@ function FrogMouth({ mood, isSpeaking }: { mood: CharacterMood; isSpeaking?: boo
     case 'excited':
       return (
         <g>
-          <path d="M80,108 Q100,120 120,108" fill="none" stroke="#30B060" strokeWidth="2.5" strokeLinecap="round" />
-          {glow > 0 && <path d="M84,110 Q100,117 116,110" fill="none" stroke="#80FFA0" strokeWidth="1.2" opacity="0.5" />}
+          <path d="M78,107 Q100,122 122,107" fill="none" stroke="#30B060" strokeWidth="2.5" strokeLinecap="round" />
+          {glow > 0 && <path d="M82,109 Q100,118 118,109" fill="none" stroke="#80FFA0" strokeWidth="1.2" opacity="0.5" />}
         </g>
       );
     case 'thinking':
       return <ellipse cx="101" cy="109" rx="4" ry="3" fill="#30B060" opacity="0.5" />;
     case 'encouraging':
-      return <path d="M84,107 Q100,115 116,107" fill="none" stroke="#30B060" strokeWidth="2.2" strokeLinecap="round" opacity="0.8" />;
+      return <path d="M80,107 Q100,118 120,107" fill="none" stroke="#30B060" strokeWidth="2.2" strokeLinecap="round" opacity="0.8" />;
     case 'headShake':
-      return <path d="M92,109 Q100,107 108,109" fill="none" stroke="#30B060" strokeWidth="2" strokeLinecap="round" opacity="0.5" />;
+      return <path d="M90,109 Q100,107 110,109" fill="none" stroke="#30B060" strokeWidth="2" strokeLinecap="round" opacity="0.5" />;
     default:
       return (
         <g>
-          <path d="M82,108 Q100,117 118,108" fill="none" stroke="#30B060" strokeWidth="2.2" strokeLinecap="round" opacity="0.85" />
-          {glow > 0 && <path d="M86,110 Q100,115 114,110" fill="none" stroke="#80FFA0" strokeWidth="1" opacity="0.4" />}
+          <path d="M80,107 Q100,118 120,107" fill="none" stroke="#30B060" strokeWidth="2.2" strokeLinecap="round" opacity="0.85" />
+          {glow > 0 && <path d="M84,109 Q100,116 116,109" fill="none" stroke="#80FFA0" strokeWidth="1" opacity="0.4" />}
         </g>
       );
   }

@@ -138,17 +138,12 @@ export default function BlooBear({ mood = 'happy', className, isSpeaking }: Bloo
 function BearEyes({ mood }: { mood: CharacterMood }) {
   const lx = 78, rx = 122, baseY = 82;
 
-  const eye = (cx: number, irisY: number, irisR = 12, pupilR = 6) => (
+  const eye = (cx: number, irisY: number, irisR = 13, pupilR = 4.5) => (
     <g>
-      <ellipse cx={cx} cy={baseY} rx="13" ry="14" fill="white" />
+      <ellipse cx={cx} cy={baseY} rx="13" ry="14" fill="#FFF8F0" />
       <circle cx={cx} cy={irisY} r={irisR} fill="#FFD080" />
-      <circle cx={cx} cy={irisY} r={pupilR} fill="#2D1810" />
-      {/* Big anime highlight */}
-      <circle cx={cx + 4} cy={irisY - 5} r="4" fill="white" opacity="0.95" />
-      {/* Secondary highlight */}
-      <circle cx={cx - 2} cy={irisY + 4} r="2" fill="white" opacity="0.6" />
-      {/* Tiny sparkle */}
-      <circle cx={cx + 6} cy={irisY - 2} r="1.2" fill="white" opacity="0.7" />
+      <circle cx={cx} cy={irisY} r={pupilR} fill="#6B4420" />
+      <circle cx={cx + 3} cy={irisY - 3} r="3" fill="white" opacity="0.9" />
     </g>
   );
 
@@ -156,8 +151,8 @@ function BearEyes({ mood }: { mood: CharacterMood }) {
     case 'excited':
       return (
         <>
-          {eye(lx, 81, 13, 5)}
-          {eye(rx, 81, 13, 5)}
+          {eye(lx, 81, 14, 4)}
+          {eye(rx, 81, 14, 4)}
           {/* Star sparkles */}
           <path d={`M${lx - 16},${70} l2,-5 l2,5 l-4,0 Z`} fill="#FFE66D" />
           <path d={`M${rx + 13},${68} l1.5,-4 l1.5,4 l-3,0 Z`} fill="#FFE66D" opacity="0.8" />
@@ -166,15 +161,15 @@ function BearEyes({ mood }: { mood: CharacterMood }) {
     case 'thinking':
       return (
         <>
-          {eye(lx - 2, baseY + 2, 11, 5)}
-          {eye(rx + 3, baseY + 2, 11, 5)}
+          {eye(lx - 2, baseY + 2, 12, 4)}
+          {eye(rx + 3, baseY + 2, 12, 4)}
         </>
       );
     case 'encouraging':
       return (
         <>
-          {eye(lx, baseY + 1, 12, 6)}
-          {eye(rx, baseY + 1, 12, 6)}
+          {eye(lx, baseY + 1, 13, 4.5)}
+          {eye(rx, baseY + 1, 13, 4.5)}
           {/* Happy arched brows */}
           <path d={`M${lx - 12},${baseY - 14} Q${lx},${baseY - 20} ${lx + 12},${baseY - 14}`} fill="none" stroke="#3B78C0" strokeWidth="1.5" strokeLinecap="round" opacity="0.4" />
           <path d={`M${rx - 12},${baseY - 14} Q${rx},${baseY - 20} ${rx + 12},${baseY - 14}`} fill="none" stroke="#3B78C0" strokeWidth="1.5" strokeLinecap="round" opacity="0.4" />
@@ -183,8 +178,8 @@ function BearEyes({ mood }: { mood: CharacterMood }) {
     case 'headShake':
       return (
         <>
-          {eye(lx, 83, 11, 6)}
-          {eye(rx, 83, 11, 6)}
+          {eye(lx, 83, 12, 4.5)}
+          {eye(rx, 83, 12, 4.5)}
           {/* Worried brows */}
           <path d={`M${lx - 10},${baseY - 16} Q${lx},${baseY - 13} ${lx + 10},${baseY - 16}`} fill="none" stroke="#3B78C0" strokeWidth="1.8" strokeLinecap="round" opacity="0.5" />
           <path d={`M${rx - 10},${baseY - 16} Q${rx},${baseY - 19} ${rx + 10},${baseY - 16}`} fill="none" stroke="#3B78C0" strokeWidth="1.8" strokeLinecap="round" opacity="0.5" />
@@ -207,21 +202,21 @@ function BearMouth({ mood, isSpeaking }: { mood: CharacterMood; isSpeaking?: boo
     case 'excited':
       return (
         <g>
-          <path d="M92,112 Q100,120 108,112" fill="none" stroke="#D4A040" strokeWidth="2.2" strokeLinecap="round" />
-          {glow > 0 && <path d="M94,114 Q100,118 106,114" fill="none" stroke="#FFD080" strokeWidth="1.2" strokeLinecap="round" opacity="0.5" />}
+          <path d="M90,111 Q100,122 110,111" fill="none" stroke="#D4A040" strokeWidth="2.2" strokeLinecap="round" />
+          {glow > 0 && <path d="M93,113 Q100,119 107,113" fill="none" stroke="#FFD080" strokeWidth="1.2" strokeLinecap="round" opacity="0.5" />}
         </g>
       );
     case 'thinking':
       return <ellipse cx="101" cy="113" rx="3.5" ry="3" fill="#D4A040" opacity="0.6" />;
     case 'encouraging':
-      return <path d="M93,112 Q100,118 107,112" fill="none" stroke="#D4A040" strokeWidth="2" strokeLinecap="round" opacity="0.85" />;
+      return <path d="M91,111 Q100,120 109,111" fill="none" stroke="#D4A040" strokeWidth="2" strokeLinecap="round" opacity="0.85" />;
     case 'headShake':
-      return <path d="M95,113 Q100,111 105,113" fill="none" stroke="#D4A040" strokeWidth="1.8" strokeLinecap="round" opacity="0.6" />;
+      return <path d="M94,113 Q100,111 106,113" fill="none" stroke="#D4A040" strokeWidth="1.8" strokeLinecap="round" opacity="0.6" />;
     default:
       return (
         <g>
-          <path d="M93,112 Q100,118 107,112" fill="none" stroke="#D4A040" strokeWidth="2" strokeLinecap="round" opacity="0.85" />
-          {glow > 0 && <path d="M95,113 Q100,116 105,113" fill="none" stroke="#FFD080" strokeWidth="1" strokeLinecap="round" opacity="0.4" />}
+          <path d="M91,111 Q100,120 109,111" fill="none" stroke="#D4A040" strokeWidth="2" strokeLinecap="round" opacity="0.85" />
+          {glow > 0 && <path d="M94,113 Q100,117 106,113" fill="none" stroke="#FFD080" strokeWidth="1" strokeLinecap="round" opacity="0.4" />}
         </g>
       );
   }

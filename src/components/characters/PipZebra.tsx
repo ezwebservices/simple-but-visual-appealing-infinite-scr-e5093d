@@ -140,14 +140,12 @@ export default function PipZebra({ mood = 'happy', className, isSpeaking }: PipZ
 function ZebraEyes({ mood }: { mood: CharacterMood }) {
   const lx = 80, rx = 120, baseY = 80;
 
-  const eye = (cx: number, irisY: number, irisR = 11, pupilR = 5) => (
+  const eye = (cx: number, irisY: number, irisR = 12, pupilR = 4.5) => (
     <g>
-      <ellipse cx={cx} cy={baseY} rx="12" ry="13" fill="white" />
+      <ellipse cx={cx} cy={baseY} rx="12" ry="13" fill="#FFFAF0" />
       <circle cx={cx} cy={irisY} r={irisR} fill="#E8A840" />
-      <circle cx={cx} cy={irisY} r={pupilR} fill="#1A1420" />
-      <circle cx={cx + 3.5} cy={irisY - 5} r="3.5" fill="white" opacity="0.95" />
-      <circle cx={cx - 2} cy={irisY + 4} r="1.8" fill="white" opacity="0.6" />
-      <circle cx={cx + 6} cy={irisY - 1} r="1.2" fill="white" opacity="0.7" />
+      <circle cx={cx} cy={irisY} r={pupilR} fill="#5C3A18" />
+      <circle cx={cx + 3} cy={irisY - 3} r="3" fill="white" opacity="0.9" />
     </g>
   );
 
@@ -155,8 +153,8 @@ function ZebraEyes({ mood }: { mood: CharacterMood }) {
     case 'excited':
       return (
         <>
-          {eye(lx, 79, 12, 4.5)}
-          {eye(rx, 79, 12, 4.5)}
+          {eye(lx, 79, 13, 4)}
+          {eye(rx, 79, 13, 4)}
           <path d={`M${lx - 14},${68} l2,-5 l2,5 l-4,0 Z`} fill="#FFE66D" />
           <path d={`M${rx + 11},${66} l1.5,-4 l1.5,4 l-3,0 Z`} fill="#FFE66D" opacity="0.8" />
         </>
@@ -164,15 +162,15 @@ function ZebraEyes({ mood }: { mood: CharacterMood }) {
     case 'thinking':
       return (
         <>
-          {eye(lx + 2, baseY + 2, 10, 4.5)}
-          {eye(rx + 2, baseY + 2, 10, 4.5)}
+          {eye(lx + 2, baseY + 2, 11, 4)}
+          {eye(rx + 2, baseY + 2, 11, 4)}
         </>
       );
     case 'encouraging':
       return (
         <>
-          {eye(lx, baseY + 1, 11, 5)}
-          {eye(rx, baseY + 1, 11, 5)}
+          {eye(lx, baseY + 1, 12, 4.5)}
+          {eye(rx, baseY + 1, 12, 4.5)}
           <path d={`M${lx - 11},${baseY - 14} Q${lx},${baseY - 20} ${lx + 11},${baseY - 14}`} fill="none" stroke="#B0BCC8" strokeWidth="1.5" strokeLinecap="round" opacity="0.4" />
           <path d={`M${rx - 11},${baseY - 14} Q${rx},${baseY - 20} ${rx + 11},${baseY - 14}`} fill="none" stroke="#B0BCC8" strokeWidth="1.5" strokeLinecap="round" opacity="0.4" />
         </>
@@ -180,8 +178,8 @@ function ZebraEyes({ mood }: { mood: CharacterMood }) {
     case 'headShake':
       return (
         <>
-          {eye(lx, 82, 10, 5)}
-          {eye(rx, 82, 10, 5)}
+          {eye(lx, 82, 11, 4.5)}
+          {eye(rx, 82, 11, 4.5)}
           <path d={`M${lx - 9},${baseY - 14} Q${lx},${baseY - 11} ${lx + 9},${baseY - 14}`} fill="none" stroke="#B0BCC8" strokeWidth="1.8" strokeLinecap="round" opacity="0.5" />
           <path d={`M${rx - 9},${baseY - 14} Q${rx},${baseY - 17} ${rx + 9},${baseY - 14}`} fill="none" stroke="#B0BCC8" strokeWidth="1.8" strokeLinecap="round" opacity="0.5" />
         </>
@@ -202,21 +200,21 @@ function ZebraMouth({ mood, isSpeaking }: { mood: CharacterMood; isSpeaking?: bo
     case 'excited':
       return (
         <g>
-          <path d="M92,114 Q100,120 108,114" fill="none" stroke="#E8A840" strokeWidth="2" strokeLinecap="round" />
-          {glow > 0 && <path d="M94,116 Q100,119 106,116" fill="none" stroke="#FFE080" strokeWidth="1" opacity="0.5" />}
+          <path d="M90,113 Q100,122 110,113" fill="none" stroke="#E8A840" strokeWidth="2" strokeLinecap="round" />
+          {glow > 0 && <path d="M93,115 Q100,120 107,115" fill="none" stroke="#FFE080" strokeWidth="1" opacity="0.5" />}
         </g>
       );
     case 'thinking':
       return <ellipse cx="101" cy="115" rx="3" ry="2.5" fill="#E8A840" opacity="0.5" />;
     case 'encouraging':
-      return <path d="M93,114 Q100,119 107,114" fill="none" stroke="#E8A840" strokeWidth="2" strokeLinecap="round" opacity="0.8" />;
+      return <path d="M91,113 Q100,121 109,113" fill="none" stroke="#E8A840" strokeWidth="2" strokeLinecap="round" opacity="0.8" />;
     case 'headShake':
-      return <path d="M96,115 Q100,113 104,115" fill="none" stroke="#E8A840" strokeWidth="1.8" strokeLinecap="round" opacity="0.5" />;
+      return <path d="M95,115 Q100,113 105,115" fill="none" stroke="#E8A840" strokeWidth="1.8" strokeLinecap="round" opacity="0.5" />;
     default:
       return (
         <g>
-          <path d="M92,114 Q100,120 108,114" fill="none" stroke="#E8A840" strokeWidth="2" strokeLinecap="round" opacity="0.85" />
-          {glow > 0 && <path d="M95,116 Q100,118 105,116" fill="none" stroke="#FFE080" strokeWidth="1" opacity="0.4" />}
+          <path d="M91,113 Q100,121 109,113" fill="none" stroke="#E8A840" strokeWidth="2" strokeLinecap="round" opacity="0.85" />
+          {glow > 0 && <path d="M94,115 Q100,119 106,115" fill="none" stroke="#FFE080" strokeWidth="1" opacity="0.4" />}
         </g>
       );
   }

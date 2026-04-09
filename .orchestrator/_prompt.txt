@@ -1,7 +1,7 @@
-You are Installer (Build Engineer). Make this specific change:
+You are Engineer (Full-Stack Engineer). Make this specific change:
 
-Commit all pending changes (.orchestrator/_prompt.txt, .orchestrator/_whiteboard.md, .orchestrator/build.json, amplify.yml) with an appropriate commit message summarizing the updates, then push to the remote main branch.
+Stage all current working tree changes (orchestrator files and character component updates), commit with a clear message summarizing the changes, and push to the main branch on the remote.
 
-Context: The user asked for: commot and push
+Context: The user asked for: commit and push
 
 Read the relevant source files, make targeted edits, and run `npm run build` to verify.

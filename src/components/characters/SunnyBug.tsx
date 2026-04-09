@@ -122,14 +122,12 @@ export default function SunnyBug({ mood = 'happy', className, isSpeaking }: Sunn
 function BugEyes({ mood }: { mood: CharacterMood }) {
   const lx = 80, rx = 120, baseY = 78;
 
-  const eye = (cx: number, irisY: number, irisR = 11, pupilR = 5) => (
+  const eye = (cx: number, irisY: number, irisR = 12, pupilR = 4.5) => (
     <g>
-      <ellipse cx={cx} cy={baseY} rx="13" ry="14" fill="white" />
+      <ellipse cx={cx} cy={baseY} rx="13" ry="14" fill="#FFF5F3" />
       <circle cx={cx} cy={irisY} r={irisR} fill="#FF6050" />
-      <circle cx={cx} cy={irisY} r={pupilR} fill="#1A0808" />
-      <circle cx={cx + 3.5} cy={irisY - 5} r="3.5" fill="white" opacity="0.95" />
-      <circle cx={cx - 2} cy={irisY + 4} r="1.8" fill="white" opacity="0.6" />
-      <circle cx={cx + 6} cy={irisY - 1} r="1.2" fill="white" opacity="0.7" />
+      <circle cx={cx} cy={irisY} r={pupilR} fill="#5C2020" />
+      <circle cx={cx + 3} cy={irisY - 3} r="3" fill="white" opacity="0.9" />
     </g>
   );
 
@@ -137,8 +135,8 @@ function BugEyes({ mood }: { mood: CharacterMood }) {
     case 'excited':
       return (
         <>
-          {eye(lx, 77, 12, 4.5)}
-          {eye(rx, 77, 12, 4.5)}
+          {eye(lx, 77, 13, 4)}
+          {eye(rx, 77, 13, 4)}
           <path d={`M${lx - 14},${66} l2,-5 l2,5 l-4,0 Z`} fill="#FFE66D" />
           <path d={`M${rx + 11},${64} l1.5,-4 l1.5,4 l-3,0 Z`} fill="#FFE66D" opacity="0.8" />
         </>
@@ -146,15 +144,15 @@ function BugEyes({ mood }: { mood: CharacterMood }) {
     case 'thinking':
       return (
         <>
-          {eye(lx + 2, baseY + 2, 10, 4.5)}
-          {eye(rx + 2, baseY + 2, 10, 4.5)}
+          {eye(lx + 2, baseY + 2, 11, 4)}
+          {eye(rx + 2, baseY + 2, 11, 4)}
         </>
       );
     case 'encouraging':
       return (
         <>
-          {eye(lx, baseY + 1, 11, 5)}
-          {eye(rx, baseY + 1, 11, 5)}
+          {eye(lx, baseY + 1, 12, 4.5)}
+          {eye(rx, baseY + 1, 12, 4.5)}
           <path d={`M${lx - 11},${baseY - 14} Q${lx},${baseY - 20} ${lx + 11},${baseY - 14}`} fill="none" stroke="#3A4A5C" strokeWidth="1.5" strokeLinecap="round" opacity="0.4" />
           <path d={`M${rx - 11},${baseY - 14} Q${rx},${baseY - 20} ${rx + 11},${baseY - 14}`} fill="none" stroke="#3A4A5C" strokeWidth="1.5" strokeLinecap="round" opacity="0.4" />
         </>
@@ -162,8 +160,8 @@ function BugEyes({ mood }: { mood: CharacterMood }) {
     case 'headShake':
       return (
         <>
-          {eye(lx, 80, 10, 5)}
-          {eye(rx, 80, 10, 5)}
+          {eye(lx, 80, 11, 4.5)}
+          {eye(rx, 80, 11, 4.5)}
           <path d={`M${lx - 9},${baseY - 14} Q${lx},${baseY - 11} ${lx + 9},${baseY - 14}`} fill="none" stroke="#3A4A5C" strokeWidth="1.8" strokeLinecap="round" opacity="0.5" />
           <path d={`M${rx - 9},${baseY - 14} Q${rx},${baseY - 17} ${rx + 9},${baseY - 14}`} fill="none" stroke="#3A4A5C" strokeWidth="1.8" strokeLinecap="round" opacity="0.5" />
         </>
@@ -184,21 +182,21 @@ function BugMouth({ mood, isSpeaking }: { mood: CharacterMood; isSpeaking?: bool
     case 'excited':
       return (
         <g>
-          <path d="M92,108 Q100,115 108,108" fill="none" stroke="#FF4040" strokeWidth="2.2" strokeLinecap="round" />
-          {glow > 0 && <path d="M94,110 Q100,113 106,110" fill="none" stroke="#FF8080" strokeWidth="1.2" opacity="0.5" />}
+          <path d="M90,107 Q100,117 110,107" fill="none" stroke="#FF4040" strokeWidth="2.2" strokeLinecap="round" />
+          {glow > 0 && <path d="M93,109 Q100,114 107,109" fill="none" stroke="#FF8080" strokeWidth="1.2" opacity="0.5" />}
         </g>
       );
     case 'thinking':
       return <ellipse cx="101" cy="109" rx="3.5" ry="2.8" fill="#FF4040" opacity="0.5" />;
     case 'encouraging':
-      return <path d="M93,108 Q100,113 107,108" fill="none" stroke="#FF4040" strokeWidth="2" strokeLinecap="round" opacity="0.8" />;
+      return <path d="M91,107 Q100,116 109,107" fill="none" stroke="#FF4040" strokeWidth="2" strokeLinecap="round" opacity="0.8" />;
     case 'headShake':
-      return <path d="M96,109 Q100,107 104,109" fill="none" stroke="#FF4040" strokeWidth="1.8" strokeLinecap="round" opacity="0.6" />;
+      return <path d="M95,109 Q100,107 105,109" fill="none" stroke="#FF4040" strokeWidth="1.8" strokeLinecap="round" opacity="0.6" />;
     default:
       return (
         <g>
-          <path d="M92,108 Q100,114 108,108" fill="none" stroke="#FF4040" strokeWidth="2.2" strokeLinecap="round" opacity="0.85" />
-          {glow > 0 && <path d="M95,110 Q100,112 105,110" fill="none" stroke="#FF8080" strokeWidth="1" opacity="0.4" />}
+          <path d="M90,107 Q100,116 110,107" fill="none" stroke="#FF4040" strokeWidth="2.2" strokeLinecap="round" opacity="0.85" />
+          {glow > 0 && <path d="M94,109 Q100,113 106,109" fill="none" stroke="#FF8080" strokeWidth="1" opacity="0.4" />}
         </g>
       );
   }

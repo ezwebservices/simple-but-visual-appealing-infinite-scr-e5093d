@@ -142,14 +142,12 @@ export default function RosieOwl({ mood = 'happy', className, isSpeaking }: Rosi
 function OwlEyes({ mood }: { mood: CharacterMood }) {
   const lx = 78, rx = 122, baseY = 78;
 
-  const eye = (cx: number, irisY: number, irisR = 11, pupilR = 5) => (
+  const eye = (cx: number, irisY: number, irisR = 12, pupilR = 4.5) => (
     <g>
-      <ellipse cx={cx} cy={baseY} rx="12" ry="13" fill="white" />
+      <ellipse cx={cx} cy={baseY} rx="12" ry="13" fill="#F8F0FF" />
       <circle cx={cx} cy={irisY} r={irisR} fill="#B060FF" />
-      <circle cx={cx} cy={irisY} r={pupilR} fill="#0E0820" />
-      <circle cx={cx + 3.5} cy={irisY - 5} r="3.5" fill="white" opacity="0.95" />
-      <circle cx={cx - 2} cy={irisY + 4} r="1.8" fill="white" opacity="0.6" />
-      <circle cx={cx + 6} cy={irisY - 1} r="1.2" fill="white" opacity="0.7" />
+      <circle cx={cx} cy={irisY} r={pupilR} fill="#3A2058" />
+      <circle cx={cx + 3} cy={irisY - 3} r="3" fill="white" opacity="0.9" />
     </g>
   );
 
@@ -157,8 +155,8 @@ function OwlEyes({ mood }: { mood: CharacterMood }) {
     case 'excited':
       return (
         <>
-          {eye(lx, 77, 12, 4.5)}
-          {eye(rx, 77, 12, 4.5)}
+          {eye(lx, 77, 13, 4)}
+          {eye(rx, 77, 13, 4)}
           <path d={`M${lx - 14},${66} l2,-5 l2,5 l-4,0 Z`} fill="#FFE66D" />
           <path d={`M${rx + 11},${64} l1.5,-4 l1.5,4 l-3,0 Z`} fill="#FFE66D" opacity="0.8" />
         </>
@@ -166,15 +164,15 @@ function OwlEyes({ mood }: { mood: CharacterMood }) {
     case 'thinking':
       return (
         <>
-          {eye(lx + 2, baseY + 2, 10, 4.5)}
-          {eye(rx + 2, baseY + 2, 10, 4.5)}
+          {eye(lx + 2, baseY + 2, 11, 4)}
+          {eye(rx + 2, baseY + 2, 11, 4)}
         </>
       );
     case 'encouraging':
       return (
         <>
-          {eye(lx, baseY + 1, 11, 5)}
-          {eye(rx, baseY + 1, 11, 5)}
+          {eye(lx, baseY + 1, 12, 4.5)}
+          {eye(rx, baseY + 1, 12, 4.5)}
           <path d={`M${lx - 11},${baseY - 14} Q${lx},${baseY - 20} ${lx + 11},${baseY - 14}`} fill="none" stroke="#583880" strokeWidth="1.5" strokeLinecap="round" opacity="0.4" />
           <path d={`M${rx - 11},${baseY - 14} Q${rx},${baseY - 20} ${rx + 11},${baseY - 14}`} fill="none" stroke="#583880" strokeWidth="1.5" strokeLinecap="round" opacity="0.4" />
         </>
@@ -182,8 +180,8 @@ function OwlEyes({ mood }: { mood: CharacterMood }) {
     case 'headShake':
       return (
         <>
-          {eye(lx, 80, 10, 5)}
-          {eye(rx, 80, 10, 5)}
+          {eye(lx, 80, 11, 4.5)}
+          {eye(rx, 80, 11, 4.5)}
           <path d={`M${lx - 9},${baseY - 14} Q${lx},${baseY - 11} ${lx + 9},${baseY - 14}`} fill="none" stroke="#583880" strokeWidth="1.8" strokeLinecap="round" opacity="0.5" />
           <path d={`M${rx - 9},${baseY - 14} Q${rx},${baseY - 17} ${rx + 9},${baseY - 14}`} fill="none" stroke="#583880" strokeWidth="1.8" strokeLinecap="round" opacity="0.5" />
         </>
@@ -204,21 +202,21 @@ function OwlMouth({ mood, isSpeaking }: { mood: CharacterMood; isSpeaking?: bool
     case 'excited':
       return (
         <g>
-          <path d="M94,112 Q100,117 106,112" fill="none" stroke="#B060FF" strokeWidth="2" strokeLinecap="round" />
-          {glow > 0 && <path d="M96,114 Q100,116 104,114" fill="none" stroke="#D8A0FF" strokeWidth="1" opacity="0.5" />}
+          <path d="M92,111 Q100,120 108,111" fill="none" stroke="#B060FF" strokeWidth="2" strokeLinecap="round" />
+          {glow > 0 && <path d="M94,113 Q100,117 106,113" fill="none" stroke="#D8A0FF" strokeWidth="1" opacity="0.5" />}
         </g>
       );
     case 'thinking':
       return <ellipse cx="101" cy="113" rx="3" ry="2.5" fill="#B060FF" opacity="0.5" />;
     case 'encouraging':
-      return <path d="M94,112 Q100,117 106,112" fill="none" stroke="#B060FF" strokeWidth="1.8" strokeLinecap="round" opacity="0.8" />;
+      return <path d="M92,111 Q100,119 108,111" fill="none" stroke="#B060FF" strokeWidth="1.8" strokeLinecap="round" opacity="0.8" />;
     case 'headShake':
-      return <path d="M96,113 Q100,111 104,113" fill="none" stroke="#B060FF" strokeWidth="1.8" strokeLinecap="round" opacity="0.5" />;
+      return <path d="M95,113 Q100,111 105,113" fill="none" stroke="#B060FF" strokeWidth="1.8" strokeLinecap="round" opacity="0.5" />;
     default:
       return (
         <g>
-          <path d="M94,112 Q100,117 106,112" fill="none" stroke="#B060FF" strokeWidth="2" strokeLinecap="round" opacity="0.85" />
-          {glow > 0 && <path d="M96,113 Q100,115 104,113" fill="none" stroke="#D8A0FF" strokeWidth="1" opacity="0.4" />}
+          <path d="M92,111 Q100,119 108,111" fill="none" stroke="#B060FF" strokeWidth="2" strokeLinecap="round" opacity="0.85" />
+          {glow > 0 && <path d="M95,113 Q100,116 105,113" fill="none" stroke="#D8A0FF" strokeWidth="1" opacity="0.4" />}
         </g>
       );
   }
