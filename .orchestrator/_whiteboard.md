@@ -1,10 +1,10 @@
 # Iteration Whiteboard
 
-**Change request:** commit and push to github
+**Change request:** commit and push changes
 
 **Subtasks planned:** 1
 
-1. **Installer**: Stage all 6 modified files (.orchestrator/_prompt.txt, .orchestrator/_whiteboard.md, .orchestrator/build.json, amplify/auth/resource.ts, package-lock.json, package.json), commit with a descriptive message summarizing the changes (build config updates, auth resource tweak, and new package dependency), and push to origin/main.
+1. **Installer**: Stage the 4 modified files (.orchestrator/_prompt.txt, .orchestrator/_whiteboard.md, .orchestrator/build.json, amplify.yml), commit with message summarizing the changes (update build config, prompt, and whiteboard), and push to origin/main.
 
 ---
 

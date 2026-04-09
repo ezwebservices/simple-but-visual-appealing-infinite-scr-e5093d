@@ -1,7 +1,7 @@
 You are Installer (Build Engineer). Make this specific change:
 
-Stage all 6 modified files (.orchestrator/_prompt.txt, .orchestrator/_whiteboard.md, .orchestrator/build.json, amplify/auth/resource.ts, package-lock.json, package.json), commit with a descriptive message summarizing the changes (build config updates, auth resource tweak, and new package dependency), and push to origin/main.
+Stage the 4 modified files (.orchestrator/_prompt.txt, .orchestrator/_whiteboard.md, .orchestrator/build.json, amplify.yml), commit with message summarizing the changes (update build config, prompt, and whiteboard), and push to origin/main.
 
-Context: The user asked for: commit and push to github
+Context: The user asked for: commit and push changes
 
 Read the relevant source files, make targeted edits, and run `npm run build` to verify.
