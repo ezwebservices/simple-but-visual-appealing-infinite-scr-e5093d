@@ -1,7 +1,7 @@
-You are QA (QA Engineer). Make this specific change:
+You are Engineer (Full-Stack Engineer). Make this specific change:
 
-Test the complete account creation and subscription flow end-to-end: (1) Verify all Math Scroll references are gone — search entire codebase for old branding, confirm NumPals appears consistently. (2) Test parent signup: create account with email/password, receive and complete email verification. (3) Test Stripe integration: verify redirect to Stripe Checkout after account creation, confirm $14.99/year price displays correctly, test with Stripe test cards (success and failure scenarios). (4) Test subscription gating: confirm unauthenticated users cannot access the app, confirm unsubscribed users are prompted to pay. (5) Test login/logout flow works correctly. (6) Verify the app still functions correctly after auth (game loads, characters display, profiles work).
+Fix the 'Authpool not configured' error. The root cause is that amplify_outputs.json is empty ({}), so Amplify.configure() in src/main.tsx has no auth/Cognito config. Either: (a) run 'npx ampx sandbox' or 'npx ampx generate outputs' to populate amplify_outputs.json with real backend config, or (b) if the backend hasn't been deployed yet, add a runtime guard in src/main.tsx that only calls Amplify.configure() when outputs has actual config, and show a fallback UI in AuthFlow when auth isn't available. Also commit all pending changes (including .orchestrator files) and push to GitHub.
 
-Context: The user asked for: The actual app needs to be updated to num pals its currently named Math Scroll and the characters dont match we should use NumPals also I need aws amplify auth setup for parents to create an account and stripe setup to do a 14.99 per year subscription the create account process flow should handle this
+Context: The user asked for: did you commit and push to github i have this error. Authpool not configured
 
 Read the relevant source files, make targeted edits, and run `npm run build` to verify.

@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import { getCurrentUser } from 'aws-amplify/auth';
+import { hasAuthConfig } from './main';
 import { colors, fontStack } from './styles/theme';
 import InfiniteScroll from './components/InfiniteScroll';
 import StreakCounter from './components/StreakCounter';
@@ -17,10 +18,13 @@ import type { MathProblem, SubConcept } from './types';
 type AppView = 'game' | 'dashboard';
 
 export default function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(
+    hasAuthConfig ? null : true // Skip auth check when backend isn't configured
+  );
 
-  // Check auth state on mount
+  // Check auth state on mount — only when auth backend is available
   useEffect(() => {
+    if (!hasAuthConfig) return;
     getCurrentUser()
       .then(() => setIsAuthenticated(true))
       .catch(() => setIsAuthenticated(false));
@@ -50,7 +54,11 @@ export default function App() {
     return <AuthFlow onAuthenticated={() => setIsAuthenticated(true)} />;
   }
 
-  // Authenticated → gate behind subscription, then show game
+  // Authenticated (or auth not configured) → gate behind subscription if auth available, else go straight to game
+  if (!hasAuthConfig) {
+    return <GameView />;
+  }
+
   return (
     <SubscriptionGate>
       <GameView />
