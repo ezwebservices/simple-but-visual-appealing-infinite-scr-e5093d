@@ -1,6 +1,6 @@
-You are Engineer (Full-Stack Engineer). Make this specific change:
+You are Architect (Software Architect). Make this specific change:
 
-Commit and push all current uncommitted changes to main. Stage the modified files (src/App.tsx, src/components/SubscriptionGate.tsx, .orchestrator/_whiteboard.md, .orchestrator/build.json) and the new file (src/components/LoadingScreen.tsx). Write a clear commit message summarizing: added LoadingScreen with dancing characters, removed 14-day trial from SubscriptionGate (instant payment required), added Stripe test-mode banner and CLI status indicator, integrated LoadingScreen into App.tsx auth check. Push to origin/main.
+Design the custom subscription flow to replace the current Stripe Checkout redirect in SubscriptionGate.tsx. The current approach redirects users to a Stripe Payment Link (STRIPE_CHECKOUT_URL). We need an in-app subscription experience instead. Evaluate: (1) Using Stripe Elements / @stripe/react-stripe-js to embed a payment form directly in the SubscriptionGate paywall UI, (2) What backend/serverless endpoint is needed to create a Stripe PaymentIntent or Subscription (e.g., an AWS Amplify Lambda function), (3) How to handle subscription confirmation without leaving the app (webhook vs client-side confirmation), (4) How this integrates with the existing Cognito auth (linking Stripe customerId to the authenticated user). Output a concrete technical spec with the component structure, API endpoints needed, and env vars required.
 
 Context: The user asked for: we need a custom subscription  method versus checkout work through this first though commit and push
 
