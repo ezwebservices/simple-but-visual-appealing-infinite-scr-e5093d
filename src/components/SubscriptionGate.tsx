@@ -397,11 +397,16 @@ export default function SubscriptionGate({ children }: SubscriptionGateProps) {
       position: 'fixed',
       inset: 0,
       background: `linear-gradient(180deg, ${colors.cream}, ${colors.lavender}40)`,
+      // Vertical scroll when content is taller than viewport (mobile, short screens, expanded payment form)
+      overflowY: 'auto',
+      WebkitOverflowScrolling: 'touch',
       display: 'flex',
-      alignItems: 'center',
+      alignItems: 'flex-start',
       justifyContent: 'center',
       fontFamily: fontStack,
       padding: 20,
+      // Account for the test mode banner so the card doesn't sit underneath it
+      paddingTop: 60,
     }}>
       <TestModeBanner />
       <div style={{
@@ -412,6 +417,8 @@ export default function SubscriptionGate({ children }: SubscriptionGateProps) {
         width: '100%',
         boxShadow: '0 8px 40px rgba(0,0,0,0.1)',
         textAlign: 'center',
+        // Allow the card to grow naturally; the parent handles scroll
+        marginBottom: 20,
       }}>
         <h1 style={{ margin: 0, fontSize: '2rem', color: colors.coral }}>NumPals</h1>
         <p style={{ color: 'rgba(0,0,0,0.6)', margin: '8px 0 24px' }}>
