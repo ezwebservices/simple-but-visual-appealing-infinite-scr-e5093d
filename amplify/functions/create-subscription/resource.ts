@@ -5,7 +5,10 @@ export const createSubscription = defineFunction({
   entry: './handler.ts',
   environment: {
     STRIPE_SECRET_KEY: secret('STRIPE_SECRET_KEY'),
-    STRIPE_PRICE_ID: process.env.STRIPE_PRICE_ID || '',
+    // Use secret() so the runtime resolver fetches from SSM at cold start.
+    // Using process.env here would bake the build-time value (empty) into the
+    // Lambda env, causing "items[0][price] cannot be empty" when the function runs.
+    STRIPE_PRICE_ID: secret('STRIPE_PRICE_ID'),
   },
   timeoutSeconds: 15,
 });
