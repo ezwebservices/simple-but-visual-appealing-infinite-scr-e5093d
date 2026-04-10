@@ -7,6 +7,20 @@ backend:
         - cd amplify/functions/create-subscription && npm install && cd ../../..
         - cd amplify/functions/stripe-webhook && npm install && cd ../../..
         - cd amplify/functions/subscription-status && npm install && cd ../../..
+        # Grant the CodeBuild role permission to read CDK bootstrap SSM parameter.
+        # This must run BEFORE ampx pipeline-deploy because CDK checks the bootstrap
+        # version via SSM before deploying. The role name is discovered dynamically
+        # so this survives Amplify role recreation.
+        - |
+          ROLE_ARN=$(aws sts get-caller-identity --query Arn --output text)
+          ROLE_NAME=$(echo "$ROLE_ARN" | grep -o 'assumed-role/[^/]*' | cut -d'/' -f2)
+          echo "Ensuring CDK bootstrap SSM read access for role: $ROLE_NAME"
+          aws iam put-role-policy \
+            --role-name "$ROLE_NAME" \
+            --policy-name CdkBootstrapSsmReadAccess \
+            --policy-document '{"Version":"2012-10-17","Statement":[{"Effect":"Allow","Action":["ssm:GetParameter","ssm:GetParameters"],"Resource":"arn:aws:ssm:*:*:parameter/cdk-bootstrap/*"}]}'
+          echo "Waiting for IAM policy propagation..."
+          sleep 10
         - npx ampx pipeline-deploy --branch $AWS_BRANCH --app-id $AWS_APP_ID
 frontend:
   phases:
