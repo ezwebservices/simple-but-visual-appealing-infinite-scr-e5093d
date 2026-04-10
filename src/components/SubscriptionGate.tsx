@@ -1,9 +1,12 @@
 import { useState, useEffect, useCallback } from 'react';
-import { signOut, fetchUserAttributes } from 'aws-amplify/auth';
+import { signOut, fetchAuthSession } from 'aws-amplify/auth';
+import { loadStripe, type Appearance } from '@stripe/stripe-js';
+import { Elements, PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import { colors, fontStack } from '../styles/theme';
+import outputs from '../../amplify_outputs.json';
 
-/** Stripe Payment Link (test-mode or live depending on env) */
-const STRIPE_CHECKOUT_URL = import.meta.env.VITE_STRIPE_CHECKOUT_URL || '';
+/** Stripe publishable key (test or live depending on env) */
+const STRIPE_PK = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || '';
 
 /** Whether we're running in dev/test mode */
 const IS_DEV = import.meta.env.DEV;
@@ -11,8 +14,33 @@ const IS_DEV = import.meta.env.DEV;
 /** Stripe CLI webhook status endpoint (dev only) */
 const STRIPE_CLI_WEBHOOK_URL = import.meta.env.VITE_STRIPE_CLI_WEBHOOK_URL || '';
 
-/** localStorage key for subscription status (cached — verified via webhook in production) */
+/** localStorage key for subscription status */
 const SUB_STORAGE_KEY = 'numpals-subscription';
+
+const stripePromise = STRIPE_PK ? loadStripe(STRIPE_PK) : null;
+
+/** Stripe Elements appearance matching NumPals design system */
+const elementsAppearance: Appearance = {
+  theme: 'stripe',
+  variables: {
+    colorPrimary: colors.mint,
+    colorBackground: '#ffffff',
+    colorText: colors.charcoal,
+    fontFamily: fontStack,
+    borderRadius: '12px',
+    spacingUnit: '4px',
+  },
+  rules: {
+    '.Input': {
+      border: '2px solid #e5e7eb',
+      padding: '12px',
+    },
+    '.Input:focus': {
+      borderColor: colors.mint,
+      boxShadow: `0 0 0 2px ${colors.mint}40`,
+    },
+  },
+};
 
 interface SubscriptionStatus {
   active: boolean;
@@ -84,72 +112,282 @@ function StripeCliStatus() {
   );
 }
 
+/** The Stripe test mode banner shown in dev */
+function TestModeBanner() {
+  if (!IS_DEV) return null;
+  return (
+    <div style={{
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      right: 0,
+      zIndex: 100,
+      background: '#fbbf24',
+      color: '#000',
+      textAlign: 'center',
+      padding: '4px 12px',
+      fontSize: '0.75rem',
+      fontFamily: fontStack,
+      fontWeight: 700,
+      letterSpacing: '0.05em',
+    }}>
+      ⚠ STRIPE TEST MODE
+    </div>
+  );
+}
+
+/** Embedded checkout form with Stripe PaymentElement */
+function CheckoutForm({ onSuccess, onBack }: { onSuccess: () => void; onBack: () => void }) {
+  const stripe = useStripe();
+  const elements = useElements();
+  const [error, setError] = useState('');
+  const [processing, setProcessing] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!stripe || !elements) return;
+
+    setProcessing(true);
+    setError('');
+
+    const { error: confirmError, paymentIntent } = await stripe.confirmPayment({
+      elements,
+      redirect: 'if_required',
+    });
+
+    if (confirmError) {
+      setError(confirmError.message || 'Payment failed. Please try again.');
+      setProcessing(false);
+      return;
+    }
+
+    if (paymentIntent?.status === 'succeeded') {
+      // Payment succeeded — poll subscription status to confirm activation
+      setProcessing(true);
+      let attempts = 0;
+      const poll = async () => {
+        attempts++;
+        try {
+          const session = await fetchAuthSession();
+          const token = session.tokens?.idToken?.toString();
+          if (!token) throw new Error('No auth token');
+
+          const resp = await callGraphQL(token, 'subscriptionStatus', `
+            query { subscriptionStatus { status currentPeriodEnd stripeCustomerId } }
+          `);
+          if (resp?.status === 'active') {
+            cacheSubscription({ active: true, customerId: resp.stripeCustomerId || undefined });
+            onSuccess();
+            return;
+          }
+        } catch {
+          // Retry
+        }
+        if (attempts < 10) {
+          setTimeout(poll, 1000);
+        } else {
+          // Assume success after timeout — webhook may be slow
+          cacheSubscription({ active: true });
+          onSuccess();
+        }
+      };
+      poll();
+    } else {
+      setError('Payment requires additional action. Please try again.');
+      setProcessing(false);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <PaymentElement options={{ layout: 'tabs' }} />
+
+      {error && (
+        <div style={{
+          background: '#fef2f2',
+          color: '#dc2626',
+          borderRadius: 8,
+          padding: '10px 14px',
+          fontSize: '0.85rem',
+          marginTop: 12,
+        }}>
+          {error}
+        </div>
+      )}
+
+      <button
+        type="submit"
+        disabled={!stripe || processing}
+        style={{
+          width: '100%',
+          padding: '16px',
+          borderRadius: '12px',
+          border: 'none',
+          background: colors.mint,
+          color: '#fff',
+          fontSize: '1.1rem',
+          fontWeight: 700,
+          fontFamily: fontStack,
+          cursor: processing ? 'wait' : 'pointer',
+          opacity: (!stripe || processing) ? 0.7 : 1,
+          marginTop: 16,
+          marginBottom: 8,
+        }}
+      >
+        {processing ? 'Processing...' : 'Pay $14.99/year'}
+      </button>
+
+      <button
+        type="button"
+        onClick={onBack}
+        disabled={processing}
+        style={{
+          background: 'none',
+          border: 'none',
+          color: 'rgba(0,0,0,0.4)',
+          fontSize: '0.85rem',
+          cursor: 'pointer',
+          fontFamily: fontStack,
+          width: '100%',
+          padding: '8px',
+        }}
+      >
+        Back
+      </button>
+    </form>
+  );
+}
+
+/** Helper to call AppSync GraphQL queries with a Cognito JWT */
+async function callGraphQL(token: string, operationName: string, query: string) {
+  const endpoint = (outputs as Record<string, unknown> & { data?: { url?: string } })?.data?.url;
+  if (!endpoint) throw new Error('AppSync endpoint not configured');
+
+  const resp = await fetch(endpoint, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: token,
+    },
+    body: JSON.stringify({ query, operationName }),
+  });
+
+  const json = await resp.json();
+  if (json.errors) {
+    throw new Error(json.errors[0]?.message || 'GraphQL error');
+  }
+  return json.data?.[operationName];
+}
+
 export default function SubscriptionGate({ children }: SubscriptionGateProps) {
   const [subStatus, setSubStatus] = useState<SubscriptionStatus | null>(loadCachedSubscription);
-  const [loading, setLoading] = useState(false);
+  const [verifying, setVerifying] = useState(false);
+  const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [checkoutError, setCheckoutError] = useState('');
-  const [userEmail, setUserEmail] = useState('');
+  const [loading, setLoading] = useState(false);
 
+  // Verify subscription status against Stripe on mount
   useEffect(() => {
-    fetchUserAttributes().then((attrs) => {
-      if (attrs.email) setUserEmail(attrs.email);
-    }).catch(() => {});
+    let cancelled = false;
+    const verify = async () => {
+      setVerifying(true);
+      try {
+        const session = await fetchAuthSession();
+        const token = session.tokens?.idToken?.toString();
+        if (!token) return;
+
+        const result = await callGraphQL(token, 'subscriptionStatus', `
+          query { subscriptionStatus { status currentPeriodEnd stripeCustomerId } }
+        `);
+
+        if (cancelled) return;
+
+        if (result?.status === 'active') {
+          const status: SubscriptionStatus = { active: true, customerId: result.stripeCustomerId || undefined };
+          cacheSubscription(status);
+          setSubStatus(status);
+        } else {
+          // Clear stale cache if Stripe says not active
+          localStorage.removeItem(SUB_STORAGE_KEY);
+          setSubStatus(null);
+        }
+      } catch {
+        // If verification fails, trust the cache (offline tolerance)
+      } finally {
+        if (!cancelled) setVerifying(false);
+      }
+    };
+    verify();
+    return () => { cancelled = true; };
   }, []);
 
-  const handleCheckout = useCallback(async () => {
+  const handleSubscribe = useCallback(async () => {
     setLoading(true);
     setCheckoutError('');
     try {
-      if (!STRIPE_CHECKOUT_URL) {
-        setCheckoutError('Payment is not configured. Please contact support.');
+      const session = await fetchAuthSession();
+      const token = session.tokens?.idToken?.toString();
+      if (!token) {
+        setCheckoutError('Authentication error. Please sign out and sign back in.');
         return;
       }
-      const separator = STRIPE_CHECKOUT_URL.includes('?') ? '&' : '?';
-      window.location.href = `${STRIPE_CHECKOUT_URL}${separator}prefilled_email=${encodeURIComponent(userEmail)}`;
+
+      const result = await callGraphQL(token, 'createSubscription', `
+        query { createSubscription { clientSecret subscriptionId } }
+      `);
+
+      if (result?.clientSecret) {
+        setClientSecret(result.clientSecret);
+      } else {
+        setCheckoutError('Could not start subscription. Please try again.');
+      }
     } catch (err) {
-      console.error('Checkout error:', err);
-      setCheckoutError('Something went wrong. Please try again.');
+      const message = err instanceof Error ? err.message : 'Something went wrong.';
+      if (message.includes('Already subscribed')) {
+        // User is already subscribed — refresh status
+        cacheSubscription({ active: true });
+        setSubStatus({ active: true });
+      } else {
+        setCheckoutError(message);
+      }
     } finally {
       setLoading(false);
     }
-  }, [userEmail]);
-
-  // Check URL params for subscription callback
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    if (params.get('subscription') === 'active') {
-      const activeSub: SubscriptionStatus = { active: true };
-      cacheSubscription(activeSub);
-      setSubStatus(activeSub);
-      window.history.replaceState({}, '', window.location.pathname);
-    }
   }, []);
 
-  // Only allow access if subscription is active — no trial bypass
+  const handlePaymentSuccess = useCallback(() => {
+    cacheSubscription({ active: true });
+    setSubStatus({ active: true });
+    setClientSecret(null);
+  }, []);
+
+  // Active subscription — render children
   if (subStatus?.active) {
     return (
       <>
-        {IS_DEV && (
-          <div style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            right: 0,
-            zIndex: 100,
-            background: '#fbbf24',
-            color: '#000',
-            textAlign: 'center',
-            padding: '4px 12px',
-            fontSize: '0.75rem',
-            fontFamily: fontStack,
-            fontWeight: 700,
-            letterSpacing: '0.05em',
-          }}>
-            ⚠ STRIPE TEST MODE
-          </div>
-        )}
+        <TestModeBanner />
         {children}
       </>
+    );
+  }
+
+  // Show loading while verifying (but only if we don't have a cached status)
+  if (verifying && !subStatus) {
+    return (
+      <div style={{
+        position: 'fixed',
+        inset: 0,
+        background: `linear-gradient(180deg, ${colors.cream}, ${colors.lavender}40)`,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontFamily: fontStack,
+      }}>
+        <TestModeBanner />
+        <div style={{ color: 'rgba(0,0,0,0.5)', fontSize: '1rem' }}>
+          Checking subscription...
+        </div>
+      </div>
     );
   }
 
@@ -165,25 +403,7 @@ export default function SubscriptionGate({ children }: SubscriptionGateProps) {
       fontFamily: fontStack,
       padding: 20,
     }}>
-      {IS_DEV && (
-        <div style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          zIndex: 100,
-          background: '#fbbf24',
-          color: '#000',
-          textAlign: 'center',
-          padding: '4px 12px',
-          fontSize: '0.75rem',
-          fontFamily: fontStack,
-          fontWeight: 700,
-          letterSpacing: '0.05em',
-        }}>
-          ⚠ STRIPE TEST MODE
-        </div>
-      )}
+      <TestModeBanner />
       <div style={{
         background: '#fff',
         borderRadius: '24px',
@@ -198,58 +418,74 @@ export default function SubscriptionGate({ children }: SubscriptionGateProps) {
           Subscribe to start learning with NumPals!
         </p>
 
-        <div style={{
-          background: `${colors.mint}10`,
-          borderRadius: '16px',
-          padding: '20px',
-          marginBottom: 20,
-        }}>
-          <div style={{ fontSize: '2.5rem', fontWeight: 800, color: colors.charcoal }}>
-            $14.99
-          </div>
-          <div style={{ color: 'rgba(0,0,0,0.5)', fontSize: '0.9rem' }}>per year</div>
-          <ul style={{ textAlign: 'left', margin: '16px 0 0', padding: '0 0 0 20px', color: 'rgba(0,0,0,0.7)', fontSize: '0.9rem', lineHeight: 1.8 }}>
-            <li>Unlimited math lessons</li>
-            <li>All NumPals characters</li>
-            <li>Progress tracking for multiple kids</li>
-            <li>No ads, ever</li>
-          </ul>
-        </div>
+        {clientSecret && stripePromise ? (
+          /* Stripe Elements payment form */
+          <Elements
+            stripe={stripePromise}
+            options={{ clientSecret, appearance: elementsAppearance }}
+          >
+            <CheckoutForm
+              onSuccess={handlePaymentSuccess}
+              onBack={() => setClientSecret(null)}
+            />
+          </Elements>
+        ) : (
+          /* Plan details + subscribe button */
+          <>
+            <div style={{
+              background: `${colors.mint}10`,
+              borderRadius: '16px',
+              padding: '20px',
+              marginBottom: 20,
+            }}>
+              <div style={{ fontSize: '2.5rem', fontWeight: 800, color: colors.charcoal }}>
+                $14.99
+              </div>
+              <div style={{ color: 'rgba(0,0,0,0.5)', fontSize: '0.9rem' }}>per year</div>
+              <ul style={{ textAlign: 'left', margin: '16px 0 0', padding: '0 0 0 20px', color: 'rgba(0,0,0,0.7)', fontSize: '0.9rem', lineHeight: 1.8 }}>
+                <li>Unlimited math lessons</li>
+                <li>All NumPals characters</li>
+                <li>Progress tracking for multiple kids</li>
+                <li>No ads, ever</li>
+              </ul>
+            </div>
 
-        {checkoutError && (
-          <div style={{
-            background: '#fef2f2',
-            color: '#dc2626',
-            borderRadius: 8,
-            padding: '10px 14px',
-            fontSize: '0.85rem',
-            marginBottom: 12,
-          }}>
-            {checkoutError}
-          </div>
+            {checkoutError && (
+              <div style={{
+                background: '#fef2f2',
+                color: '#dc2626',
+                borderRadius: 8,
+                padding: '10px 14px',
+                fontSize: '0.85rem',
+                marginBottom: 12,
+              }}>
+                {checkoutError}
+              </div>
+            )}
+
+            <button
+              type="button"
+              onClick={handleSubscribe}
+              disabled={loading}
+              style={{
+                width: '100%',
+                padding: '16px',
+                borderRadius: '12px',
+                border: 'none',
+                background: colors.mint,
+                color: '#fff',
+                fontSize: '1.1rem',
+                fontWeight: 700,
+                fontFamily: fontStack,
+                cursor: loading ? 'wait' : 'pointer',
+                opacity: loading ? 0.7 : 1,
+                marginBottom: 12,
+              }}
+            >
+              {loading ? 'Setting up...' : 'Subscribe Now'}
+            </button>
+          </>
         )}
-
-        <button
-          type="button"
-          onClick={handleCheckout}
-          disabled={loading}
-          style={{
-            width: '100%',
-            padding: '16px',
-            borderRadius: '12px',
-            border: 'none',
-            background: colors.mint,
-            color: '#fff',
-            fontSize: '1.1rem',
-            fontWeight: 700,
-            fontFamily: fontStack,
-            cursor: loading ? 'wait' : 'pointer',
-            opacity: loading ? 0.7 : 1,
-            marginBottom: 12,
-          }}
-        >
-          {loading ? 'Redirecting to checkout...' : 'Subscribe Now'}
-        </button>
 
         <button
           type="button"
