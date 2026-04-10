@@ -35,8 +35,8 @@ new CfnOutput(webhookFn.stack, 'StripeWebhookUrl', {
   value: fnUrl.url,
 });
 
-// Grant the webhook lambda read/write access to the Subscription + ProcessedWebhookEvent tables
-const subscriptionTable = backend.data.resources.tables['Subscription'];
+// Grant the webhook lambda read/write access to the UserSubscription + ProcessedWebhookEvent tables
+const subscriptionTable = backend.data.resources.tables['UserSubscription'];
 const processedEventTable = backend.data.resources.tables['ProcessedWebhookEvent'];
 
 if (subscriptionTable) {

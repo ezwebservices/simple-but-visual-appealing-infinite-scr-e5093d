@@ -25,11 +25,13 @@ const schema = a.schema({
     .authorization((allow) => [allow.owner()]),
 
   // ────────────────────────────────────────────────────────────
-  // SUBSCRIPTION — per-user mirror of the Stripe subscription state.
+  // USER SUBSCRIPTION — per-user mirror of the Stripe subscription state.
+  // Named UserSubscription (not Subscription) because "Subscription" is
+  // a reserved GraphQL root operation type and cannot be used as a model.
   // Owner can READ. Webhook Lambda updates via direct DDB SDK
   // (NOT via this GraphQL API — see stripe-webhook handler).
   // ────────────────────────────────────────────────────────────
-  Subscription: a
+  UserSubscription: a
     .model({
       // The Cognito user sub is used as the owner field automatically.
       status: a.string().required(),          // 'active' | 'past_due' | 'canceled' | 'incomplete' | 'trialing' | 'none'
