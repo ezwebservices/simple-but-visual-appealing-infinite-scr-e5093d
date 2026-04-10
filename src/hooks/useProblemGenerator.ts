@@ -3,7 +3,7 @@ import type { MathProblem, Operator, ObjectType, CharacterName, SubConcept } fro
 import { gradients } from '../styles/theme';
 
 const objectTypes: ObjectType[] = ['apple', 'star', 'heart', 'balloon', 'fish'];
-const characters: CharacterName[] = ['bloo', 'sunny', 'rosie', 'milo', 'pip', 'rex'];
+const ALL_CHARACTERS: CharacterName[] = ['bloo', 'sunny', 'rosie', 'milo', 'pip', 'rex'];
 
 function pickRandom<T>(arr: readonly T[]): T {
   return arr[Math.floor(Math.random() * arr.length)];
@@ -28,8 +28,12 @@ function generateWrongAnswers(correct: number, min: number, max: number, count =
 
 let idCounter = 0;
 
-export default function useProblemGenerator() {
+export default function useProblemGenerator(availableCharacters?: CharacterName[]) {
   const lastProblemRef = useRef<string>('');
+  // Default to all characters if no unlock list is provided (legacy fallback)
+  const characters = availableCharacters && availableCharacters.length > 0
+    ? availableCharacters
+    : ALL_CHARACTERS;
 
   const generate = useCallback((concept: SubConcept): MathProblem => {
     let num1: number;
@@ -245,12 +249,12 @@ export default function useProblemGenerator() {
       answer,
       wrongAnswers,
       objectType,
-      character: pickRandom(characters),
+      character: pickRandom(characters),  // unlocked characters only
       backgroundColor: pickRandom(gradients),
       explanation,
       concept,
     };
-  }, []);
+  }, [characters]);
 
   return generate;
 }

@@ -18,6 +18,9 @@ interface LessonCardProps {
   onAdvance?: () => void;
   onSpeak: (text: string) => void;
   isSpeaking?: boolean;
+  /** Highest dance move unlocked (1–5). When the child gets a problem right,
+   *  a random move from 1..unlockedDanceMoves is picked for the celebration. */
+  unlockedDanceMoves?: number;
 }
 
 function getSpokenText(problem: MathProblem): string {
@@ -57,7 +60,7 @@ function getQuestionText(problem: MathProblem): string {
   return `${num1} ${sym} ${num2} = ?`;
 }
 
-export default function LessonCard({ problem, isActive, onCorrect, onWrong, onAdvance, onSpeak, isSpeaking }: LessonCardProps) {
+export default function LessonCard({ problem, isActive, onCorrect, onWrong, onAdvance, onSpeak, isSpeaking, unlockedDanceMoves = 1 }: LessonCardProps) {
   const [selected, setSelected] = useState<number | null>(null);
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
   const [showCelebration, setShowCelebration] = useState(false);
@@ -146,12 +149,21 @@ export default function LessonCard({ problem, isActive, onCorrect, onWrong, onAd
         ? 'thinking'
         : 'happy';
 
-  // Animation: spin on correct, dance while actively playing, idle otherwise
+  // Pick a random unlocked dance move once when correct, then keep using it
+  // until the next problem (so it doesn't keep re-randomizing on every render).
+  const correctDanceRef = useRef<number>(1);
+  if (isCorrect === true && correctDanceRef.current === 1) {
+    correctDanceRef.current = Math.floor(Math.random() * unlockedDanceMoves) + 1;
+  }
+  if (isCorrect === null) {
+    correctDanceRef.current = 1; // reset for next problem
+  }
+
+  // Animation: random unlocked dance on correct, idle (random variants) when waiting,
+  // dance (move 1) only briefly while actively engaged with the problem
   const charAnimation: CharacterAnimation = isCorrect === true
-    ? 'spin'
-    : isActive
-      ? 'dance'
-      : 'idle';
+    ? (`dance-${correctDanceRef.current}` as CharacterAnimation)
+    : 'idle';
 
   const questionText = getQuestionText(problem);
   const concept = problem.concept;

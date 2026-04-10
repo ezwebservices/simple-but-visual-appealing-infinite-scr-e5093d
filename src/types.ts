@@ -6,7 +6,7 @@ export type CharacterName = 'bloo' | 'sunny' | 'rosie' | 'milo' | 'pip' | 'rex' 
 
 export type CharacterMood = 'happy' | 'excited' | 'thinking' | 'encouraging' | 'headShake';
 
-export type CharacterAnimation = 'idle' | 'dance' | 'spin' | 'none';
+export type CharacterAnimation = 'idle' | 'dance' | 'dance-1' | 'dance-2' | 'dance-3' | 'dance-4' | 'dance-5' | 'spin' | 'none';
 
 /** Fine-grained sub-concepts in learning progression order */
 export type SubConcept =
@@ -120,7 +120,34 @@ export interface ChildProfile {
   accuracyHistory: { date: string; accuracy: number; concept: SubConcept; _total?: number }[];
   /** Recent activity (last 50 entries) */
   recentActivity: ActivityEntry[];
+  /** Characters the child has unlocked. Always starts with ['bloo']. */
+  unlockedCharacters?: CharacterName[];
+  /** Highest dance move number unlocked (1–5). Starts at 1. */
+  unlockedDanceMoves?: number;
 }
+
+/** Unlock thresholds — how many sub-concepts must be mastered to unlock each reward */
+export const CHARACTER_UNLOCK_ORDER: CharacterName[] = ['bloo', 'sunny', 'rosie', 'milo', 'pip', 'rex'];
+
+/** masteredCount → which characters are unlocked. Index = masteredCount needed. */
+export const CHARACTER_UNLOCK_THRESHOLDS: Record<CharacterName, number> = {
+  bloo: 0,    // starter
+  sunny: 1,   // unlocks after first mastery
+  rosie: 3,
+  milo: 5,
+  pip: 7,
+  rex: 10,
+  robo: 999,  // legacy alias, never auto-unlocked
+};
+
+/** masteredCount → highest dance move unlocked (1–5) */
+export const DANCE_MOVE_THRESHOLDS: number[] = [
+  0,  // dance 1: from start
+  2,  // dance 2: master 2
+  4,  // dance 3: master 4
+  6,  // dance 4: master 6
+  9,  // dance 5: master 9
+];
 
 export interface ProgressData {
   totalCorrect: number;

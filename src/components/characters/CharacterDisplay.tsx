@@ -239,20 +239,59 @@ const animationCSS = `
 @keyframes char-m5-mouth-default { 0%, 60%, 100% { opacity: 1; } 65%, 95% { opacity: 0; } }
 @keyframes char-m5-mouth-laugh   { 0%, 60%, 100% { opacity: 0; } 65%, 95% { opacity: 1; } }
 
-/* ══════ DANCE MODES ══════ */
-.char-dance .char-left-arm  { animation: char-m1-arm-l 3.2s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite; }
-.char-dance .char-right-arm { animation: char-m1-arm-r 3.2s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite; }
-.char-dance .char-torso     { animation: char-m1-body  3.2s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite; }
-.char-dance .char-head      { animation: char-m1-head  3.2s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite; }
-.char-dance .char-tail      { animation: char-m1-tail  3.2s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite; }
-.char-dance .mouth-default  { animation: char-m1-mouth-default 3.2s steps(1) infinite; }
-.char-dance .mouth-open     { animation: char-m1-mouth-open 3.2s steps(1) infinite; }
+/* ══════ DANCE MODES — 5 distinct moves ══════ */
 
-/* SPIN — superstar pose */
+/* DANCE 1 — POWER PUMP (default; .char-dance is alias for .char-dance-1) */
+.char-dance .char-left-arm,
+.char-dance-1 .char-left-arm  { animation: char-m1-arm-l 3.2s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite; }
+.char-dance .char-right-arm,
+.char-dance-1 .char-right-arm { animation: char-m1-arm-r 3.2s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite; }
+.char-dance .char-torso,
+.char-dance-1 .char-torso     { animation: char-m1-body  3.2s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite; }
+.char-dance .char-head,
+.char-dance-1 .char-head      { animation: char-m1-head  3.2s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite; }
+.char-dance .char-tail,
+.char-dance-1 .char-tail      { animation: char-m1-tail  3.2s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite; }
+.char-dance .mouth-default,
+.char-dance-1 .mouth-default  { animation: char-m1-mouth-default 3.2s steps(1) infinite; }
+.char-dance .mouth-open,
+.char-dance-1 .mouth-open     { animation: char-m1-mouth-open 3.2s steps(1) infinite; }
+
+/* DANCE 2 — CHA-CHA SLIDE */
+.char-dance-2 .char-left-arm  { animation: char-m2-arm-l 3.6s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite; }
+.char-dance-2 .char-right-arm { animation: char-m2-arm-r 3.6s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite; }
+.char-dance-2 .char-left-leg  { animation: char-m2-leg-l 3.6s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite; }
+.char-dance-2 .char-right-leg { animation: char-m2-leg-r 3.6s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite; }
+.char-dance-2 .char-torso     { animation: char-m2-body  3.6s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite; }
+.char-dance-2 .char-head      { animation: char-m2-head  3.6s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite; }
+.char-dance-2 .char-tail      { animation: char-m2-tail  3.6s ease-in-out infinite; }
+
+/* DANCE 3 — DISCO FEVER */
+.char-dance-3 .char-left-arm  { animation: char-m3-arm-l 3.2s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite; }
+.char-dance-3 .char-right-arm { animation: char-m3-arm-r 3.2s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite; }
+.char-dance-3 .char-torso     { animation: char-m3-body  3.2s ease-in-out infinite; }
+.char-dance-3 .char-head      { animation: char-m3-head  3.2s ease-in-out infinite; }
+.char-dance-3 .char-tail      { animation: char-m3-tail  3.2s ease-in-out infinite; }
+
+/* DANCE 4 — EARTHQUAKE SHAKE */
+.char-dance-4 .char-left-arm  { animation: char-m4-arm-l 1.4s ease-in-out infinite; }
+.char-dance-4 .char-right-arm { animation: char-m4-arm-r 1.4s ease-in-out infinite; }
+.char-dance-4 .char-torso     { animation: char-m4-body  1.4s ease-in-out infinite; }
+.char-dance-4 .char-head      { animation: char-m4-head  1.4s ease-in-out infinite; }
+.char-dance-4 .char-tail      { animation: char-m4-tail  1.4s ease-in-out infinite; }
+.char-dance-4 .mouth-default  { animation: char-m4-mouth-default 1.4s steps(1) infinite; }
+.char-dance-4 .mouth-laugh    { animation: char-m4-mouth-laugh 1.4s steps(1) infinite; }
+
+/* DANCE 5 — SUPERSTAR SPIN & POSE (the unlockable finale) */
+.char-dance-5 .char-all,
 .char-spin .char-all       { animation: char-m5-all 4.5s cubic-bezier(0.4, 0, 0.2, 1) infinite; }
+.char-dance-5 .char-left-arm,
 .char-spin .char-left-arm  { animation: char-m5-arm-l 4.5s cubic-bezier(0.4, 0, 0.2, 1) infinite; }
+.char-dance-5 .char-right-arm,
 .char-spin .char-right-arm { animation: char-m5-arm-r 4.5s cubic-bezier(0.4, 0, 0.2, 1) infinite; }
+.char-dance-5 .mouth-default,
 .char-spin .mouth-default  { animation: char-m5-mouth-default 4.5s steps(1) infinite; }
+.char-dance-5 .mouth-laugh,
 .char-spin .mouth-laugh    { animation: char-m5-mouth-laugh 4.5s steps(1) infinite; }
 
 /* ══════ IDLE — random variants cycled by JS ══════ */
@@ -465,7 +504,11 @@ export default function CharacterDisplay({
   ensureStyles();
 
   const animClass =
-    animation === 'dance' ? 'char-dance' :
+    animation === 'dance' || animation === 'dance-1' ? 'char-dance-1' :
+    animation === 'dance-2' ? 'char-dance-2' :
+    animation === 'dance-3' ? 'char-dance-3' :
+    animation === 'dance-4' ? 'char-dance-4' :
+    animation === 'dance-5' ? 'char-dance-5' :
     animation === 'spin' ? 'char-spin' :
     animation === 'idle' ? 'char-idle' :
     '';

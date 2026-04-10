@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
-import type { MathProblem, SubConcept } from '../types';
+import type { MathProblem, SubConcept, CharacterName } from '../types';
 import LessonCard from './LessonCard';
 import useProblemGenerator from '../hooks/useProblemGenerator';
 
@@ -9,12 +9,16 @@ interface InfiniteScrollProps {
   onSpeak: (text: string) => void;
   isSpeaking?: boolean;
   concept: SubConcept;
+  /** Pool of unlocked characters for problem generation */
+  availableCharacters?: CharacterName[];
+  /** Highest dance move unlocked (1–5) */
+  unlockedDanceMoves?: number;
 }
 
 const BUFFER_AHEAD = 3;
 
-export default function InfiniteScroll({ onCorrect, onWrong, onSpeak, isSpeaking, concept }: InfiniteScrollProps) {
-  const generate = useProblemGenerator();
+export default function InfiniteScroll({ onCorrect, onWrong, onSpeak, isSpeaking, concept, availableCharacters, unlockedDanceMoves = 1 }: InfiniteScrollProps) {
+  const generate = useProblemGenerator(availableCharacters);
   const [cards, setCards] = useState<MathProblem[]>(() =>
     Array.from({ length: BUFFER_AHEAD + 1 }, () => generate(concept)),
   );
@@ -99,6 +103,7 @@ export default function InfiniteScroll({ onCorrect, onWrong, onSpeak, isSpeaking
             onAdvance={() => scrollToCard(i + 1)}
             onSpeak={onSpeak}
             isSpeaking={i === activeIndex ? isSpeaking : false}
+            unlockedDanceMoves={unlockedDanceMoves}
           />
         </div>
       ))}
