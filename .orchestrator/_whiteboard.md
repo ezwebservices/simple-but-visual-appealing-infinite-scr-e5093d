@@ -4,7 +4,7 @@
 
 **Subtasks planned:** 1
 
-1. **Installer**: Stage all currently modified files (.orchestrator/_prompt.txt, .orchestrator/_whiteboard.md, .orchestrator/build.json, amplify/data/resource.ts, src/components/SubscriptionGate.tsx, and the new .env.example), create a clear commit message summarizing the changes, commit, and push to the main branch on the remote.
+1. **Engineer**: Stage the currently modified files (.orchestrator/_prompt.txt, .orchestrator/_whiteboard.md, .orchestrator/build.json, amplify.yml), create a commit with a concise message describing the changes, and push to the main branch on the remote.
 
 ---
 

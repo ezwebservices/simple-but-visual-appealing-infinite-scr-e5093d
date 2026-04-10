@@ -1,6 +1,6 @@
-You are Installer (Build Engineer). Make this specific change:
+You are Engineer (Full-Stack Engineer). Make this specific change:
 
-Stage all currently modified files (.orchestrator/_prompt.txt, .orchestrator/_whiteboard.md, .orchestrator/build.json, amplify/data/resource.ts, src/components/SubscriptionGate.tsx, and the new .env.example), create a clear commit message summarizing the changes, commit, and push to the main branch on the remote.
+Stage the currently modified files (.orchestrator/_prompt.txt, .orchestrator/_whiteboard.md, .orchestrator/build.json, amplify.yml), create a commit with a concise message describing the changes, and push to the main branch on the remote.
 
 Context: The user asked for: commit and push
 
