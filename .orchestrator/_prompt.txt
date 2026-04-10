@@ -1,7 +1,7 @@
 You are Engineer (Full-Stack Engineer). Make this specific change:
 
-Implement the custom in-app subscription flow based on the Architect's design. Replace the Stripe Checkout redirect in SubscriptionGate.tsx with an embedded Stripe Elements payment form. Key changes: (1) Install @stripe/stripe-js and @stripe/react-stripe-js, (2) Create an embedded payment form component within the paywall UI (card input, submit button, error handling), (3) Add a serverless API endpoint (Amplify Lambda or API route) that creates a Stripe Subscription with a PaymentIntent for $14.99/year, (4) On successful payment, update the subscription status in-app and cache it, (5) Maintain the existing dev-mode Stripe test banner and CLI status indicator. Keep the same visual style (colors, fonts, rounded cards) from the current paywall design.
+Stage all 4 modified files (.orchestrator/_prompt.txt, .orchestrator/_whiteboard.md, .orchestrator/build.json, src/components/SubscriptionGate.tsx), create a commit with an appropriate message summarizing the changes, and push to origin/main.
 
-Context: The user asked for: we need a custom subscription  method versus checkout work through this first though commit and push
+Context: The user asked for: commit and push
 
 Read the relevant source files, make targeted edits, and run `npm run build` to verify.

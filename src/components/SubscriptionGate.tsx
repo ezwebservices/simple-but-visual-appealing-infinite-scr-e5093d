@@ -173,7 +173,7 @@ function CheckoutForm({ onSuccess, onBack }: { onSuccess: () => void; onBack: ()
           if (!token) throw new Error('No auth token');
 
           const resp = await callGraphQL(token, 'subscriptionStatus', `
-            query { subscriptionStatus { status currentPeriodEnd stripeCustomerId } }
+            query subscriptionStatus { subscriptionStatus { status currentPeriodEnd stripeCustomerId } }
           `);
           if (resp?.status === 'active') {
             cacheSubscription({ active: true, customerId: resp.stripeCustomerId || undefined });
@@ -297,7 +297,7 @@ export default function SubscriptionGate({ children }: SubscriptionGateProps) {
         if (!token) return;
 
         const result = await callGraphQL(token, 'subscriptionStatus', `
-          query { subscriptionStatus { status currentPeriodEnd stripeCustomerId } }
+          query subscriptionStatus { subscriptionStatus { status currentPeriodEnd stripeCustomerId } }
         `);
 
         if (cancelled) return;
@@ -333,7 +333,7 @@ export default function SubscriptionGate({ children }: SubscriptionGateProps) {
       }
 
       const result = await callGraphQL(token, 'createSubscription', `
-        query { createSubscription { clientSecret subscriptionId } }
+        query createSubscription { createSubscription { clientSecret subscriptionId } }
       `);
 
       if (result?.clientSecret) {
