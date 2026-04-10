@@ -17,6 +17,41 @@ const STRIPE_CLI_WEBHOOK_URL = import.meta.env.VITE_STRIPE_CLI_WEBHOOK_URL || ''
 /** localStorage key for subscription status */
 const SUB_STORAGE_KEY = 'numpals-subscription';
 
+/**
+ * Subscription plan info — sourced from Amplify Hosting env vars set by the
+ * orchestrator's setup_stripe_subscription / update_stripe_price commands.
+ * The orchestrator keeps these in sync with the actual Stripe Product/Price.
+ */
+const PLAN_NAME = import.meta.env.VITE_STRIPE_PLAN_NAME || 'NumPals';
+const PLAN_AMOUNT_CENTS = parseInt(import.meta.env.VITE_STRIPE_PLAN_AMOUNT || '0', 10);
+const PLAN_CURRENCY = (import.meta.env.VITE_STRIPE_PLAN_CURRENCY || 'usd').toLowerCase();
+const PLAN_INTERVAL = (import.meta.env.VITE_STRIPE_PLAN_INTERVAL || 'month') as 'day' | 'week' | 'month' | 'year';
+
+/** Format a cents amount as a localized currency string. Falls back gracefully if Intl is unsupported. */
+function formatPrice(cents: number, currency: string): string {
+  if (!cents) return '—';
+  try {
+    return new Intl.NumberFormat(undefined, {
+      style: 'currency',
+      currency: currency.toUpperCase(),
+      minimumFractionDigits: cents % 100 === 0 ? 0 : 2,
+    }).format(cents / 100);
+  } catch {
+    return `$${(cents / 100).toFixed(2)}`;
+  }
+}
+
+/** Human-friendly interval label, e.g. "month" → "per month" */
+function intervalLabel(interval: string): string {
+  switch (interval) {
+    case 'day': return 'per day';
+    case 'week': return 'per week';
+    case 'year': return 'per year';
+    case 'month':
+    default: return 'per month';
+  }
+}
+
 const stripePromise = STRIPE_PK ? loadStripe(STRIPE_PK) : null;
 
 /** Stripe Elements appearance matching NumPals design system */
@@ -420,9 +455,9 @@ export default function SubscriptionGate({ children }: SubscriptionGateProps) {
         // Allow the card to grow naturally; the parent handles scroll
         marginBottom: 20,
       }}>
-        <h1 style={{ margin: 0, fontSize: '2rem', color: colors.coral }}>NumPals</h1>
+        <h1 style={{ margin: 0, fontSize: '2rem', color: colors.coral }}>{PLAN_NAME}</h1>
         <p style={{ color: 'rgba(0,0,0,0.6)', margin: '8px 0 24px' }}>
-          Subscribe to start learning with NumPals!
+          Subscribe to start learning with {PLAN_NAME}!
         </p>
 
         {clientSecret && stripePromise ? (
@@ -446,9 +481,9 @@ export default function SubscriptionGate({ children }: SubscriptionGateProps) {
               marginBottom: 20,
             }}>
               <div style={{ fontSize: '2.5rem', fontWeight: 800, color: colors.charcoal }}>
-                $14.99
+                {formatPrice(PLAN_AMOUNT_CENTS, PLAN_CURRENCY)}
               </div>
-              <div style={{ color: 'rgba(0,0,0,0.5)', fontSize: '0.9rem' }}>per year</div>
+              <div style={{ color: 'rgba(0,0,0,0.5)', fontSize: '0.9rem' }}>{intervalLabel(PLAN_INTERVAL)}</div>
               <ul style={{ textAlign: 'left', margin: '16px 0 0', padding: '0 0 0 20px', color: 'rgba(0,0,0,0.7)', fontSize: '0.9rem', lineHeight: 1.8 }}>
                 <li>Unlimited math lessons</li>
                 <li>All NumPals characters</li>
