@@ -1,8 +1,69 @@
 import { type ClientSchema, a, defineData } from "@aws-amplify/backend";
 import { createSubscription } from "../functions/create-subscription/resource";
 import { subscriptionStatus } from "../functions/subscription-status/resource";
+import { billingPortal } from "../functions/billing-portal/resource";
+import { stripeWebhook } from "../functions/stripe-webhook/resource";
 
 const schema = a.schema({
+  // ────────────────────────────────────────────────────────────
+  // CHILD PROFILE — per-user owned learning profiles
+  // Each parent account can have multiple child profiles, each
+  // with their own mastery progress and activity history.
+  // ────────────────────────────────────────────────────────────
+  ChildProfile: a
+    .model({
+      childId: a.string().required(),         // client-generated UUID
+      name: a.string().required(),
+      avatar: a.string().required(),
+      // Progress data is stored as JSON for flexibility — the schema for
+      // SubConceptProgress + accuracyHistory + recentActivity is enforced
+      // client-side (TypeScript types in src/types.ts).
+      conceptProgress: a.json().required(),   // Record<SubConcept, SubConceptProgress>
+      accuracyHistory: a.json(),              // Array<{ date, accuracy, concept }>
+      recentActivity: a.json(),               // Array<ActivityEntry>
+    })
+    .authorization((allow) => [allow.owner()]),
+
+  // ────────────────────────────────────────────────────────────
+  // SUBSCRIPTION — per-user mirror of the Stripe subscription state.
+  // Owner can READ. Webhook Lambda updates via direct DDB SDK
+  // (NOT via this GraphQL API — see stripe-webhook handler).
+  // ────────────────────────────────────────────────────────────
+  Subscription: a
+    .model({
+      // The Cognito user sub is used as the owner field automatically.
+      status: a.string().required(),          // 'active' | 'past_due' | 'canceled' | 'incomplete' | 'trialing' | 'none'
+      stripeCustomerId: a.string().required(),
+      stripeSubscriptionId: a.string(),
+      currentPeriodEnd: a.datetime(),
+      cancelAtPeriodEnd: a.boolean(),
+      lastEventId: a.string(),                // Stripe event ID that last touched this row
+      lastEventAt: a.datetime(),
+    })
+    .authorization((allow) => [
+      allow.owner().to(['read']),
+      // Webhook lambda + subscription-status lambda need access — granted
+      // via IAM in backend.ts (direct DynamoDB writes, not GraphQL).
+    ]),
+
+  // ────────────────────────────────────────────────────────────
+  // PROCESSED WEBHOOK EVENT — idempotency tracker so a Stripe
+  // retry doesn't double-process the same event.
+  // ────────────────────────────────────────────────────────────
+  ProcessedWebhookEvent: a
+    .model({
+      eventId: a.string().required(),         // Stripe event ID (primary key field)
+      eventType: a.string().required(),
+      processedAt: a.datetime().required(),
+    })
+    .authorization((allow) => [
+      // Only the webhook lambda touches this — via IAM, granted in backend.ts.
+      // Empty rules block all GraphQL access to this model.
+    ]),
+
+  // ────────────────────────────────────────────────────────────
+  // CUSTOM TYPES + MUTATIONS — Stripe subscription flow
+  // ────────────────────────────────────────────────────────────
   CreateSubscriptionResult: a.customType({
     clientSecret: a.string().required(),
     subscriptionId: a.string().required(),
@@ -12,6 +73,11 @@ const schema = a.schema({
     status: a.string().required(),
     currentPeriodEnd: a.string(),
     stripeCustomerId: a.string(),
+    cancelAtPeriodEnd: a.boolean(),
+  }),
+
+  BillingPortalResult: a.customType({
+    url: a.string().required(),
   }),
 
   createSubscription: a
@@ -25,6 +91,13 @@ const schema = a.schema({
     .returns(a.ref('SubscriptionStatusResult'))
     .handler(a.handler.function(subscriptionStatus))
     .authorization((allow) => [allow.authenticated()]),
+
+  // NEW: Stripe Customer Portal session for cancel/update card/invoices
+  createBillingPortalSession: a
+    .mutation()
+    .returns(a.ref('BillingPortalResult'))
+    .handler(a.handler.function(billingPortal))
+    .authorization((allow) => [allow.authenticated()]),
 });
 
 export type Schema = ClientSchema<typeof schema>;
@@ -35,3 +108,7 @@ export const data = defineData({
     defaultAuthorizationMode: "userPool",
   },
 });
+
+// Re-export the webhook function so backend.ts can grant it DDB permissions
+// (it's not used in the schema itself, but it needs IAM access to the tables)
+export { stripeWebhook };

@@ -6,9 +6,11 @@ import { data } from './data/resource';
 import { stripeWebhook } from './functions/stripe-webhook/resource';
 import { createSubscription } from './functions/create-subscription/resource';
 import { subscriptionStatus } from './functions/subscription-status/resource';
+import { billingPortal } from './functions/billing-portal/resource';
 
 /**
- * NumPals backend — auth, data, Stripe subscription functions, and webhook handler.
+ * NumPals backend — auth, data, Stripe subscription functions, webhook handler,
+ * and billing portal session creator.
  */
 const backend = defineBackend({
   auth,
@@ -16,15 +18,39 @@ const backend = defineBackend({
   stripeWebhook,
   createSubscription,
   subscriptionStatus,
+  billingPortal,
 });
 
-// Expose stripe webhook as a public Function URL (Stripe signs requests)
+// ────────────────────────────────────────────────────────────────────
+// STRIPE WEBHOOK — Function URL + DynamoDB access
+// ────────────────────────────────────────────────────────────────────
 const webhookFn = backend.stripeWebhook.resources.lambda;
 const fnUrl = webhookFn.addFunctionUrl({
   authType: FunctionUrlAuthType.NONE,
 });
 
-// Output the webhook URL for registering in Stripe Dashboard
 new CfnOutput(webhookFn.stack, 'StripeWebhookUrl', {
   value: fnUrl.url,
 });
+
+// Grant the webhook lambda read/write access to the Subscription + ProcessedWebhookEvent tables
+const subscriptionTable = backend.data.resources.tables['Subscription'];
+const processedEventTable = backend.data.resources.tables['ProcessedWebhookEvent'];
+
+if (subscriptionTable) {
+  subscriptionTable.grantReadWriteData(webhookFn);
+  webhookFn.addEnvironment('SUBSCRIPTION_TABLE_NAME', subscriptionTable.tableName);
+}
+if (processedEventTable) {
+  processedEventTable.grantReadWriteData(webhookFn);
+  webhookFn.addEnvironment('PROCESSED_EVENT_TABLE_NAME', processedEventTable.tableName);
+}
+
+// ────────────────────────────────────────────────────────────────────
+// SUBSCRIPTION-STATUS LAMBDA — read access to Subscription table
+// ────────────────────────────────────────────────────────────────────
+const statusFn = backend.subscriptionStatus.resources.lambda;
+if (subscriptionTable) {
+  subscriptionTable.grantReadData(statusFn);
+  statusFn.addEnvironment('SUBSCRIPTION_TABLE_NAME', subscriptionTable.tableName);
+}
