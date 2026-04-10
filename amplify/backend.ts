@@ -1,5 +1,5 @@
 import { defineBackend } from '@aws-amplify/backend';
-import { FunctionUrlAuthType } from 'aws-cdk-lib/aws-lambda';
+import { FunctionUrlAuthType, Function as LambdaFunction } from 'aws-cdk-lib/aws-lambda';
 import { CfnOutput } from 'aws-cdk-lib';
 import { auth } from './auth/resource';
 import { data } from './data/resource';
@@ -23,8 +23,10 @@ const backend = defineBackend({
 
 // ────────────────────────────────────────────────────────────────────
 // STRIPE WEBHOOK — Function URL + DynamoDB access
+// `backend.X.resources.lambda` returns the IFunction interface; cast to
+// the concrete Function class to access addEnvironment().
 // ────────────────────────────────────────────────────────────────────
-const webhookFn = backend.stripeWebhook.resources.lambda;
+const webhookFn = backend.stripeWebhook.resources.lambda as LambdaFunction;
 const fnUrl = webhookFn.addFunctionUrl({
   authType: FunctionUrlAuthType.NONE,
 });
@@ -49,7 +51,7 @@ if (processedEventTable) {
 // ────────────────────────────────────────────────────────────────────
 // SUBSCRIPTION-STATUS LAMBDA — read access to Subscription table
 // ────────────────────────────────────────────────────────────────────
-const statusFn = backend.subscriptionStatus.resources.lambda;
+const statusFn = backend.subscriptionStatus.resources.lambda as LambdaFunction;
 if (subscriptionTable) {
   subscriptionTable.grantReadData(statusFn);
   statusFn.addEnvironment('SUBSCRIPTION_TABLE_NAME', subscriptionTable.tableName);
