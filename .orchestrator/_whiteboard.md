@@ -4,7 +4,7 @@
 
 **Subtasks planned:** 1
 
-1. **Engineer**: Stage all 4 modified files (.orchestrator/_prompt.txt, .orchestrator/_whiteboard.md, .orchestrator/build.json, src/components/SubscriptionGate.tsx), create a commit with an appropriate message summarizing the changes, and push to origin/main.
+1. **Engineer**: Stage all modified files (.gitignore, .orchestrator/_prompt.txt, .orchestrator/_whiteboard.md, .orchestrator/build.json, amplify.yml) and the staged deletion of amplify_outputs.json. Commit with an appropriate message summarizing the changes (update orchestrator config, build settings, and amplify deployment; remove amplify_outputs.json; update .gitignore). Then push to origin/main.
 
 ---
 
