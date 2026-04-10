@@ -26,7 +26,4 @@ dist-ssr
 # amplify
 .amplify
 amplifyconfiguration*
-amplify_outputs.json
-# Track the committed stub so the frontend build can resolve the import
-# even when the backend pipeline-deploy step is skipped in amplify.yml.
-!/amplify_outputs.json
+amplify_outputs*
