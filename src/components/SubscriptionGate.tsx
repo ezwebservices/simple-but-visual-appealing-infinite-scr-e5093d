@@ -2,15 +2,20 @@ import { useState, useEffect, useCallback } from 'react';
 import { signOut, fetchUserAttributes } from 'aws-amplify/auth';
 import { colors, fontStack } from '../styles/theme';
 
-/** Stripe Payment Link or backend checkout session URL */
+/** Stripe Payment Link (test-mode or live depending on env) */
 const STRIPE_CHECKOUT_URL = import.meta.env.VITE_STRIPE_CHECKOUT_URL || '';
+
+/** Whether we're running in dev/test mode */
+const IS_DEV = import.meta.env.DEV;
+
+/** Stripe CLI webhook status endpoint (dev only) */
+const STRIPE_CLI_WEBHOOK_URL = import.meta.env.VITE_STRIPE_CLI_WEBHOOK_URL || '';
 
 /** localStorage key for subscription status (cached — verified via webhook in production) */
 const SUB_STORAGE_KEY = 'numpals-subscription';
 
 interface SubscriptionStatus {
   active: boolean;
-  trialEnd?: string;
   customerId?: string;
 }
 
@@ -32,33 +37,57 @@ function cacheSubscription(status: SubscriptionStatus): void {
   }
 }
 
-/**
- * 14-day free trial check.
- * Trial starts from the user's first visit (stored in localStorage).
- */
-const TRIAL_KEY = 'numpals-trial-start';
-const TRIAL_DAYS = 14;
-
-function getTrialStatus(): { inTrial: boolean; daysRemaining: number } {
-  let start = localStorage.getItem(TRIAL_KEY);
-  if (!start) {
-    start = new Date().toISOString();
-    localStorage.setItem(TRIAL_KEY, start);
-  }
-  const elapsed = Date.now() - new Date(start).getTime();
-  const daysElapsed = elapsed / (1000 * 60 * 60 * 24);
-  const daysRemaining = Math.max(0, Math.ceil(TRIAL_DAYS - daysElapsed));
-  return { inTrial: daysRemaining > 0, daysRemaining };
-}
-
 interface SubscriptionGateProps {
   children: React.ReactNode;
 }
 
+/** Stripe CLI connection status badge (dev only) */
+function StripeCliStatus() {
+  const [status, setStatus] = useState<'checking' | 'connected' | 'disconnected'>('checking');
+
+  useEffect(() => {
+    if (!STRIPE_CLI_WEBHOOK_URL) {
+      setStatus('disconnected');
+      return;
+    }
+    fetch(STRIPE_CLI_WEBHOOK_URL, { method: 'GET', mode: 'no-cors' })
+      .then(() => setStatus('connected'))
+      .catch(() => setStatus('disconnected'));
+  }, []);
+
+  const dotColor = status === 'connected' ? '#22c55e' : status === 'disconnected' ? '#ef4444' : '#facc15';
+  const label = status === 'checking' ? 'Checking...' : status === 'connected' ? 'CLI Connected' : 'CLI Disconnected';
+
+  return (
+    <div style={{
+      display: 'flex',
+      alignItems: 'center',
+      gap: 6,
+      padding: '6px 12px',
+      background: 'rgba(0,0,0,0.05)',
+      borderRadius: 8,
+      fontSize: '0.75rem',
+      color: 'rgba(0,0,0,0.6)',
+    }}>
+      <div style={{
+        width: 8,
+        height: 8,
+        borderRadius: '50%',
+        background: dotColor,
+        flexShrink: 0,
+      }} />
+      <span>Stripe CLI: {label}</span>
+      {STRIPE_CLI_WEBHOOK_URL && (
+        <span style={{ opacity: 0.5, marginLeft: 4 }}>({STRIPE_CLI_WEBHOOK_URL})</span>
+      )}
+    </div>
+  );
+}
+
 export default function SubscriptionGate({ children }: SubscriptionGateProps) {
   const [subStatus, setSubStatus] = useState<SubscriptionStatus | null>(loadCachedSubscription);
-  const [trial, setTrial] = useState(getTrialStatus);
   const [loading, setLoading] = useState(false);
+  const [checkoutError, setCheckoutError] = useState('');
   const [userEmail, setUserEmail] = useState('');
 
   useEffect(() => {
@@ -67,27 +96,19 @@ export default function SubscriptionGate({ children }: SubscriptionGateProps) {
     }).catch(() => {});
   }, []);
 
-  // Re-check trial on mount
-  useEffect(() => {
-    setTrial(getTrialStatus());
-  }, []);
-
   const handleCheckout = useCallback(async () => {
     setLoading(true);
+    setCheckoutError('');
     try {
-      if (STRIPE_CHECKOUT_URL) {
-        // Redirect to Stripe Payment Link or backend-created checkout session
-        const separator = STRIPE_CHECKOUT_URL.includes('?') ? '&' : '?';
-        window.location.href = `${STRIPE_CHECKOUT_URL}${separator}prefilled_email=${encodeURIComponent(userEmail)}`;
+      if (!STRIPE_CHECKOUT_URL) {
+        setCheckoutError('Payment is not configured. Please contact support.');
         return;
       }
-
-      // No Stripe config — grant access (dev/preview mode)
-      const devSub: SubscriptionStatus = { active: true };
-      cacheSubscription(devSub);
-      setSubStatus(devSub);
+      const separator = STRIPE_CHECKOUT_URL.includes('?') ? '&' : '?';
+      window.location.href = `${STRIPE_CHECKOUT_URL}${separator}prefilled_email=${encodeURIComponent(userEmail)}`;
     } catch (err) {
       console.error('Checkout error:', err);
+      setCheckoutError('Something went wrong. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -100,47 +121,31 @@ export default function SubscriptionGate({ children }: SubscriptionGateProps) {
       const activeSub: SubscriptionStatus = { active: true };
       cacheSubscription(activeSub);
       setSubStatus(activeSub);
-      // Clean URL
       window.history.replaceState({}, '', window.location.pathname);
     }
   }, []);
 
-  // Allow access if subscription active OR in trial
-  if (subStatus?.active || trial.inTrial) {
+  // Only allow access if subscription is active — no trial bypass
+  if (subStatus?.active) {
     return (
       <>
-        {trial.inTrial && !subStatus?.active && (
+        {IS_DEV && (
           <div style={{
             position: 'fixed',
             top: 0,
             left: 0,
             right: 0,
             zIndex: 100,
-            background: colors.sunny,
-            color: colors.charcoal,
+            background: '#fbbf24',
+            color: '#000',
             textAlign: 'center',
-            padding: '6px 12px',
-            fontSize: '0.8rem',
+            padding: '4px 12px',
+            fontSize: '0.75rem',
             fontFamily: fontStack,
-            fontWeight: 600,
+            fontWeight: 700,
+            letterSpacing: '0.05em',
           }}>
-            Free trial: {trial.daysRemaining} day{trial.daysRemaining !== 1 ? 's' : ''} remaining —{' '}
-            <button
-              type="button"
-              onClick={handleCheckout}
-              style={{
-                background: 'none',
-                border: 'none',
-                color: colors.coral,
-                fontWeight: 800,
-                cursor: 'pointer',
-                fontFamily: fontStack,
-                fontSize: '0.8rem',
-                textDecoration: 'underline',
-              }}
-            >
-              Subscribe now ($14.99/year)
-            </button>
+            ⚠ STRIPE TEST MODE
           </div>
         )}
         {children}
@@ -148,7 +153,7 @@ export default function SubscriptionGate({ children }: SubscriptionGateProps) {
     );
   }
 
-  // Paywall — trial expired and no active subscription
+  // Paywall — no active subscription
   return (
     <div style={{
       position: 'fixed',
@@ -160,6 +165,25 @@ export default function SubscriptionGate({ children }: SubscriptionGateProps) {
       fontFamily: fontStack,
       padding: 20,
     }}>
+      {IS_DEV && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          zIndex: 100,
+          background: '#fbbf24',
+          color: '#000',
+          textAlign: 'center',
+          padding: '4px 12px',
+          fontSize: '0.75rem',
+          fontFamily: fontStack,
+          fontWeight: 700,
+          letterSpacing: '0.05em',
+        }}>
+          ⚠ STRIPE TEST MODE
+        </div>
+      )}
       <div style={{
         background: '#fff',
         borderRadius: '24px',
@@ -171,7 +195,7 @@ export default function SubscriptionGate({ children }: SubscriptionGateProps) {
       }}>
         <h1 style={{ margin: 0, fontSize: '2rem', color: colors.coral }}>NumPals</h1>
         <p style={{ color: 'rgba(0,0,0,0.6)', margin: '8px 0 24px' }}>
-          Your free trial has ended. Subscribe to keep learning!
+          Subscribe to start learning with NumPals!
         </p>
 
         <div style={{
@@ -191,6 +215,19 @@ export default function SubscriptionGate({ children }: SubscriptionGateProps) {
             <li>No ads, ever</li>
           </ul>
         </div>
+
+        {checkoutError && (
+          <div style={{
+            background: '#fef2f2',
+            color: '#dc2626',
+            borderRadius: 8,
+            padding: '10px 14px',
+            fontSize: '0.85rem',
+            marginBottom: 12,
+          }}>
+            {checkoutError}
+          </div>
+        )}
 
         <button
           type="button"
@@ -228,6 +265,12 @@ export default function SubscriptionGate({ children }: SubscriptionGateProps) {
         >
           Sign out
         </button>
+
+        {IS_DEV && (
+          <div style={{ marginTop: 16 }}>
+            <StripeCliStatus />
+          </div>
+        )}
       </div>
     </div>
   );

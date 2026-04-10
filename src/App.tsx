@@ -2,6 +2,7 @@ import { useState, useCallback, useEffect } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import { getCurrentUser } from 'aws-amplify/auth';
 import { colors, fontStack } from './styles/theme';
+import LoadingScreen from './components/LoadingScreen';
 import InfiniteScroll from './components/InfiniteScroll';
 import StreakCounter from './components/StreakCounter';
 import ParentDashboard from './components/ParentDashboard';
@@ -26,23 +27,9 @@ export default function App() {
       .catch(() => setIsAuthenticated(false));
   }, []);
 
-  // Show nothing while checking auth
+  // Show loading screen with dancing characters while checking auth
   if (isAuthenticated === null) {
-    return (
-      <div style={{
-        position: 'fixed',
-        inset: 0,
-        backgroundColor: colors.cream,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        fontFamily: fontStack,
-        fontSize: '1.2rem',
-        color: 'rgba(0,0,0,0.4)',
-      }}>
-        Loading...
-      </div>
-    );
+    return <LoadingScreen />;
   }
 
   // Unauthenticated → show auth flow
