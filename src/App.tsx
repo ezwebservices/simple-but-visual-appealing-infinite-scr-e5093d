@@ -4,7 +4,6 @@ import { getCurrentUser } from 'aws-amplify/auth';
 import { colors, fontStack } from './styles/theme';
 import LoadingScreen from './components/LoadingScreen';
 import InfiniteScroll from './components/InfiniteScroll';
-import StreakCounter from './components/StreakCounter';
 import ParentDashboard from './components/ParentDashboard';
 import ProfileSwitcher from './components/ProfileSwitcher';
 import AuthFlow from './components/AuthFlow';
@@ -48,7 +47,7 @@ export default function App() {
 }
 
 function GameView() {
-  const { progress, recordCorrect, recordWrong } = useProgress();
+  const { recordCorrect, recordWrong } = useProgress();
   const { speak, isSpeaking } = useAudio();
   const { children, activeChild, activeChildId, addChild, switchChild, updateChild, removeChild, resetChild } = useChildProfiles();
   const { recordAnswer, getActiveConcept } = useMastery();
@@ -105,8 +104,7 @@ function GameView() {
         overflow: 'hidden',
       }}
     >
-      {/* Streak counter — top-right */}
-      <StreakCounter streak={progress.currentStreak} />
+      {/* Streak counter removed — replaced by the unlock button below */}
 
       {/* Parent dashboard button — bottom-right */}
       <button
@@ -143,21 +141,8 @@ function GameView() {
         onSwitchChild={switchChild}
       />
 
-      {/* Visual unlock progress — top center, no text, just character icons + stars */}
-      {activeChild && (
-        <div
-          style={{
-            position: 'fixed',
-            top: 16,
-            left: '50%',
-            transform: 'translateX(-50%)',
-            zIndex: 30,
-            pointerEvents: 'none',
-          }}
-        >
-          <UnlockProgress child={activeChild} />
-        </div>
-      )}
+      {/* Unlock collection button — floating top-right, opens full modal with character + dance previews */}
+      {activeChild && <UnlockProgress child={activeChild} />}
 
       {/* key={activeChildId} forces full remount on profile switch,
           resetting the problem buffer to the new child's active concept */}

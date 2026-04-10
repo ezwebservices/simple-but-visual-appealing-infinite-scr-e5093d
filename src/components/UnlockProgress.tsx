@@ -1,6 +1,7 @@
-import { motion } from 'framer-motion';
-import type { ChildProfile } from '../types';
-import { CHARACTER_UNLOCK_ORDER } from '../types';
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import type { ChildProfile, CharacterName } from '../types';
+import { CHARACTER_UNLOCK_ORDER, CHARACTER_UNLOCK_THRESHOLDS, DANCE_MOVE_THRESHOLDS } from '../types';
 import {
   getUnlockedCharacters,
   getUnlockedDanceMoves,
@@ -8,6 +9,7 @@ import {
   progressToNextCharacter,
   progressToNextDance,
 } from '../hooks/useUnlocks';
+import CharacterDisplay from './characters/CharacterDisplay';
 import { PALETTES } from './characters/CharacterRig';
 
 interface UnlockProgressProps {
@@ -15,14 +17,14 @@ interface UnlockProgressProps {
 }
 
 /**
- * Visual unlock progress for non-readers (4-year-old design).
- * Shows a row of character avatars (locked = grayscale silhouette,
- * unlocked = colored) and a row of dance star icons.
+ * Unlock progress UI: a single floating button (top-right) that opens a
+ * full-screen modal showing live character previews and dance previews.
  *
- * NO TEXT. Position-only feedback. Tap-to-hear-name (auditory) handled
- * elsewhere via the audio hook.
+ * Designed for 4-year-olds: no text labels, big animated characters, big
+ * stars, lock icons on locked items.
  */
 export default function UnlockProgress({ child }: UnlockProgressProps) {
+  const [open, setOpen] = useState(false);
   const unlockedChars = new Set(getUnlockedCharacters(child));
   const unlockedDance = getUnlockedDanceMoves(child);
   const mastered = countMastered(child);
@@ -30,178 +32,516 @@ export default function UnlockProgress({ child }: UnlockProgressProps) {
   const nextDance = progressToNextDance(child);
 
   return (
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        gap: 14,
-        padding: '12px 16px',
-        background: 'rgba(255, 255, 255, 0.7)',
-        backdropFilter: 'blur(8px)',
-        borderRadius: 24,
-        border: '2px solid rgba(255, 255, 255, 0.9)',
-        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.06)',
-      }}
-    >
-      {/* Character row — circles */}
-      <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-        {CHARACTER_UNLOCK_ORDER.map((name) => {
-          const unlocked = unlockedChars.has(name);
-          const palette = PALETTES[name];
-          const bodyColor = palette?.body[2] ?? '#A5C8E5';
-          return (
+    <>
+      {/* Floating button — top-right corner */}
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        aria-label="Open unlocks"
+        title="My collection"
+        style={{
+          position: 'fixed',
+          top: 16,
+          right: 16,
+          zIndex: 40,
+          width: 56,
+          height: 56,
+          borderRadius: '50%',
+          border: '3px solid white',
+          background: 'linear-gradient(145deg, #FFD93D, #FF9500)',
+          boxShadow: '0 4px 16px rgba(0,0,0,0.18)',
+          cursor: 'pointer',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: 0,
+          WebkitTapHighlightColor: 'transparent',
+        }}
+      >
+        {/* Star icon — represents collection / rewards */}
+        <svg viewBox="0 0 24 24" width="32" height="32">
+          <path
+            d="M12 2 L14.4 8.4 L21 8.4 L15.8 12.6 L17.6 19.2 L12 15 L6.4 19.2 L8.2 12.6 L3 8.4 L9.6 8.4 Z"
+            fill="white"
+            stroke="#C49C00"
+            strokeWidth="1.2"
+            strokeLinejoin="round"
+          />
+        </svg>
+        {/* Tiny badge — number of unlocks (no text, just count of stars) */}
+        <span
+          style={{
+            position: 'absolute',
+            bottom: -2,
+            right: -2,
+            background: '#FF6B6B',
+            color: 'white',
+            borderRadius: 999,
+            minWidth: 22,
+            height: 22,
+            fontSize: 13,
+            fontWeight: 800,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            border: '2px solid white',
+            boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
+          }}
+        >
+          {unlockedChars.size + unlockedDance}
+        </span>
+      </button>
+
+      {/* Modal */}
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setOpen(false)}
+            style={{
+              position: 'fixed',
+              inset: 0,
+              background: 'rgba(0, 0, 0, 0.6)',
+              backdropFilter: 'blur(8px)',
+              zIndex: 1000,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: 16,
+              overflowY: 'auto',
+            }}
+          >
             <motion.div
-              key={name}
-              initial={false}
-              animate={{
-                scale: unlocked ? 1 : 0.85,
-                opacity: unlocked ? 1 : 0.35,
-              }}
-              transition={{ type: 'spring', stiffness: 300, damping: 22 }}
+              initial={{ scale: 0.85, y: 30 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.85, y: 30 }}
+              transition={{ type: 'spring', stiffness: 280, damping: 24 }}
+              onClick={(e) => e.stopPropagation()}
               style={{
-                width: 38,
-                height: 38,
-                borderRadius: '50%',
-                background: unlocked
-                  ? `radial-gradient(circle at 35% 30%, ${palette?.body[0] ?? '#fff'}, ${bodyColor})`
-                  : 'linear-gradient(180deg, #CCC, #888)',
-                border: unlocked
-                  ? `2.5px solid ${palette?.stroke ?? '#888'}`
-                  : '2.5px solid #999',
+                background: 'linear-gradient(180deg, #FFFAF0 0%, #FFF0DC 100%)',
+                borderRadius: 32,
+                padding: '24px 20px 32px',
+                maxWidth: 720,
+                width: '100%',
+                maxHeight: '92vh',
+                overflowY: 'auto',
+                boxShadow: '0 12px 60px rgba(0,0,0,0.35)',
                 position: 'relative',
-                boxShadow: unlocked ? '0 2px 8px rgba(0,0,0,0.15)' : 'none',
               }}
             >
-              {/* Tiny eyes for each character icon */}
-              {unlocked && (
-                <>
-                  <div
-                    style={{
-                      position: 'absolute',
-                      top: 12,
-                      left: 9,
-                      width: 7,
-                      height: 8,
-                      borderRadius: '50%',
-                      background: '#1A0F08',
-                    }}
-                  />
-                  <div
-                    style={{
-                      position: 'absolute',
-                      top: 12,
-                      right: 9,
-                      width: 7,
-                      height: 8,
-                      borderRadius: '50%',
-                      background: '#1A0F08',
-                    }}
-                  />
-                </>
-              )}
-              {!unlocked && (
+              {/* Close button */}
+              <button
+                type="button"
+                onClick={() => setOpen(false)}
+                aria-label="Close"
+                style={{
+                  position: 'absolute',
+                  top: 16,
+                  right: 16,
+                  width: 44,
+                  height: 44,
+                  borderRadius: '50%',
+                  border: 'none',
+                  background: 'rgba(0, 0, 0, 0.08)',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: 22,
+                  fontWeight: 800,
+                  color: '#666',
+                  WebkitTapHighlightColor: 'transparent',
+                }}
+              >
+                ✕
+              </button>
+
+              {/* CHARACTERS section */}
+              <div style={{ marginTop: 8 }}>
+                <SectionHeader icon="👥" />
                 <div
                   style={{
-                    position: 'absolute',
-                    top: '50%',
-                    left: '50%',
-                    transform: 'translate(-50%, -50%)',
-                    fontSize: 18,
-                    opacity: 0.7,
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(3, 1fr)',
+                    gap: 12,
+                    marginBottom: 16,
                   }}
                 >
-                  🔒
+                  {CHARACTER_UNLOCK_ORDER.map((name) => {
+                    const unlocked = unlockedChars.has(name);
+                    return (
+                      <CharacterCard
+                        key={name}
+                        name={name}
+                        unlocked={unlocked}
+                        threshold={CHARACTER_UNLOCK_THRESHOLDS[name]}
+                        currentMastered={mastered}
+                      />
+                    );
+                  })}
                 </div>
-              )}
+
+                {/* Progress bar to next character */}
+                {nextChar && (
+                  <ProgressBar
+                    progress={nextChar.progress}
+                    color1="#4ECDC4"
+                    color2="#FFD93D"
+                    label={`${nextChar.current}/${nextChar.needed}`}
+                  />
+                )}
+              </div>
+
+              {/* DANCES section */}
+              <div style={{ marginTop: 28 }}>
+                <SectionHeader icon="💫" />
+                <div
+                  style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(5, 1fr)',
+                    gap: 8,
+                    marginBottom: 16,
+                  }}
+                >
+                  {[1, 2, 3, 4, 5].map((moveNum) => (
+                    <DanceCard
+                      key={moveNum}
+                      moveNum={moveNum}
+                      unlocked={unlockedDance >= moveNum}
+                      threshold={DANCE_MOVE_THRESHOLDS[moveNum - 1]}
+                      currentMastered={mastered}
+                    />
+                  ))}
+                </div>
+
+                {nextDance && (
+                  <ProgressBar
+                    progress={nextDance.progress}
+                    color1="#FF6B6B"
+                    color2="#FFD93D"
+                    label={`${nextDance.current}/${nextDance.needed}`}
+                  />
+                )}
+              </div>
             </motion.div>
-          );
-        })}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
+  );
+}
+
+// ──────────────────────────────────────────────────────────────────
+// Section header — emoji-only (no text for non-readers)
+// ──────────────────────────────────────────────────────────────────
+function SectionHeader({ icon }: { icon: string }) {
+  return (
+    <div
+      style={{
+        textAlign: 'center',
+        fontSize: 32,
+        marginBottom: 12,
+      }}
+    >
+      {icon}
+    </div>
+  );
+}
+
+// ──────────────────────────────────────────────────────────────────
+// Character card — animated character preview, locked state shows
+// silhouette + lock icon over a hint of the character's color
+// ──────────────────────────────────────────────────────────────────
+function CharacterCard({
+  name,
+  unlocked,
+  threshold,
+  currentMastered,
+}: {
+  name: CharacterName;
+  unlocked: boolean;
+  threshold: number;
+  currentMastered: number;
+}) {
+  const palette = PALETTES[name];
+  const remaining = Math.max(0, threshold - currentMastered);
+
+  return (
+    <div
+      style={{
+        background: unlocked
+          ? `linear-gradient(180deg, ${palette?.body[0] ?? '#fff'} 0%, ${palette?.body[1] ?? '#eee'} 100%)`
+          : 'linear-gradient(180deg, #ECECF0 0%, #CCCCD0 100%)',
+        borderRadius: 20,
+        padding: 8,
+        border: unlocked
+          ? `3px solid ${palette?.body[3] ?? '#999'}`
+          : '3px solid #BBB',
+        boxShadow: unlocked ? '0 4px 12px rgba(0,0,0,0.12)' : '0 1px 4px rgba(0,0,0,0.08)',
+        position: 'relative',
+        aspectRatio: '1',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        overflow: 'hidden',
+      }}
+    >
+      <div
+        style={{
+          width: '100%',
+          height: '100%',
+          filter: unlocked ? 'none' : 'grayscale(1) brightness(0.7) contrast(0.7)',
+          opacity: unlocked ? 1 : 0.5,
+        }}
+      >
+        <CharacterDisplay
+          character={name}
+          mood={unlocked ? 'happy' : 'happy'}
+          animation={unlocked ? 'idle' : 'none'}
+        />
       </div>
 
-      {/* Progress bar to next character unlock */}
-      {nextChar && (
-        <div style={{ width: '100%', maxWidth: 240 }}>
+      {!unlocked && (
+        <>
+          {/* Lock overlay */}
           <div
             style={{
-              width: '100%',
-              height: 6,
-              background: 'rgba(0, 0, 0, 0.08)',
-              borderRadius: 999,
-              overflow: 'hidden',
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              width: 52,
+              height: 52,
+              borderRadius: '50%',
+              background: 'rgba(0, 0, 0, 0.65)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: 28,
             }}
           >
-            <motion.div
-              initial={{ width: 0 }}
-              animate={{ width: `${nextChar.progress * 100}%` }}
-              transition={{ type: 'spring', stiffness: 200, damping: 30 }}
-              style={{
-                height: '100%',
-                background: 'linear-gradient(90deg, #4ECDC4, #FFD93D)',
-                borderRadius: 999,
-              }}
-            />
+            🔒
           </div>
-        </div>
-      )}
-
-      {/* Dance move stars row */}
-      <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
-        {[1, 2, 3, 4, 5].map((moveNum) => {
-          const unlocked = unlockedDance >= moveNum;
-          return (
-            <motion.svg
-              key={moveNum}
-              width={28}
-              height={28}
-              viewBox="0 0 24 24"
-              initial={false}
-              animate={{
-                scale: unlocked ? 1 : 0.8,
-                opacity: unlocked ? 1 : 0.3,
-              }}
-              transition={{ type: 'spring', stiffness: 300, damping: 22 }}
-            >
+          {/* Stars-needed badge */}
+          <div
+            style={{
+              position: 'absolute',
+              bottom: 6,
+              left: '50%',
+              transform: 'translateX(-50%)',
+              background: '#FFD93D',
+              color: '#5C4500',
+              padding: '3px 10px',
+              borderRadius: 999,
+              fontSize: 13,
+              fontWeight: 800,
+              boxShadow: '0 2px 6px rgba(0,0,0,0.2)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 3,
+            }}
+          >
+            <svg width="13" height="13" viewBox="0 0 24 24">
               <path
                 d="M12 2 L14.4 8.4 L21 8.4 L15.8 12.6 L17.6 19.2 L12 15 L6.4 19.2 L8.2 12.6 L3 8.4 L9.6 8.4 Z"
-                fill={unlocked ? '#FFD93D' : '#CCCCCC'}
-                stroke={unlocked ? '#C49C00' : '#999'}
-                strokeWidth="1.2"
-                strokeLinejoin="round"
+                fill="#5C4500"
               />
-            </motion.svg>
-          );
-        })}
+            </svg>
+            {remaining}
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
+// ──────────────────────────────────────────────────────────────────
+// Dance card — uses BlooBear (the always-unlocked character) doing
+// the actual dance move so kids see what they'll unlock
+// ──────────────────────────────────────────────────────────────────
+function DanceCard({
+  moveNum,
+  unlocked,
+  threshold,
+  currentMastered,
+}: {
+  moveNum: number;
+  unlocked: boolean;
+  threshold: number;
+  currentMastered: number;
+}) {
+  const remaining = Math.max(0, threshold - currentMastered);
+
+  return (
+    <div
+      style={{
+        background: unlocked
+          ? 'linear-gradient(180deg, #FFF8E5 0%, #FFE9B0 100%)'
+          : 'linear-gradient(180deg, #ECECF0 0%, #CCCCD0 100%)',
+        borderRadius: 16,
+        padding: 4,
+        border: unlocked ? '3px solid #FFD93D' : '3px solid #BBB',
+        boxShadow: unlocked ? '0 4px 12px rgba(255,217,61,0.4)' : '0 1px 4px rgba(0,0,0,0.08)',
+        position: 'relative',
+        aspectRatio: '1',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        overflow: 'hidden',
+      }}
+    >
+      <div
+        style={{
+          width: '100%',
+          height: '100%',
+          filter: unlocked ? 'none' : 'grayscale(1) brightness(0.7) contrast(0.7)',
+          opacity: unlocked ? 1 : 0.5,
+        }}
+      >
+        <CharacterDisplay
+          character="bloo"
+          mood={unlocked ? 'excited' : 'happy'}
+          animation={unlocked ? (`dance-${moveNum}` as 'dance-1') : 'none'}
+        />
       </div>
 
-      {/* Progress bar to next dance unlock */}
-      {nextDance && (
-        <div style={{ width: '100%', maxWidth: 240 }}>
+      {/* Move number badge — top-left */}
+      <div
+        style={{
+          position: 'absolute',
+          top: 4,
+          left: 4,
+          width: 24,
+          height: 24,
+          borderRadius: '50%',
+          background: unlocked ? '#FFD93D' : '#888',
+          color: unlocked ? '#5C4500' : 'white',
+          fontSize: 13,
+          fontWeight: 800,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          border: '2px solid white',
+          boxShadow: '0 1px 3px rgba(0,0,0,0.2)',
+        }}
+      >
+        {moveNum}
+      </div>
+
+      {!unlocked && (
+        <>
           <div
             style={{
-              width: '100%',
-              height: 6,
-              background: 'rgba(0, 0, 0, 0.08)',
-              borderRadius: 999,
-              overflow: 'hidden',
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              width: 40,
+              height: 40,
+              borderRadius: '50%',
+              background: 'rgba(0, 0, 0, 0.65)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: 22,
             }}
           >
-            <motion.div
-              initial={{ width: 0 }}
-              animate={{ width: `${nextDance.progress * 100}%` }}
-              transition={{ type: 'spring', stiffness: 200, damping: 30 }}
-              style={{
-                height: '100%',
-                background: 'linear-gradient(90deg, #FF6B6B, #FFD93D)',
-                borderRadius: 999,
-              }}
-            />
+            🔒
           </div>
-        </div>
+          <div
+            style={{
+              position: 'absolute',
+              bottom: 4,
+              left: '50%',
+              transform: 'translateX(-50%)',
+              background: '#FFD93D',
+              color: '#5C4500',
+              padding: '2px 8px',
+              borderRadius: 999,
+              fontSize: 11,
+              fontWeight: 800,
+              boxShadow: '0 1px 4px rgba(0,0,0,0.2)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 2,
+            }}
+          >
+            <svg width="11" height="11" viewBox="0 0 24 24">
+              <path
+                d="M12 2 L14.4 8.4 L21 8.4 L15.8 12.6 L17.6 19.2 L12 15 L6.4 19.2 L8.2 12.6 L3 8.4 L9.6 8.4 Z"
+                fill="#5C4500"
+              />
+            </svg>
+            {remaining}
+          </div>
+        </>
       )}
+    </div>
+  );
+}
 
-      {/* Hidden — for tests/debug */}
-      <span style={{ display: 'none' }} aria-hidden>{mastered}</span>
+// ──────────────────────────────────────────────────────────────────
+// Progress bar with star count badge
+// ──────────────────────────────────────────────────────────────────
+function ProgressBar({
+  progress,
+  color1,
+  color2,
+  label,
+}: {
+  progress: number;
+  color1: string;
+  color2: string;
+  label: string;
+}) {
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '0 8px' }}>
+      <div
+        style={{
+          flex: 1,
+          height: 12,
+          background: 'rgba(0, 0, 0, 0.08)',
+          borderRadius: 999,
+          overflow: 'hidden',
+        }}
+      >
+        <motion.div
+          initial={{ width: 0 }}
+          animate={{ width: `${Math.min(100, progress * 100)}%` }}
+          transition={{ type: 'spring', stiffness: 200, damping: 30 }}
+          style={{
+            height: '100%',
+            background: `linear-gradient(90deg, ${color1}, ${color2})`,
+            borderRadius: 999,
+          }}
+        />
+      </div>
+      <div
+        style={{
+          minWidth: 50,
+          background: '#FFD93D',
+          color: '#5C4500',
+          padding: '4px 10px',
+          borderRadius: 999,
+          fontSize: 13,
+          fontWeight: 800,
+          textAlign: 'center',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: 4,
+        }}
+      >
+        <svg width="13" height="13" viewBox="0 0 24 24">
+          <path
+            d="M12 2 L14.4 8.4 L21 8.4 L15.8 12.6 L17.6 19.2 L12 15 L6.4 19.2 L8.2 12.6 L3 8.4 L9.6 8.4 Z"
+            fill="#5C4500"
+          />
+        </svg>
+        {label}
+      </div>
     </div>
   );
 }
