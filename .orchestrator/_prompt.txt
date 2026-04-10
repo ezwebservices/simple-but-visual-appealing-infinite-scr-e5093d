@@ -1,7 +1,7 @@
-You are Engineer (Full-Stack Engineer). Make this specific change:
+You are Installer (Build Engineer). Make this specific change:
 
-Stage all currently modified files (.orchestrator/_prompt.txt, .orchestrator/_whiteboard.md, .orchestrator/build.json, brand/logo.svg, landing/index.html), create a commit with a clear message summarizing the changes (landing page character updates and orchestrator state), and push to origin/main.
+Stage all currently modified files (.orchestrator/_prompt.txt, .orchestrator/_whiteboard.md, .orchestrator/build.json, amplify/data/resource.ts, src/components/SubscriptionGate.tsx, and the new .env.example), create a clear commit message summarizing the changes, commit, and push to the main branch on the remote.
 
-Context: The user asked for: commit and push changes?
+Context: The user asked for: commit and push
 
 Read the relevant source files, make targeted edits, and run `npm run build` to verify.

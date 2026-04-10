@@ -333,7 +333,7 @@ export default function SubscriptionGate({ children }: SubscriptionGateProps) {
       }
 
       const result = await callGraphQL(token, 'createSubscription', `
-        query createSubscription { createSubscription { clientSecret subscriptionId } }
+        mutation createSubscription { createSubscription { clientSecret subscriptionId } }
       `);
 
       if (result?.clientSecret) {

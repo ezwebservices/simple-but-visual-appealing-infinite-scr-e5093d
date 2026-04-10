@@ -15,7 +15,7 @@ const schema = a.schema({
   }),
 
   createSubscription: a
-    .query()
+    .mutation()
     .returns(a.ref('CreateSubscriptionResult'))
     .handler(a.handler.function(createSubscription))
     .authorization((allow) => [allow.authenticated()]),
