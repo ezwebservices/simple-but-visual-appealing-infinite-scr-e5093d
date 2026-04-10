@@ -1,7 +1,7 @@
 You are Engineer (Full-Stack Engineer). Make this specific change:
 
-After the Designer updates the landing page character SVGs: review the changes for correctness, then stage all modified files (including any other pending changes), commit with a descriptive message like 'Update Meet the Pals landing page characters to match game view designs', and push to the remote repository.
+Stage all currently modified files (.orchestrator/_prompt.txt, .orchestrator/_whiteboard.md, .orchestrator/build.json, brand/logo.svg, landing/index.html), create a commit with a clear message summarizing the changes (landing page character updates and orchestrator state), and push to origin/main.
 
-Context: The user asked for: commit and push  but fore you need to update the meet the pals on the landging oage the logo to reflect the ones being used int he game vuew that are more up to date
+Context: The user asked for: commit and push changes?
 
 Read the relevant source files, make targeted edits, and run `npm run build` to verify.

@@ -4,47 +4,72 @@
     <filter id="shadow" x="-10%" y="-10%" width="130%" height="130%">
       <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#00000020"/>
     </filter>
-    <!-- Gradient for the circle bg -->
-    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#4FC3F7"/>
-      <stop offset="100%" stop-color="#81D4FA"/>
-    </linearGradient>
+    <!-- Background gradient -->
+    <radialGradient id="bgGrad" cx="50%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#81D4FA"/>
+      <stop offset="100%" stop-color="#4FC3F7"/>
+    </radialGradient>
+    <!-- Bloo body/head gradients matching Meet the Pals style -->
+    <radialGradient id="logo-head" cx="45%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#7EC8FF"/>
+      <stop offset="60%" stop-color="#4A90D9"/>
+      <stop offset="100%" stop-color="#3B78C0"/>
+    </radialGradient>
+    <radialGradient id="logo-ear" cx="50%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#6BB0F0"/>
+      <stop offset="100%" stop-color="#4A90D9"/>
+    </radialGradient>
+    <radialGradient id="logo-belly" cx="50%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#FFE8C0"/>
+      <stop offset="100%" stop-color="#FFD080"/>
+    </radialGradient>
   </defs>
 
   <!-- Background circle -->
   <circle cx="200" cy="200" r="190" fill="url(#bgGrad)" filter="url(#shadow)"/>
 
-  <!-- Bear face (Bloo) — main mascot -->
+  <!-- Bloo Bear face — new rounded-ellipse/gradient style -->
   <!-- Ears -->
-  <circle cx="130" cy="110" r="42" fill="#3BA8D8"/>
-  <circle cx="130" cy="110" r="26" fill="#FFD54F"/>
-  <circle cx="270" cy="110" r="42" fill="#3BA8D8"/>
-  <circle cx="270" cy="110" r="26" fill="#FFD54F"/>
+  <ellipse cx="130" cy="108" rx="40" ry="38" fill="url(#logo-ear)"/>
+  <ellipse cx="130" cy="108" rx="24" ry="22" fill="#FFD080" opacity="0.45"/>
+  <path d="M118,96 Q130,92 142,96" fill="none" stroke="#3B78C0" stroke-width="0.7" stroke-dasharray="2,2" opacity="0.3"/>
+  <ellipse cx="270" cy="108" rx="40" ry="38" fill="url(#logo-ear)"/>
+  <ellipse cx="270" cy="108" rx="24" ry="22" fill="#FFD080" opacity="0.45"/>
+  <path d="M258,96 Q270,92 282,96" fill="none" stroke="#3B78C0" stroke-width="0.7" stroke-dasharray="2,2" opacity="0.3"/>
 
   <!-- Head -->
-  <circle cx="200" cy="190" r="100" fill="#3BA8D8"/>
+  <ellipse cx="200" cy="185" rx="100" ry="95" fill="url(#logo-head)"/>
+  <!-- Highlight shimmer -->
+  <ellipse cx="178" cy="130" rx="50" ry="22" fill="white" opacity="0.12"/>
+  <!-- Center line detail -->
+  <path d="M200,92 Q202,140 200,185 Q198,230 200,278" fill="none" stroke="#3B78C0" stroke-width="0.7" stroke-dasharray="3,4" opacity="0.2"/>
 
-  <!-- Face / muzzle -->
-  <ellipse cx="200" cy="215" rx="55" ry="42" fill="#E1F5FE"/>
-
-  <!-- Eyes -->
-  <circle cx="165" cy="175" r="16" fill="#4A4A4A"/>
-  <circle cx="235" cy="175" r="16" fill="#4A4A4A"/>
-  <!-- Eye shine -->
-  <circle cx="170" cy="169" r="5" fill="#FFFFFF"/>
-  <circle cx="240" cy="169" r="5" fill="#FFFFFF"/>
+  <!-- Muzzle area -->
+  <ellipse cx="200" cy="218" rx="38" ry="28" fill="#5EA8E8" opacity="0.5"/>
 
   <!-- Nose -->
-  <ellipse cx="200" cy="205" rx="12" ry="9" fill="#4A4A4A"/>
-
-  <!-- Smile -->
-  <path d="M180 222 Q200 245 220 222" stroke="#4A4A4A" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+  <ellipse cx="200" cy="208" rx="10" ry="7.5" fill="#2D1810"/>
+  <ellipse cx="198" cy="206" rx="3.5" ry="2.5" fill="white" opacity="0.4"/>
 
   <!-- Cheek blush -->
-  <ellipse cx="148" cy="210" rx="16" ry="10" fill="#FF8A80" opacity="0.5"/>
-  <ellipse cx="252" cy="210" rx="16" ry="10" fill="#FF8A80" opacity="0.5"/>
+  <circle cx="148" cy="210" r="16" fill="#FF9999" opacity="0.35"/>
+  <circle cx="252" cy="210" r="16" fill="#FF9999" opacity="0.35"/>
 
-  <!-- "123" floating above/around the bear -->
+  <!-- Eyes — golden iris style -->
+  <ellipse cx="165" cy="178" rx="20" ry="22" fill="#FFF8F0"/>
+  <circle cx="165" cy="177" r="20" fill="#FFD080"/>
+  <circle cx="165" cy="177" r="7" fill="#6B4420"/>
+  <circle cx="170" cy="172" r="5" fill="white" opacity="0.9"/>
+
+  <ellipse cx="235" cy="178" rx="20" ry="22" fill="#FFF8F0"/>
+  <circle cx="235" cy="177" r="20" fill="#FFD080"/>
+  <circle cx="235" cy="177" r="7" fill="#6B4420"/>
+  <circle cx="240" cy="172" r="5" fill="white" opacity="0.9"/>
+
+  <!-- Smile -->
+  <path d="M185 228 Q200 244 215 228" fill="none" stroke="#D4A040" stroke-width="3" stroke-linecap="round" opacity="0.85"/>
+
+  <!-- "123" floating around the bear -->
   <text x="112" y="310" font-family="Fredoka One, Baloo 2, Arial Rounded MT Bold, sans-serif" font-size="56" font-weight="800" fill="#FFD54F" transform="rotate(-12, 112, 310)">1</text>
   <text x="177" y="320" font-family="Fredoka One, Baloo 2, Arial Rounded MT Bold, sans-serif" font-size="64" font-weight="800" fill="#FFFFFF">2</text>
   <text x="248" y="310" font-family="Fredoka One, Baloo 2, Arial Rounded MT Bold, sans-serif" font-size="56" font-weight="800" fill="#FF8A80" transform="rotate(12, 248, 310)">3</text>
@@ -58,5 +83,5 @@
   <text x="60" y="200" font-family="Arial Rounded MT Bold, sans-serif" font-size="28" font-weight="800" fill="#81C784" opacity="0.8">+</text>
 
   <!-- Minus sign accent -->
-  <text x="330" y="245" font-family="Arial Rounded MT Bold, sans-serif" font-size="28" font-weight="800" fill="#CE93D8" opacity="0.8">−</text>
+  <text x="330" y="245" font-family="Arial Rounded MT Bold, sans-serif" font-size="28" font-weight="800" fill="#CE93D8" opacity="0.8">-</text>
 </svg>
