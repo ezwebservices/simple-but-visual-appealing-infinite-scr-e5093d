@@ -56,10 +56,10 @@ const schema = a.schema({
       eventType: a.string().required(),
       processedAt: a.datetime().required(),
     })
-    .authorization((allow) => [
-      // Only the webhook lambda touches this — via IAM, granted in backend.ts.
-      // Empty rules block all GraphQL access to this model.
-    ]),
+    // Function-only access via IAM (granted in backend.ts).
+    // authenticated() satisfies the schema validator; no users actually
+    // query this directly — the webhook lambda writes via DDB SDK.
+    .authorization((allow) => [allow.authenticated().to(['read'])]),
 
   // ────────────────────────────────────────────────────────────
   // CUSTOM TYPES + MUTATIONS — Stripe subscription flow

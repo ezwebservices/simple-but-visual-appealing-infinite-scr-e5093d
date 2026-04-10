@@ -1,8 +1,8 @@
 import { useState, useCallback } from 'react';
-import { signUp, confirmSignUp, signIn, type SignInOutput } from 'aws-amplify/auth';
+import { signUp, confirmSignUp, signIn, resetPassword, confirmResetPassword, type SignInOutput } from 'aws-amplify/auth';
 import { colors, fontStack } from '../styles/theme';
 
-type AuthStep = 'signUp' | 'verify' | 'signIn' | 'complete';
+type AuthStep = 'signUp' | 'verify' | 'signIn' | 'forgot' | 'forgotConfirm' | 'complete';
 
 interface AuthFlowProps {
   onAuthenticated: () => void;
@@ -70,6 +70,43 @@ export default function AuthFlow({ onAuthenticated }: AuthFlowProps) {
       setLoading(false);
     }
   }, [email, password, onAuthenticated]);
+
+  // ── Password reset: request the code (Cognito emails it) ──
+  const handleForgot = useCallback(async () => {
+    setError('');
+    setLoading(true);
+    try {
+      await resetPassword({ username: email });
+      setStep('forgotConfirm');
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Could not start password reset');
+    } finally {
+      setLoading(false);
+    }
+  }, [email]);
+
+  // ── Password reset: confirm the code + new password, then sign in ──
+  const handleForgotConfirm = useCallback(async () => {
+    setError('');
+    setLoading(true);
+    try {
+      await confirmResetPassword({
+        username: email,
+        confirmationCode: code,
+        newPassword: password,
+      });
+      const result: SignInOutput = await signIn({ username: email, password });
+      if (result.isSignedIn) {
+        onAuthenticated();
+      } else {
+        setStep('signIn');
+      }
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Password reset failed');
+    } finally {
+      setLoading(false);
+    }
+  }, [email, code, password, onAuthenticated]);
 
   const inputStyle: React.CSSProperties = {
     width: '100%',
@@ -149,6 +186,15 @@ export default function AuthFlow({ onAuthenticated }: AuthFlowProps) {
               {loading ? 'Signing in...' : 'Sign In'}
             </button>
             <p style={{ textAlign: 'center', fontSize: '0.85rem', color: 'rgba(0,0,0,0.5)', margin: 0 }}>
+              <button
+                type="button"
+                onClick={() => { setStep('forgot'); setError(''); }}
+                style={{ background: 'none', border: 'none', color: colors.mint, fontWeight: 600, cursor: 'pointer', fontFamily: fontStack, fontSize: '0.85rem' }}
+              >
+                Forgot password?
+              </button>
+            </p>
+            <p style={{ textAlign: 'center', fontSize: '0.85rem', color: 'rgba(0,0,0,0.5)', margin: 0 }}>
               No account?{' '}
               <button
                 type="button"
@@ -156,6 +202,74 @@ export default function AuthFlow({ onAuthenticated }: AuthFlowProps) {
                 style={{ background: 'none', border: 'none', color: colors.mint, fontWeight: 700, cursor: 'pointer', fontFamily: fontStack, fontSize: '0.85rem' }}
               >
                 Create one
+              </button>
+            </p>
+          </form>
+        )}
+
+        {step === 'forgot' && (
+          <form onSubmit={(e) => { e.preventDefault(); handleForgot(); }} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+            <h2 style={{ margin: 0, fontSize: '1.2rem', color: colors.charcoal }}>Reset Password</h2>
+            <p style={{ margin: 0, fontSize: '0.9rem', color: 'rgba(0,0,0,0.6)' }}>
+              Enter your email and we'll send you a code to reset your password.
+            </p>
+            <input
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              style={inputStyle}
+            />
+            <button type="submit" disabled={loading} style={buttonStyle}>
+              {loading ? 'Sending...' : 'Send Reset Code'}
+            </button>
+            <p style={{ textAlign: 'center', fontSize: '0.85rem', color: 'rgba(0,0,0,0.5)', margin: 0 }}>
+              <button
+                type="button"
+                onClick={() => { setStep('signIn'); setError(''); }}
+                style={{ background: 'none', border: 'none', color: colors.mint, fontWeight: 700, cursor: 'pointer', fontFamily: fontStack, fontSize: '0.85rem' }}
+              >
+                Back to sign in
+              </button>
+            </p>
+          </form>
+        )}
+
+        {step === 'forgotConfirm' && (
+          <form onSubmit={(e) => { e.preventDefault(); handleForgotConfirm(); }} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+            <h2 style={{ margin: 0, fontSize: '1.2rem', color: colors.charcoal }}>Set New Password</h2>
+            <p style={{ margin: 0, fontSize: '0.9rem', color: 'rgba(0,0,0,0.6)' }}>
+              Check <strong>{email}</strong> for a verification code.
+            </p>
+            <input
+              type="text"
+              placeholder="Verification code"
+              value={code}
+              onChange={(e) => setCode(e.target.value)}
+              required
+              style={inputStyle}
+              autoComplete="one-time-code"
+            />
+            <input
+              type="password"
+              placeholder="New password (8+ characters)"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              minLength={8}
+              style={inputStyle}
+            />
+            <button type="submit" disabled={loading} style={buttonStyle}>
+              {loading ? 'Resetting...' : 'Reset Password'}
+            </button>
+            <p style={{ textAlign: 'center', fontSize: '0.85rem', color: 'rgba(0,0,0,0.5)', margin: 0 }}>
+              <button
+                type="button"
+                onClick={() => { setStep('signIn'); setError(''); }}
+                style={{ background: 'none', border: 'none', color: colors.mint, fontWeight: 700, cursor: 'pointer', fontFamily: fontStack, fontSize: '0.85rem' }}
+              >
+                Cancel
               </button>
             </p>
           </form>
