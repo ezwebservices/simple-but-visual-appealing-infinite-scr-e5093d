@@ -10,6 +10,12 @@ interface InfiniteScrollProps {
   onSpeak: (text: string) => void;
   isSpeaking?: boolean;
   /**
+   * When true the active LessonCard freezes: no auto-speak, no auto-advance,
+   * no new-problem rendering. Used while the unlock celebration overlay is
+   * covering the screen so the kid can focus on their reward.
+   */
+  isPaused?: boolean;
+  /**
    * Active concept to use when no review is due. The parent closes over
    * the child profile and returns the current linear-progression concept
    * via useMastery.getActiveConcept.
@@ -44,6 +50,7 @@ export default function InfiniteScroll({
   onWrong,
   onSpeak,
   isSpeaking,
+  isPaused = false,
   concept,
   getConceptForIndex,
   getDifficultyForConcept,
@@ -93,6 +100,7 @@ export default function InfiniteScroll({
           <LessonCard
             problem={problem}
             isActive={true}
+            isPaused={isPaused}
             onCorrect={() => onCorrect(problem)}
             onWrong={() => onWrong(problem)}
             onAdvance={handleAdvance}

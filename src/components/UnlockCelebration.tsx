@@ -6,6 +6,12 @@ import type { UnlockEvent } from '../hooks/useUnlocks';
 
 interface UnlockCelebrationProps {
   unlock: UnlockEvent | null;
+  /**
+   * The character the child is currently playing as. Used so a dance-move
+   * unlock can showcase the kid's own pal performing the new move (instead
+   * of a generic golden star).
+   */
+  activeCharacter: CharacterName;
   onDismiss: () => void;
 }
 
@@ -13,20 +19,26 @@ interface UnlockCelebrationProps {
  * Full-screen unlock celebration shown when a child masters enough sub-concepts
  * to unlock a new character or dance move. Pure visual + auditory (no text).
  *
- * Auto-dismisses after 4 seconds.
+ * Auto-dismisses after 5 seconds — long enough to see the new dance loop at
+ * least once. Tap anywhere to dismiss sooner.
  */
-export default function UnlockCelebration({ unlock, onDismiss }: UnlockCelebrationProps) {
+export default function UnlockCelebration({ unlock, activeCharacter, onDismiss }: UnlockCelebrationProps) {
   useEffect(() => {
     if (!unlock) return;
-    const t = setTimeout(onDismiss, 4500);
+    const t = setTimeout(onDismiss, 5200);
     return () => clearTimeout(t);
   }, [unlock, onDismiss]);
 
   if (!unlock) return null;
 
-  // Pick what to highlight (character first, then dance move)
+  // Pick what to highlight — character unlock takes priority, otherwise
+  // show the active pal performing the newly-unlocked dance move.
   const newChar: CharacterName | null = unlock.newCharacters[0] ?? null;
   const newDance = unlock.newDanceMoves[0] ?? null;
+  // For dance unlocks, use the kid's current pal so the celebration feels
+  // personal ("look what YOU can do now!"). For character unlocks we show
+  // the newly-unlocked pal itself.
+  const dancePerformer: CharacterName = newChar ?? activeCharacter;
 
   return (
     <AnimatePresence>
@@ -104,7 +116,9 @@ export default function UnlockCelebration({ unlock, onDismiss }: UnlockCelebrati
           );
         })}
 
-        {/* Big character or dance star reveal */}
+        {/* Big character reveal — the unlocked pal (or the active pal
+            performing the newly-unlocked dance). Uses the exact dance
+            animation the kid just earned so they see what they won. */}
         <motion.div
           initial={{ scale: 0, rotate: -180 }}
           animate={{ scale: 1, rotate: 0 }}
@@ -113,40 +127,59 @@ export default function UnlockCelebration({ unlock, onDismiss }: UnlockCelebrati
             width: 280,
             height: 280,
             zIndex: 2,
+            position: 'relative',
           }}
         >
-          {newChar ? (
-            <CharacterDisplay character={newChar} mood="excited" animation="dance-1" />
-          ) : (
-            // Big golden star for dance move unlock
-            <svg viewBox="0 0 100 100" width="100%" height="100%">
-              <defs>
-                <radialGradient id="unlock-star" cx="50%" cy="40%" r="60%">
-                  <stop offset="0%" stopColor="#FFF8C8" />
-                  <stop offset="60%" stopColor="#FFD93D" />
-                  <stop offset="100%" stopColor="#C49C00" />
-                </radialGradient>
-              </defs>
-              <path
-                d="M50 8 L62 38 L94 38 L68 58 L78 90 L50 70 L22 90 L32 58 L6 38 L38 38 Z"
-                fill="url(#unlock-star)"
-                stroke="#C49C00"
-                strokeWidth="3"
-                strokeLinejoin="round"
-              />
-              {/* Star number badge */}
-              <text
-                x="50"
-                y="58"
-                textAnchor="middle"
-                fontSize="28"
-                fontWeight="900"
-                fill="#1A0F08"
-                fontFamily="system-ui, sans-serif"
-              >
-                {newDance}
-              </text>
-            </svg>
+          <CharacterDisplay
+            character={dancePerformer}
+            mood="excited"
+            animation={newDance ? (`dance-${newDance}` as 'dance-1') : 'dance-1'}
+          />
+
+          {/* Dance-number star badge — only for dance unlocks */}
+          {!newChar && newDance && (
+            <motion.div
+              initial={{ scale: 0, y: 10 }}
+              animate={{ scale: 1, y: 0 }}
+              transition={{ type: 'spring', stiffness: 260, damping: 16, delay: 0.9 }}
+              style={{
+                position: 'absolute',
+                top: -8,
+                right: -8,
+                width: 92,
+                height: 92,
+                zIndex: 3,
+                pointerEvents: 'none',
+              }}
+            >
+              <svg viewBox="0 0 100 100" width="100%" height="100%">
+                <defs>
+                  <radialGradient id="unlock-star-badge" cx="50%" cy="40%" r="60%">
+                    <stop offset="0%" stopColor="#FFF8C8" />
+                    <stop offset="60%" stopColor="#FFD93D" />
+                    <stop offset="100%" stopColor="#C49C00" />
+                  </radialGradient>
+                </defs>
+                <path
+                  d="M50 8 L62 38 L94 38 L68 58 L78 90 L50 70 L22 90 L32 58 L6 38 L38 38 Z"
+                  fill="url(#unlock-star-badge)"
+                  stroke="#C49C00"
+                  strokeWidth="3"
+                  strokeLinejoin="round"
+                />
+                <text
+                  x="50"
+                  y="62"
+                  textAnchor="middle"
+                  fontSize="34"
+                  fontWeight="900"
+                  fill="#1A0F08"
+                  fontFamily="system-ui, sans-serif"
+                >
+                  {newDance}
+                </text>
+              </svg>
+            </motion.div>
           )}
         </motion.div>
 

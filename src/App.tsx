@@ -48,7 +48,7 @@ export default function App() {
 
 function GameView() {
   const { recordCorrect, recordWrong } = useProgress();
-  const { speak, isSpeaking } = useAudio();
+  const { speak, isSpeaking, cancelSpeech } = useAudio();
   const { children, activeChild, activeChildId, addChild, switchChild, updateChild, removeChild, resetChild } = useChildProfiles();
   const { recordAnswer, getActiveConcept, getNextProblemConcept, getConceptDifficulty } = useMastery();
   const [view, setView] = useState<AppView>('game');
@@ -77,12 +77,17 @@ function GameView() {
       // Detect newly-unlocked characters/dance moves
       const event = detectNewUnlocks(activeChild, updatedChild);
       if (event) {
-        // Delay the celebration so the on-correct dance has time to play first
-        setTimeout(() => setUnlockEvent(event), 1800);
+        // Delay the celebration so the on-correct dance has time to play first.
+        // When it fires, cancel speech so the kid isn't distracted by the next
+        // question auto-reading underneath the overlay.
+        setTimeout(() => {
+          cancelSpeech();
+          setUnlockEvent(event);
+        }, 1800);
       }
       prevChildRef.current = updatedChild;
     }
-  }, [activeChild, activeChildId, recordCorrect, recordAnswer, updateChild]);
+  }, [activeChild, activeChildId, recordCorrect, recordAnswer, updateChild, cancelSpeech]);
 
   const handleWrong = useCallback((problem: MathProblem) => {
     recordWrong();
@@ -152,6 +157,7 @@ function GameView() {
         onWrong={handleWrong}
         onSpeak={speak}
         isSpeaking={isSpeaking}
+        isPaused={unlockEvent !== null}
         concept={currentConcept}
         getConceptForIndex={(index) =>
           activeChild ? getNextProblemConcept(activeChild, index) : currentConcept
@@ -164,7 +170,14 @@ function GameView() {
       />
 
       {/* Unlock celebration overlay — full-screen burst when new character/dance unlocks */}
-      <UnlockCelebration unlock={unlockEvent} onDismiss={() => setUnlockEvent(null)} />
+      <UnlockCelebration
+        unlock={unlockEvent}
+        activeCharacter={activeChild?.avatar ?? 'bloo'}
+        onDismiss={() => {
+          cancelSpeech();
+          setUnlockEvent(null);
+        }}
+      />
 
       {/* Parent Dashboard overlay */}
       <AnimatePresence>
@@ -176,6 +189,9 @@ function GameView() {
             onAddChild={addChild}
             onRemoveChild={removeChild}
             onResetChild={resetChild}
+            onEditChild={(id, name, avatar) =>
+              updateChild(id, (c) => ({ ...c, name, avatar }))
+            }
             onClose={() => setView('game')}
           />
         )}

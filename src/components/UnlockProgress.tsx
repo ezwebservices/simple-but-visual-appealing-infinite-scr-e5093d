@@ -31,6 +31,12 @@ export default function UnlockProgress({ child }: UnlockProgressProps) {
   const nextChar = progressToNextCharacter(child);
   const nextDance = progressToNextDance(child);
 
+  // Selected character for the "see your dance moves" preview row.
+  // Defaults to the child's active avatar; falls back to bloo.
+  const [selectedChar, setSelectedChar] = useState<CharacterName>(
+    unlockedChars.has(child.avatar) ? child.avatar : 'bloo',
+  );
+
   return (
     <>
       {/* Floating button — top-right corner */}
@@ -176,6 +182,8 @@ export default function UnlockProgress({ child }: UnlockProgressProps) {
                         key={name}
                         name={name}
                         unlocked={unlocked}
+                        selected={selectedChar === name}
+                        onSelect={() => unlocked && setSelectedChar(name)}
                         threshold={CHARACTER_UNLOCK_THRESHOLDS[name]}
                         currentMastered={mastered}
                       />
@@ -194,9 +202,24 @@ export default function UnlockProgress({ child }: UnlockProgressProps) {
                 )}
               </div>
 
-              {/* DANCES section */}
+              {/* DANCES section — the 5 dance cards use whichever pal the
+                  kid just selected above, so they see their own favourite
+                  character doing each move. */}
               <div style={{ marginTop: 28 }}>
                 <SectionHeader icon="💫" />
+                <div
+                  style={{
+                    textAlign: 'center',
+                    fontSize: 13,
+                    fontWeight: 700,
+                    color: '#8A6A30',
+                    marginTop: -4,
+                    marginBottom: 10,
+                    letterSpacing: 0.3,
+                  }}
+                >
+                  tap a pal above to see their moves
+                </div>
                 <div
                   style={{
                     display: 'grid',
@@ -207,8 +230,9 @@ export default function UnlockProgress({ child }: UnlockProgressProps) {
                 >
                   {[1, 2, 3, 4, 5].map((moveNum) => (
                     <DanceCard
-                      key={moveNum}
+                      key={`${selectedChar}-${moveNum}`}
                       moveNum={moveNum}
+                      character={selectedChar}
                       unlocked={unlockedDance >= moveNum}
                       threshold={DANCE_MOVE_THRESHOLDS[moveNum - 1]}
                       currentMastered={mastered}
@@ -257,11 +281,15 @@ function SectionHeader({ icon }: { icon: string }) {
 function CharacterCard({
   name,
   unlocked,
+  selected,
+  onSelect,
   threshold,
   currentMastered,
 }: {
   name: CharacterName;
   unlocked: boolean;
+  selected: boolean;
+  onSelect: () => void;
   threshold: number;
   currentMastered: number;
 }) {
@@ -269,23 +297,36 @@ function CharacterCard({
   const remaining = Math.max(0, threshold - currentMastered);
 
   return (
-    <div
+    <button
+      type="button"
+      onClick={onSelect}
+      disabled={!unlocked}
+      aria-pressed={selected}
+      aria-label={unlocked ? `Select ${name}` : `${name} — locked`}
       style={{
         background: unlocked
           ? `linear-gradient(180deg, ${palette?.body[0] ?? '#fff'} 0%, ${palette?.body[1] ?? '#eee'} 100%)`
           : 'linear-gradient(180deg, #ECECF0 0%, #CCCCD0 100%)',
         borderRadius: 20,
         padding: 8,
-        border: unlocked
-          ? `3px solid ${palette?.body[3] ?? '#999'}`
-          : '3px solid #BBB',
-        boxShadow: unlocked ? '0 4px 12px rgba(0,0,0,0.12)' : '0 1px 4px rgba(0,0,0,0.08)',
+        border: selected
+          ? '4px solid #FFB200'
+          : unlocked
+            ? `3px solid ${palette?.body[3] ?? '#999'}`
+            : '3px solid #BBB',
+        boxShadow: selected
+          ? '0 0 0 4px rgba(255,178,0,0.25), 0 6px 18px rgba(255,178,0,0.35)'
+          : unlocked ? '0 4px 12px rgba(0,0,0,0.12)' : '0 1px 4px rgba(0,0,0,0.08)',
         position: 'relative',
         aspectRatio: '1',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         overflow: 'hidden',
+        cursor: unlocked ? 'pointer' : 'not-allowed',
+        transform: selected ? 'scale(1.04)' : 'scale(1)',
+        transition: 'transform 0.15s, box-shadow 0.15s, border-color 0.15s',
+        WebkitTapHighlightColor: 'transparent',
       }}
     >
       <div
@@ -353,21 +394,23 @@ function CharacterCard({
           </div>
         </>
       )}
-    </div>
+    </button>
   );
 }
 
 // ──────────────────────────────────────────────────────────────────
-// Dance card — uses BlooBear (the always-unlocked character) doing
-// the actual dance move so kids see what they'll unlock
+// Dance card — uses the character the kid selected above, so they
+// see their own favourite pal doing each dance move.
 // ──────────────────────────────────────────────────────────────────
 function DanceCard({
   moveNum,
+  character,
   unlocked,
   threshold,
   currentMastered,
 }: {
   moveNum: number;
+  character: CharacterName;
   unlocked: boolean;
   threshold: number;
   currentMastered: number;
@@ -401,7 +444,7 @@ function DanceCard({
         }}
       >
         <CharacterDisplay
-          character="bloo"
+          character={character}
           mood={unlocked ? 'excited' : 'happy'}
           animation={unlocked ? (`dance-${moveNum}` as 'dance-1') : 'none'}
         />

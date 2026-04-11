@@ -95,10 +95,11 @@
     <path d="M148,180 Q160,193 172,180" fill="none" stroke="#1A0F08" stroke-width="3.5" stroke-linecap="round"/>
   </g>
 
-  <!-- "123" floating around the bear -->
-  <text x="60" y="365" font-family="Fredoka One, Baloo 2, Arial Rounded MT Bold, sans-serif" font-size="56" font-weight="800" fill="#FFD54F" transform="rotate(-12, 60, 365)">1</text>
-  <text x="180" y="380" font-family="Fredoka One, Baloo 2, Arial Rounded MT Bold, sans-serif" font-size="64" font-weight="800" fill="#FFFFFF">2</text>
-  <text x="300" y="365" font-family="Fredoka One, Baloo 2, Arial Rounded MT Bold, sans-serif" font-size="56" font-weight="800" fill="#FF8A80" transform="rotate(12, 300, 365)">3</text>
+  <!-- "123" floating around the bear — pulled up so they sit inside the
+       circle instead of hanging off the bottom edge -->
+  <text x="70" y="320" font-family="Fredoka One, Baloo 2, Arial Rounded MT Bold, sans-serif" font-size="54" font-weight="800" fill="#FFD54F" transform="rotate(-12, 70, 320)">1</text>
+  <text x="178" y="335" font-family="Fredoka One, Baloo 2, Arial Rounded MT Bold, sans-serif" font-size="60" font-weight="800" fill="#FFFFFF">2</text>
+  <text x="290" y="320" font-family="Fredoka One, Baloo 2, Arial Rounded MT Bold, sans-serif" font-size="54" font-weight="800" fill="#FF8A80" transform="rotate(12, 290, 320)">3</text>
 
   <!-- Small stars -->
   <polygon points="55,85 59,75 63,85 53,79 67,79" fill="#FFD54F"/>

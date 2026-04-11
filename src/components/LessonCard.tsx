@@ -55,6 +55,12 @@ function SubitizingPattern({ count, animateIn }: { count: number; animateIn: boo
 interface LessonCardProps {
   problem: MathProblem;
   isActive: boolean;
+  /**
+   * When true the card freezes — auto-speak is suppressed and any pending
+   * auto-advance waits until isPaused flips back to false. Used while the
+   * unlock celebration overlay is showing.
+   */
+  isPaused?: boolean;
   onCorrect: () => void;
   onWrong: () => void;
   onAdvance?: () => void;
@@ -108,7 +114,7 @@ function getQuestionText(problem: MathProblem): string {
   return `${num1} ${sym} ${num2} = ?`;
 }
 
-export default function LessonCard({ problem, isActive, onCorrect, onWrong, onAdvance, onSpeak, isSpeaking, unlockedDanceMoves = 1 }: LessonCardProps) {
+export default function LessonCard({ problem, isActive, isPaused = false, onCorrect, onWrong, onAdvance, onSpeak, isSpeaking, unlockedDanceMoves = 1 }: LessonCardProps) {
   const [selected, setSelected] = useState<number | null>(null);
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
   const [showCelebration, setShowCelebration] = useState(false);
@@ -119,6 +125,11 @@ export default function LessonCard({ problem, isActive, onCorrect, onWrong, onAd
   const retryTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isActiveRef = useRef(isActive);
   isActiveRef.current = isActive;
+  const isPausedRef = useRef(isPaused);
+  isPausedRef.current = isPaused;
+  // Set when the celebration timer fired while paused — the advance is
+  // deferred until isPaused flips back to false.
+  const pendingAdvanceRef = useRef(false);
 
   // Clean up timers on unmount
   useEffect(() => {
@@ -128,16 +139,26 @@ export default function LessonCard({ problem, isActive, onCorrect, onWrong, onAd
     };
   }, []);
 
-  // Auto-read problem when card becomes active
+  // Auto-read problem when card becomes active (skip while paused — the
+  // unlock celebration is up and we don't want speech underneath it).
   useEffect(() => {
-    if (isActive && !hasSpoken.current) {
+    if (isActive && !isPaused && !hasSpoken.current) {
       hasSpoken.current = true;
       const timer = setTimeout(() => {
         onSpeak(getSpokenText(problem));
       }, 400);
       return () => clearTimeout(timer);
     }
-  }, [isActive, problem, onSpeak]);
+  }, [isActive, isPaused, problem, onSpeak]);
+
+  // When the celebration overlay dismisses (isPaused -> false), flush any
+  // auto-advance that was queued while paused.
+  useEffect(() => {
+    if (!isPaused && pendingAdvanceRef.current) {
+      pendingAdvanceRef.current = false;
+      onAdvance?.();
+    }
+  }, [isPaused, onAdvance]);
 
   const shuffledAnswers = useRef(
     [problem.answer, ...problem.wrongAnswers].sort(() => Math.random() - 0.5),
@@ -154,8 +175,13 @@ export default function LessonCard({ problem, isActive, onCorrect, onWrong, onAd
         onCorrect();
         celebrationTimer.current = setTimeout(() => {
           setShowCelebration(false);
-          // Only auto-scroll if card is still active (user hasn't manually scrolled away)
-          if (isActiveRef.current) {
+          if (!isActiveRef.current) return;
+          // If the unlock celebration is currently showing, defer the
+          // advance until the overlay is dismissed so the kid isn't
+          // rushed past their reward.
+          if (isPausedRef.current) {
+            pendingAdvanceRef.current = true;
+          } else {
             onAdvance?.();
           }
         }, 3000);

@@ -80,6 +80,7 @@ interface ParentDashboardProps {
   onAddChild: (name: string, avatar: CharacterName) => void;
   onRemoveChild: (id: string) => void;
   onResetChild: (id: string) => void;
+  onEditChild: (id: string, name: string, avatar: CharacterName) => void;
   onClose: () => void;
 }
 
@@ -243,9 +244,33 @@ function SubConceptRow({ concept, child }: { concept: SubConcept; child: ChildPr
 }
 
 /** Add child form */
-function AddChildForm({ onAdd, onCancel }: { onAdd: (name: string, avatar: CharacterName) => void; onCancel: () => void }) {
-  const [name, setName] = useState('');
-  const [avatar, setAvatar] = useState<CharacterName>('bloo');
+/**
+ * Add/Edit child form. When `initial` is provided the form operates in edit
+ * mode (different title, "Save" button, preserves the existing child's
+ * progress by going through the `onSave` callback which only updates name
+ * and avatar).
+ */
+function AddChildForm({
+  onAdd,
+  onSave,
+  onCancel,
+  initial,
+}: {
+  onAdd?: (name: string, avatar: CharacterName) => void;
+  onSave?: (name: string, avatar: CharacterName) => void;
+  onCancel: () => void;
+  initial?: { name: string; avatar: CharacterName };
+}) {
+  const [name, setName] = useState(initial?.name ?? '');
+  const [avatar, setAvatar] = useState<CharacterName>(initial?.avatar ?? 'bloo');
+  const isEdit = !!initial;
+
+  const handleSubmit = () => {
+    const trimmed = name.trim();
+    if (!trimmed) return;
+    if (isEdit) onSave?.(trimmed, avatar);
+    else onAdd?.(trimmed, avatar);
+  };
 
   return (
     <motion.div
@@ -260,7 +285,7 @@ function AddChildForm({ onAdd, onCancel }: { onAdd: (name: string, avatar: Chara
       }}
     >
       <div style={{ fontFamily: fontStack, fontWeight: 700, fontSize: '1rem', color: colors.charcoal, marginBottom: 12 }}>
-        Add a Child
+        {isEdit ? 'Edit Profile' : 'Add a Child'}
       </div>
       <input
         type="text"
@@ -308,7 +333,7 @@ function AddChildForm({ onAdd, onCancel }: { onAdd: (name: string, avatar: Chara
         <motion.button
           type="button"
           whileTap={{ scale: 0.95 }}
-          onClick={() => name.trim() && onAdd(name.trim(), avatar)}
+          onClick={handleSubmit}
           disabled={!name.trim()}
           style={{
             flex: 1, padding: '12px', border: 'none', borderRadius: 14,
@@ -318,7 +343,7 @@ function AddChildForm({ onAdd, onCancel }: { onAdd: (name: string, avatar: Chara
             WebkitTapHighlightColor: 'transparent',
           }}
         >
-          Add Child
+          {isEdit ? 'Save' : 'Add Child'}
         </motion.button>
         <motion.button
           type="button"
@@ -524,10 +549,12 @@ export default function ParentDashboard({
   onAddChild,
   onRemoveChild,
   onResetChild,
+  onEditChild,
   onClose,
 }: ParentDashboardProps) {
   const [pinVerified, setPinVerified] = useState(false);
   const [showAddForm, setShowAddForm] = useState(false);
+  const [showEditForm, setShowEditForm] = useState(false);
   const [selectedChildId, setSelectedChildId] = useState(activeChildId);
   const selectedChild = childProfiles.find(c => c.id === selectedChildId) ?? childProfiles[0] ?? null;
 
@@ -724,6 +751,17 @@ export default function ParentDashboard({
             {showAddForm && (
               <AddChildForm onAdd={handleAdd} onCancel={() => setShowAddForm(false)} />
             )}
+            {showEditForm && selectedChild && (
+              <AddChildForm
+                key={`edit-${selectedChild.id}`}
+                initial={{ name: selectedChild.name, avatar: selectedChild.avatar }}
+                onSave={(name, avatar) => {
+                  onEditChild(selectedChild.id, name, avatar);
+                  setShowEditForm(false);
+                }}
+                onCancel={() => setShowEditForm(false)}
+              />
+            )}
           </AnimatePresence>
         </div>
 
@@ -919,6 +957,23 @@ export default function ParentDashboard({
                   })}
                 </div>
               )}
+            </div>
+
+            {/* ── Edit profile ── */}
+            <div style={{ textAlign: 'center', padding: '8px 0 4px' }}>
+              <motion.button
+                type="button"
+                whileTap={{ scale: 0.95 }}
+                onClick={() => { setShowEditForm(true); setShowAddForm(false); }}
+                style={{
+                  padding: '10px 24px', border: `2px solid ${colors.mint}55`, borderRadius: 14,
+                  background: `${colors.mint}12`, color: colors.mint,
+                  fontFamily: fontStack, fontSize: '0.85rem', fontWeight: 700,
+                  cursor: 'pointer', WebkitTapHighlightColor: 'transparent',
+                }}
+              >
+                Edit {selectedChild.name}&apos;s Profile
+              </motion.button>
             </div>
 
             {/* ── Reset progress ── */}
