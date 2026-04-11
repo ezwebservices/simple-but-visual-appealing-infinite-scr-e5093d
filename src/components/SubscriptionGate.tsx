@@ -396,57 +396,13 @@ export default function SubscriptionGate({ children }: SubscriptionGateProps) {
     setClientSecret(null);
   }, []);
 
-  // Manage Subscription — opens Stripe Customer Portal in a new tab.
-  // Lets the user cancel, update card, view invoices.
-  const handleManageSubscription = useCallback(async () => {
-    try {
-      const session = await fetchAuthSession();
-      const token = session.tokens?.idToken?.toString();
-      if (!token) return;
-      const result = await callGraphQL(token, 'createBillingPortalSession', `
-        mutation createBillingPortalSession { createBillingPortalSession { url } }
-      `);
-      if (result?.url) {
-        window.location.href = result.url;
-      }
-    } catch (e) {
-      console.error('Failed to open billing portal:', e);
-    }
-  }, []);
-
-  // Active subscription — render children with a small "manage" button
+  // Active subscription — render children. Subscription management lives
+  // in the Parent Dashboard (PIN-gated) so kids can't tap it.
   if (subStatus?.active) {
     return (
       <>
         <TestModeBanner />
         {children}
-        <button
-          type="button"
-          onClick={handleManageSubscription}
-          aria-label="Manage subscription"
-          title="Manage subscription"
-          style={{
-            position: 'fixed',
-            bottom: 20,
-            left: 20,
-            zIndex: 40,
-            width: 48,
-            height: 48,
-            borderRadius: '50%',
-            border: 'none',
-            background: 'rgba(255,255,255,0.85)',
-            backdropFilter: 'blur(8px)',
-            boxShadow: '0 2px 12px rgba(0,0,0,0.1)',
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            WebkitTapHighlightColor: 'transparent',
-            fontSize: 20,
-          }}
-        >
-          💳
-        </button>
       </>
     );
   }

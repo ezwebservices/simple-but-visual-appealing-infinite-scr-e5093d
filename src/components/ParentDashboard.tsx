@@ -1,11 +1,27 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { signOut, fetchAuthSession } from 'aws-amplify/auth';
 import type { ChildProfile, SubConcept, CharacterName } from '../types';
 import { SUB_CONCEPT_ORDER } from '../types';
 import { colors, fontStack, dashboard } from '../styles/theme';
 import CharacterDisplay from './characters/CharacterDisplay';
+import outputs from '../../amplify_outputs.json';
 
 const PIN_STORAGE_KEY = 'numpals-parent-pin';
+
+/** Lightweight GraphQL fetch — calls a custom mutation against AppSync. */
+async function callGraphQL(token: string, operationName: string, query: string) {
+  const endpoint = (outputs as Record<string, unknown> & { data?: { url?: string } })?.data?.url;
+  if (!endpoint) throw new Error('AppSync endpoint not configured');
+  const resp = await fetch(endpoint, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Authorization: token },
+    body: JSON.stringify({ query, operationName }),
+  });
+  const json = await resp.json();
+  if (json.errors) throw new Error(json.errors[0]?.message || 'GraphQL error');
+  return json.data?.[operationName];
+}
 
 interface ParentDashboardProps {
   children: ChildProfile[];
@@ -440,6 +456,45 @@ export default function ParentDashboard({
   const [selectedChildId, setSelectedChildId] = useState(activeChildId);
   const selectedChild = childProfiles.find(c => c.id === selectedChildId) ?? childProfiles[0] ?? null;
 
+  const [accountBusy, setAccountBusy] = useState<null | 'portal' | 'signout'>(null);
+
+  // Open Stripe Customer Portal — for cancel/update card/view invoices
+  const handleManageSubscription = useCallback(async () => {
+    setAccountBusy('portal');
+    try {
+      const session = await fetchAuthSession();
+      const token = session.tokens?.idToken?.toString();
+      if (!token) throw new Error('Not signed in');
+      const result = await callGraphQL(token, 'createBillingPortalSession', `
+        mutation createBillingPortalSession { createBillingPortalSession { url } }
+      `);
+      if (result?.url) {
+        window.location.href = result.url;
+        return; // page is navigating away
+      }
+      alert('Could not open billing portal — please try again.');
+    } catch (e) {
+      console.error(e);
+      alert('Could not open billing portal: ' + (e instanceof Error ? e.message : 'Unknown error'));
+    } finally {
+      setAccountBusy(null);
+    }
+  }, []);
+
+  // Sign out — clears Cognito session, returns to AuthFlow
+  const handleSignOut = useCallback(async () => {
+    if (!confirm('Sign out of NumPals?')) return;
+    setAccountBusy('signout');
+    try {
+      await signOut();
+      // Hard reload so the app re-checks auth and shows AuthFlow
+      window.location.reload();
+    } catch (e) {
+      console.error(e);
+      setAccountBusy(null);
+    }
+  }, []);
+
   if (!pinVerified) {
     return <PinGate onSuccess={() => setPinVerified(true)} onClose={onClose} />;
   }
@@ -844,6 +899,92 @@ export default function ParentDashboard({
             <div style={{ fontSize: '0.85rem' }}>Tap the + button above to add your first child</div>
           </div>
         )}
+
+        {/* ── Account section ── */}
+        <div style={{
+          background: dashboard.cardBg,
+          borderRadius: dashboard.cardRadius,
+          padding: 16,
+          boxShadow: dashboard.cardShadow,
+          marginTop: 16,
+        }}>
+          <div style={{
+            fontSize: '0.75rem',
+            fontWeight: 700,
+            textTransform: 'uppercase',
+            letterSpacing: '0.08em',
+            color: 'rgba(0,0,0,0.45)',
+            marginBottom: 12,
+          }}>
+            Account
+          </div>
+
+          <button
+            type="button"
+            onClick={handleManageSubscription}
+            disabled={accountBusy !== null}
+            style={{
+              width: '100%',
+              padding: '14px 16px',
+              borderRadius: 14,
+              border: 'none',
+              background: colors.mint,
+              color: '#fff',
+              fontSize: '0.95rem',
+              fontWeight: 700,
+              fontFamily: fontStack,
+              cursor: accountBusy ? 'wait' : 'pointer',
+              opacity: accountBusy === 'portal' ? 0.6 : 1,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 8,
+              marginBottom: 10,
+              WebkitTapHighlightColor: 'transparent',
+            }}
+          >
+            <span style={{ fontSize: '1.1rem' }}>💳</span>
+            {accountBusy === 'portal' ? 'Opening...' : 'Manage Subscription'}
+          </button>
+
+          <button
+            type="button"
+            onClick={handleSignOut}
+            disabled={accountBusy !== null}
+            style={{
+              width: '100%',
+              padding: '14px 16px',
+              borderRadius: 14,
+              border: '2px solid rgba(0,0,0,0.1)',
+              background: 'transparent',
+              color: colors.charcoal,
+              fontSize: '0.95rem',
+              fontWeight: 700,
+              fontFamily: fontStack,
+              cursor: accountBusy ? 'wait' : 'pointer',
+              opacity: accountBusy === 'signout' ? 0.6 : 1,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 8,
+              WebkitTapHighlightColor: 'transparent',
+            }}
+          >
+            <span style={{ fontSize: '1.1rem' }}>👋</span>
+            {accountBusy === 'signout' ? 'Signing out...' : 'Sign Out'}
+          </button>
+
+          <p style={{
+            fontSize: '0.7rem',
+            color: 'rgba(0,0,0,0.4)',
+            margin: '12px 0 0',
+            textAlign: 'center',
+            lineHeight: 1.5,
+          }}>
+            Manage Subscription opens Stripe to update your card,
+            cancel, or view past invoices.
+          </p>
+        </div>
       </div>
     </motion.div>
   );
