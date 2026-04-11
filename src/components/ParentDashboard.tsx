@@ -138,6 +138,419 @@ const AVATAR_LABELS: Record<CharacterName, string> = {
   robo: 'Robo Rocket',
 };
 
+// ──────────────────────────────────────────────────────────────────
+// Summary stats helpers — pure functions over ChildProfile data.
+// Used by AllKidsOverview, CategoryMasteryBars, and WeeklyActivityChart
+// below. Kept outside the main component so they don't re-create every
+// render.
+// ──────────────────────────────────────────────────────────────────
+
+interface ChildSummary {
+  masteredCount: number;
+  totalAttempted: number;
+  totalCorrect: number;
+  overallAccuracy: number;  // 0..100
+  todayProblems: number;
+  todayAccuracy: number | null;
+  sevenDayAccuracy: number | null;
+  sevenDayProblems: number;
+  activeConcept: SubConcept | null;
+  sparkline: number[];      // accuracy 0..100 per day, last 7 days (null days → 0)
+}
+
+function summariseChild(child: ChildProfile): ChildSummary {
+  let totalAttempted = 0;
+  let totalCorrect = 0;
+  let masteredCount = 0;
+  let activeConcept: SubConcept | null = null;
+
+  for (const sc of SUB_CONCEPT_ORDER) {
+    const cp = child.conceptProgress[sc];
+    if (!cp) continue;
+    totalAttempted += cp.totalAttempted;
+    totalCorrect += cp.totalCorrect;
+    if (cp.status === 'mastered') masteredCount += 1;
+    if (!activeConcept && cp.status === 'active') activeConcept = sc;
+  }
+
+  // Daily rollup — group accuracyHistory entries by date
+  const dailyTotals = new Map<string, { total: number; correct: number }>();
+  for (const h of child.accuracyHistory ?? []) {
+    const t = h._total ?? 1;
+    const correct = Math.round((h.accuracy / 100) * t);
+    const bucket = dailyTotals.get(h.date) ?? { total: 0, correct: 0 };
+    bucket.total += t;
+    bucket.correct += correct;
+    dailyTotals.set(h.date, bucket);
+  }
+
+  const today = new Date().toISOString().slice(0, 10);
+  const todayBucket = dailyTotals.get(today);
+  const todayProblems = todayBucket?.total ?? 0;
+  const todayAccuracy = todayBucket && todayBucket.total > 0
+    ? Math.round((todayBucket.correct / todayBucket.total) * 100)
+    : null;
+
+  // Build last-7-day sparkline (fill zeros for missing days)
+  const sparkline: number[] = [];
+  let sevenDayTotal = 0;
+  let sevenDayCorrect = 0;
+  let sevenDayProblems = 0;
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    const key = d.toISOString().slice(0, 10);
+    const bucket = dailyTotals.get(key);
+    if (bucket && bucket.total > 0) {
+      sparkline.push(Math.round((bucket.correct / bucket.total) * 100));
+      sevenDayTotal += bucket.total;
+      sevenDayCorrect += bucket.correct;
+      sevenDayProblems += bucket.total;
+    } else {
+      sparkline.push(0);
+    }
+  }
+  const sevenDayAccuracy = sevenDayTotal > 0 ? Math.round((sevenDayCorrect / sevenDayTotal) * 100) : null;
+
+  const overallAccuracy = totalAttempted > 0 ? Math.round((totalCorrect / totalAttempted) * 100) : 0;
+
+  return {
+    masteredCount,
+    totalAttempted,
+    totalCorrect,
+    overallAccuracy,
+    todayProblems,
+    todayAccuracy,
+    sevenDayAccuracy,
+    sevenDayProblems,
+    activeConcept,
+    sparkline,
+  };
+}
+
+/**
+ * AllKidsOverview — "at a glance" comparison row for every child on the
+ * account. One card per kid with mastery bar, overall accuracy, 7-day
+ * activity count, and a tiny sparkline of the last 7 days' accuracy.
+ */
+function AllKidsOverview({ children }: { children: ChildProfile[] }) {
+  if (children.length === 0) return null;
+
+  return (
+    <div style={{
+      background: dashboard.cardBg,
+      borderRadius: dashboard.cardRadius,
+      padding: '16px 20px',
+      boxShadow: dashboard.cardShadow,
+      marginBottom: 16,
+    }}>
+      <div style={{
+        fontSize: '0.75rem', fontWeight: 700, color: 'rgba(0,0,0,0.4)',
+        textTransform: 'uppercase' as const, letterSpacing: '0.08em',
+        marginBottom: 12,
+      }}>
+        All Kids at a Glance
+      </div>
+      {children.map((child, idx) => {
+        const s = summariseChild(child);
+        const masteryPct = Math.round((s.masteredCount / SUB_CONCEPT_ORDER.length) * 100);
+        return (
+          <div key={child.id} style={{
+            display: 'flex', gap: 12, alignItems: 'center',
+            padding: '12px 0',
+            borderTop: idx === 0 ? 'none' : '1px solid rgba(0,0,0,0.06)',
+          }}>
+            <div style={{ width: 48, height: 48, flexShrink: 0 }}>
+              <CharacterDisplay character={child.avatar} mood="happy" />
+            </div>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ display: 'flex', alignItems: 'baseline', gap: 8, marginBottom: 4 }}>
+                <span style={{
+                  fontFamily: fontStack, fontWeight: 800, fontSize: '0.95rem',
+                  color: colors.charcoal,
+                }}>{child.name}</span>
+                <span style={{
+                  fontFamily: fontStack, fontSize: '0.7rem', fontWeight: 600,
+                  color: 'rgba(0,0,0,0.45)',
+                }}>
+                  {s.masteredCount}/{SUB_CONCEPT_ORDER.length} · {s.overallAccuracy}%
+                </span>
+              </div>
+              {/* Mastery bar */}
+              <div style={{
+                height: 6, borderRadius: 3,
+                background: 'rgba(0,0,0,0.06)', overflow: 'hidden',
+                marginBottom: 6,
+              }}>
+                <motion.div
+                  initial={{ width: 0 }}
+                  animate={{ width: `${masteryPct}%` }}
+                  transition={{ duration: 0.6, ease: 'easeOut', delay: idx * 0.05 }}
+                  style={{
+                    height: '100%', borderRadius: 3,
+                    background: `linear-gradient(90deg, ${colors.mint}, ${colors.sky})`,
+                  }}
+                />
+              </div>
+              {/* Stats row */}
+              <div style={{
+                display: 'flex', gap: 10, flexWrap: 'wrap',
+                fontFamily: fontStack, fontSize: '0.68rem', fontWeight: 600,
+                color: 'rgba(0,0,0,0.55)',
+              }}>
+                <span>Today {s.todayProblems}{s.todayAccuracy !== null ? ` · ${s.todayAccuracy}%` : ''}</span>
+                <span>· 7d {s.sevenDayProblems}{s.sevenDayAccuracy !== null ? ` · ${s.sevenDayAccuracy}%` : ''}</span>
+              </div>
+            </div>
+            {/* Tiny 7-day sparkline */}
+            <MiniSparkline values={s.sparkline} />
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+/** 80×32 sparkline used in the all-kids overview. */
+function MiniSparkline({ values }: { values: number[] }) {
+  if (values.length === 0) return null;
+  const w = 80;
+  const h = 32;
+  const step = w / (values.length - 1 || 1);
+  const points = values.map((v, i) => ({
+    x: i * step,
+    y: h - (Math.max(0, Math.min(100, v)) / 100) * (h - 4) - 2,
+  }));
+  const d = points.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x.toFixed(1)} ${p.y.toFixed(1)}`).join(' ');
+  const area = `${d} L ${points[points.length - 1].x.toFixed(1)} ${h} L ${points[0].x.toFixed(1)} ${h} Z`;
+  return (
+    <svg width={w} height={h} viewBox={`0 0 ${w} ${h}`} style={{ flexShrink: 0 }}>
+      <path d={area} fill={`${colors.mint}25`} />
+      <path d={d} fill="none" stroke={colors.mint} strokeWidth={1.8}
+            strokeLinecap="round" strokeLinejoin="round" />
+      {points.map((p, i) => (
+        <circle key={i} cx={p.x} cy={p.y} r={1.8} fill={colors.mint} />
+      ))}
+    </svg>
+  );
+}
+
+/**
+ * CategoryMasteryBars — horizontal bars showing mastery % per concept
+ * group. Lets a parent see at a glance which curriculum areas the kid
+ * has locked in vs still has work on.
+ */
+function CategoryMasteryBars({ child }: { child: ChildProfile }) {
+  return (
+    <div style={{
+      background: dashboard.cardBg,
+      borderRadius: dashboard.cardRadius,
+      padding: '16px 20px',
+      boxShadow: dashboard.cardShadow,
+      marginBottom: 16,
+    }}>
+      <div style={{
+        fontSize: '0.75rem', fontWeight: 700, color: 'rgba(0,0,0,0.4)',
+        textTransform: 'uppercase' as const, letterSpacing: '0.08em',
+        marginBottom: 12,
+      }}>
+        Mastery by Category
+      </div>
+      {CONCEPT_GROUPS.map(group => {
+        const total = group.concepts.length;
+        const mastered = group.concepts.filter(
+          sc => child.conceptProgress[sc]?.status === 'mastered',
+        ).length;
+        const active = group.concepts.some(
+          sc => child.conceptProgress[sc]?.status === 'active',
+        );
+        const pct = total > 0 ? (mastered / total) * 100 : 0;
+        return (
+          <div key={group.label} style={{ marginBottom: 10 }}>
+            <div style={{
+              display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+              marginBottom: 4,
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                <div style={{ width: 9, height: 9, borderRadius: '50%', background: group.color }} />
+                <span style={{
+                  fontFamily: fontStack, fontWeight: 700, fontSize: '0.8rem',
+                  color: colors.charcoal,
+                }}>
+                  {group.label}
+                </span>
+                {active && (
+                  <span style={{
+                    fontSize: '0.6rem', fontWeight: 700, color: colors.peach,
+                    background: `${colors.peach}20`, padding: '1px 6px', borderRadius: 6,
+                  }}>
+                    Learning
+                  </span>
+                )}
+              </div>
+              <span style={{
+                fontFamily: fontStack, fontSize: '0.7rem', fontWeight: 700,
+                color: 'rgba(0,0,0,0.5)',
+              }}>
+                {mastered}/{total}
+              </span>
+            </div>
+            <div style={{
+              height: 10, borderRadius: 5,
+              background: 'rgba(0,0,0,0.06)', overflow: 'hidden',
+            }}>
+              <motion.div
+                initial={{ width: 0 }}
+                animate={{ width: `${pct}%` }}
+                transition={{ duration: 0.8, ease: 'easeOut' }}
+                style={{
+                  height: '100%',
+                  borderRadius: 5,
+                  background: `linear-gradient(90deg, ${group.color}, ${group.color}CC)`,
+                }}
+              />
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+/**
+ * WeeklyActivityChart — bar chart of problems attempted per day over the
+ * last 7 days. Bar colour encodes accuracy (mint ≥ 80%, peach 60–80%,
+ * coral < 60%). Empty days show as flat bases. Helps parents see whether
+ * the kid is practising daily or just in big spurts.
+ */
+function WeeklyActivityChart({ child }: { child: ChildProfile }) {
+  // Aggregate accuracyHistory by date for the last 7 days
+  const dailyTotals = new Map<string, { total: number; correct: number }>();
+  for (const h of child.accuracyHistory ?? []) {
+    const t = h._total ?? 1;
+    const correct = Math.round((h.accuracy / 100) * t);
+    const bucket = dailyTotals.get(h.date) ?? { total: 0, correct: 0 };
+    bucket.total += t;
+    bucket.correct += correct;
+    dailyTotals.set(h.date, bucket);
+  }
+
+  const days: { label: string; date: string; count: number; accuracy: number | null }[] = [];
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    const key = d.toISOString().slice(0, 10);
+    const bucket = dailyTotals.get(key);
+    const dayLabel = d.toLocaleDateString(undefined, { weekday: 'short' }).slice(0, 2);
+    days.push({
+      label: dayLabel,
+      date: key,
+      count: bucket?.total ?? 0,
+      accuracy: bucket && bucket.total > 0 ? Math.round((bucket.correct / bucket.total) * 100) : null,
+    });
+  }
+
+  const maxCount = Math.max(1, ...days.map(d => d.count));
+  const totalThisWeek = days.reduce((s, d) => s + d.count, 0);
+
+  const colorFor = (acc: number | null): string => {
+    if (acc === null) return 'rgba(0,0,0,0.08)';
+    if (acc >= 80) return colors.mint;
+    if (acc >= 60) return colors.peach;
+    return colors.coral;
+  };
+
+  return (
+    <div style={{
+      background: dashboard.cardBg,
+      borderRadius: dashboard.cardRadius,
+      padding: '16px 20px',
+      boxShadow: dashboard.cardShadow,
+      marginBottom: 16,
+    }}>
+      <div style={{
+        display: 'flex', justifyContent: 'space-between', alignItems: 'baseline',
+        marginBottom: 12,
+      }}>
+        <div style={{
+          fontSize: '0.75rem', fontWeight: 700, color: 'rgba(0,0,0,0.4)',
+          textTransform: 'uppercase' as const, letterSpacing: '0.08em',
+        }}>
+          This Week
+        </div>
+        <div style={{
+          fontFamily: fontStack, fontSize: '0.72rem', fontWeight: 600,
+          color: 'rgba(0,0,0,0.5)',
+        }}>
+          {totalThisWeek} problems
+        </div>
+      </div>
+      <div style={{
+        display: 'flex', alignItems: 'flex-end', gap: 8, height: 110,
+        padding: '0 4px',
+      }}>
+        {days.map((d, i) => {
+          const heightPct = d.count > 0 ? Math.max(8, (d.count / maxCount) * 100) : 6;
+          return (
+            <div key={d.date} style={{
+              flex: 1, display: 'flex', flexDirection: 'column',
+              alignItems: 'center', gap: 4,
+            }}>
+              <div style={{
+                fontFamily: fontStack, fontSize: '0.62rem', fontWeight: 700,
+                color: 'rgba(0,0,0,0.5)',
+                height: 14,
+              }}>
+                {d.count > 0 ? d.count : ''}
+              </div>
+              <div style={{
+                width: '100%', flex: 1, display: 'flex', alignItems: 'flex-end',
+              }}>
+                <motion.div
+                  initial={{ height: 0 }}
+                  animate={{ height: `${heightPct}%` }}
+                  transition={{ duration: 0.5, delay: i * 0.04, ease: 'easeOut' }}
+                  style={{
+                    width: '100%',
+                    borderRadius: '6px 6px 2px 2px',
+                    background: colorFor(d.accuracy),
+                    minHeight: 4,
+                  }}
+                />
+              </div>
+              <div style={{
+                fontFamily: fontStack, fontSize: '0.62rem', fontWeight: 700,
+                color: 'rgba(0,0,0,0.45)',
+              }}>
+                {d.label}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+      {/* Accuracy legend */}
+      <div style={{
+        display: 'flex', justifyContent: 'center', gap: 12, marginTop: 10,
+        fontFamily: fontStack, fontSize: '0.6rem', fontWeight: 600,
+        color: 'rgba(0,0,0,0.45)',
+      }}>
+        <LegendDot color={colors.mint} label="≥80%" />
+        <LegendDot color={colors.peach} label="60-80%" />
+        <LegendDot color={colors.coral} label="<60%" />
+      </div>
+    </div>
+  );
+}
+
+function LegendDot({ color, label }: { color: string; label: string }) {
+  return (
+    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+      <span style={{ width: 8, height: 8, borderRadius: '50%', background: color }} />
+      {label}
+    </span>
+  );
+}
+
 /** Inline SVG mini sparkline for accuracy trends */
 function AccuracyTrendChart({ data }: { data: { date: string; accuracy: number }[] }) {
   if (data.length < 2) {
@@ -765,6 +1178,9 @@ export default function ParentDashboard({
           </AnimatePresence>
         </div>
 
+        {/* ── All Kids at a Glance — comparison panel for every child ── */}
+        <AllKidsOverview children={childProfiles} />
+
         {selectedChild ? (
           <>
             {/* ── Progress Overview ── */}
@@ -819,6 +1235,12 @@ export default function ParentDashboard({
                 />
               </div>
             </div>
+
+            {/* ── Mastery by Category (new horizontal bar breakdown) ── */}
+            <CategoryMasteryBars child={selectedChild} />
+
+            {/* ── This Week activity (new 7-day bar chart) ── */}
+            <WeeklyActivityChart child={selectedChild} />
 
             {/* ── Concept Mastery (grouped) ── */}
             <div style={{

@@ -317,34 +317,37 @@ export default function CharacterRig({
               </>
             )}
             {characterId === 'sunny' && (
-              // FOX — curved teardrop ears that flare out of the head with
-              // a wide attached base and a pointed tip. Dark ear-tips read
-              // as classic fox markings.
+              // FOX — narrow pointed ears positioned over the top-sides of
+              // the head with their base fully embedded INSIDE the head
+              // silhouette. Because char-ears renders before the head
+              // ellipse, the base is hidden by the head — only the upper
+              // point (above y=44) is visible, so each ear reads as a fox
+              // ear peeking out from behind the head rather than a triangle
+              // floating in space.
               <>
-                {/* LEFT ear — base hugs the head top around (78..118, 68) */}
+                {/* LEFT ear — base anchored inside the head at x≈118..148, y=60;
+                    pointed tip at (116, 4). */}
                 <path
-                  d="M72,70 Q60,40 82,10 Q100,26 120,70 Q108,62 72,70 Z"
+                  d="M118,60 Q102,30 116,4 Q138,24 148,60 Z"
                   fill={`url(#${id('body')})`}
                 />
                 <path
-                  d="M82,66 Q76,42 88,20 Q98,34 112,66 Q100,60 82,66 Z"
+                  d="M122,56 Q112,32 118,12 Q134,28 142,56 Z"
                   fill={`url(#${id('belly')})`}
                 />
-                <path d="M78,24 Q82,10 90,14 Q88,24 82,30 Z" fill="#3D1810" opacity="0.9" />
-                {/* base blend so ear joins the head silhouette smoothly */}
-                <ellipse cx="96" cy="70" rx="26" ry="6" fill={`url(#${id('body')})`} />
+                {/* Dark fox ear-tip */}
+                <path d="M114,18 Q116,4 122,10 Q120,20 116,24 Z" fill="#3D1810" opacity="0.9" />
 
-                {/* RIGHT ear — mirror */}
+                {/* RIGHT ear — mirrored across x=160 */}
                 <path
-                  d="M248,70 Q260,40 238,10 Q220,26 200,70 Q212,62 248,70 Z"
+                  d="M202,60 Q218,30 204,4 Q182,24 172,60 Z"
                   fill={`url(#${id('body')})`}
                 />
                 <path
-                  d="M238,66 Q244,42 232,20 Q222,34 208,66 Q220,60 238,66 Z"
+                  d="M198,56 Q208,32 202,12 Q186,28 178,56 Z"
                   fill={`url(#${id('belly')})`}
                 />
-                <path d="M242,24 Q238,10 230,14 Q232,24 238,30 Z" fill="#3D1810" opacity="0.9" />
-                <ellipse cx="224" cy="70" rx="26" ry="6" fill={`url(#${id('body')})`} />
+                <path d="M206,18 Q204,4 198,10 Q200,20 204,24 Z" fill="#3D1810" opacity="0.9" />
               </>
             )}
             {characterId === 'rosie' && (
