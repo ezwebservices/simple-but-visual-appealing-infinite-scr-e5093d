@@ -24,11 +24,14 @@ export type SubConcept =
   | 'number-order-10'
   | 'counting-on'
   | 'addition-small'
+  | 'doubles'
+  | 'decomposition'
   | 'addition-10'
+  | 'make-10'
   | 'subtraction-small'
   | 'subtraction-10';
 
-/** Ordered progression of sub-concepts */
+/** Ordered progression of sub-concepts (20 total — K–1 math curriculum) */
 export const SUB_CONCEPT_ORDER: SubConcept[] = [
   'rote-counting-5',
   'rote-counting-10',
@@ -44,7 +47,10 @@ export const SUB_CONCEPT_ORDER: SubConcept[] = [
   'number-order-10',
   'counting-on',
   'addition-small',
+  'doubles',         // new — doubles fact fluency (1+1..5+5)
+  'decomposition',   // new — part-whole thinking ("5 = 2 + ?")
   'addition-10',
+  'make-10',         // new — bridge-to-ten strategy ("7 + ? = 10")
   'subtraction-small',
   'subtraction-10',
 ];
@@ -134,19 +140,19 @@ export const CHARACTER_UNLOCK_THRESHOLDS: Record<CharacterName, number> = {
   bloo: 0,    // starter
   sunny: 1,   // unlocks after first mastery
   rosie: 3,
-  milo: 5,
-  pip: 7,
-  rex: 10,
+  milo: 6,
+  pip: 10,
+  rex: 14,
   robo: 999,  // legacy alias, never auto-unlocked
 };
 
 /** masteredCount → highest dance move unlocked (1–5) */
 export const DANCE_MOVE_THRESHOLDS: number[] = [
-  0,  // dance 1: from start
-  2,  // dance 2: master 2
-  4,  // dance 3: master 4
-  6,  // dance 4: master 6
-  9,  // dance 5: master 9
+  0,   // dance 1: from start
+  3,   // dance 2
+  7,   // dance 3
+  12,  // dance 4
+  17,  // dance 5 (the finale — unlocks near the end of the full curriculum)
 ];
 
 export interface ProgressData {

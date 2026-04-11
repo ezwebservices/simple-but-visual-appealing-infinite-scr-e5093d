@@ -50,7 +50,7 @@ function GameView() {
   const { recordCorrect, recordWrong } = useProgress();
   const { speak, isSpeaking } = useAudio();
   const { children, activeChild, activeChildId, addChild, switchChild, updateChild, removeChild, resetChild } = useChildProfiles();
-  const { recordAnswer, getActiveConcept } = useMastery();
+  const { recordAnswer, getActiveConcept, getNextProblemConcept, getConceptDifficulty } = useMastery();
   const [view, setView] = useState<AppView>('game');
   const [unlockEvent, setUnlockEvent] = useState<UnlockEvent | null>(null);
 
@@ -153,6 +153,12 @@ function GameView() {
         onSpeak={speak}
         isSpeaking={isSpeaking}
         concept={currentConcept}
+        getConceptForIndex={(index) =>
+          activeChild ? getNextProblemConcept(activeChild, index) : currentConcept
+        }
+        getDifficultyForConcept={(c) =>
+          activeChild ? getConceptDifficulty(activeChild, c) : 0.5
+        }
         availableCharacters={unlockedCharacters}
         unlockedDanceMoves={unlockedDanceMoves}
       />

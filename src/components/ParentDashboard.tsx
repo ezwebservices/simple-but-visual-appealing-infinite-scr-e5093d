@@ -101,6 +101,9 @@ const SUB_CONCEPT_LABELS: Record<SubConcept, string> = {
   'addition-10': 'Addition (to 10)',
   'subtraction-small': 'Subtraction (Small)',
   'subtraction-10': 'Subtraction (to 10)',
+  'doubles': 'Doubles',
+  'decomposition': 'Part-Whole',
+  'make-10': 'Make 10',
 };
 
 interface ConceptGroup {
@@ -118,16 +121,18 @@ const CONCEPT_GROUPS: ConceptGroup[] = [
   { label: 'Number Order', color: '#FF6B6B', concepts: ['number-order-5', 'number-order-10'] },
   { label: 'Counting On', color: '#DDA0DD', concepts: ['counting-on'] },
   { label: 'Addition', color: '#4ECDC4', concepts: ['addition-small', 'addition-10'] },
+  { label: 'Doubles & Parts', color: '#6FCF97', concepts: ['doubles', 'decomposition'] },
+  { label: 'Make 10', color: '#56CCF2', concepts: ['make-10'] },
   { label: 'Subtraction', color: '#FF6B6B', concepts: ['subtraction-small', 'subtraction-10'] },
 ];
 
 const AVATAR_OPTIONS: CharacterName[] = ['bloo', 'sunny', 'rosie', 'milo', 'pip', 'rex', 'robo'];
 const AVATAR_LABELS: Record<CharacterName, string> = {
   bloo: 'Bloo Bear',
-  sunny: 'Sunny Bug',
-  rosie: 'Rosie Owl',
+  sunny: 'Sunny Fox',
+  rosie: 'Rosie Bunny',
   milo: 'Milo Frog',
-  pip: 'Pip Zebra',
+  pip: 'Pip Panda',
   rex: 'Rex Robot',
   robo: 'Robo Rocket',
 };

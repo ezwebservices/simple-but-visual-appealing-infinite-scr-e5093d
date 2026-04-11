@@ -1,55 +1,186 @@
-"""One-shot script: replace 8 character SVGs in landing/index.html
-with the new polished design (matches CharacterRig.tsx)."""
+"""Regenerate the 8 character SVGs in landing/index.html so each pal is a
+distinct animal (bear/fox/bunny/frog/panda/robot). Palettes and decoration
+shapes are kept in lockstep with src/components/characters/CharacterRig.tsx."""
 
 PALETTES = {
-    'sunny': {
+    'sunny': {  # FOX — warm orange
         'body':  ['#FFEDE0', '#FFD0BC', '#F4A48E', '#E2806A', '#C95F4A'],
         'belly': ['#FFF8E5', '#FCEDC4', '#F5DA9A', '#E8C57A'],
         'iris':  ['#1A0F08', '#3D2818', '#7A4F2C'],
     },
-    'rosie': {
-        'body':  ['#F5E5FB', '#E5C8F0', '#CFA8E0', '#B689CC', '#9D6FB5'],
-        'belly': ['#FFF6F8', '#FBE3EC', '#F5C9D8', '#E8AABC'],
-        'iris':  ['#1A0820', '#3D1F4A', '#7A4F8C'],
+    'rosie': {  # BUNNY — soft pink (re-paletted from purple)
+        'body':  ['#FFF0F4', '#FFD8E2', '#FFB8CC', '#F594B0', '#E07898'],
+        'belly': ['#FFFAFC', '#FFEEF2', '#FFDCE5', '#F5B8C8'],
+        'iris':  ['#1A0820', '#3D1F2A', '#9D5870'],
     },
-    'milo': {
+    'milo': {  # FROG — fresh green
         'body':  ['#E8FBE8', '#C8F0CC', '#A2DCA8', '#7BC587', '#5BA868'],
         'belly': ['#F8FFE8', '#EFFAC8', '#E0F098', '#C8DD78'],
         'iris':  ['#0A1A05', '#1F4A1A', '#5A8C45'],
     },
-    'pip': {
+    'pip': {  # PANDA — grayscale white
         'body':  ['#FAFCFF', '#EFF1F5', '#DFE3EA', '#C5CCD6', '#A8B0BC'],
         'belly': ['#FFFFFF', '#F5F7FA', '#E5E9F0', '#C5CCD6'],
         'iris':  ['#0A0A12', '#1F1F2A', '#525266'],
     },
-    'rex': {
+    'rex': {  # ROBOT — cyan
         'body':  ['#E0F8FE', '#BDEEFB', '#94DEF0', '#6DC8DD', '#54B3C8'],
         'belly': ['#F0FCFF', '#D8F4FA', '#B8E8F2', '#90D2E0'],
         'iris':  ['#0A1F2A', '#1F3D4A', '#52788C'],
     },
 }
 
-ACCENTS = {
-    'sunny': '<circle cx="142" cy="232" r="4" fill="#2A1810" opacity="0.7"/><circle cx="178" cy="232" r="4" fill="#2A1810" opacity="0.7"/><circle cx="160" cy="252" r="3.5" fill="#2A1810" opacity="0.7"/>',
-    'rosie': '',
-    'milo':  '',
-    'pip':   '<path d="M130,225 Q160,221 190,225" stroke="#2A2A38" stroke-width="3" fill="none" opacity="0.7" stroke-linecap="round"/><path d="M125,245 Q160,242 195,245" stroke="#2A2A38" stroke-width="3" fill="none" opacity="0.7" stroke-linecap="round"/><path d="M130,265 Q160,268 190,265" stroke="#2A2A38" stroke-width="3" fill="none" opacity="0.7" stroke-linecap="round"/>',
-    'rex':   '<rect x="142" y="225" width="36" height="22" rx="4" fill="#1F3D4A" opacity="0.6"/><circle cx="152" cy="236" r="2" fill="#FFD93D"/><circle cx="160" cy="236" r="2" fill="#FF6B6B"/><circle cx="168" cy="236" r="2" fill="#4ECDC4"/>',
+# ─── Per-animal decorations ────────────────────────────────────────────────
+# EARS — replaces the default bear-ear block. Varies per animal.
+EARS = {
+    'sunny': lambda p: (
+        # FOX — pointy triangle ears with dark tips
+        '<path d="M70,68 L92,5 L116,68 Z" fill="url(#{prefix}-body)"/>'
+        '<path d="M82,55 L92,18 L104,55 Z" fill="url(#{prefix}-belly)"/>'
+        '<path d="M84,30 L92,5 L100,30 Z" fill="#3D1810" opacity="0.85"/>'
+        '<path d="M204,68 L228,5 L250,68 Z" fill="url(#{prefix}-body)"/>'
+        '<path d="M216,55 L228,18 L240,55 Z" fill="url(#{prefix}-belly)"/>'
+        '<path d="M220,30 L228,5 L236,30 Z" fill="#3D1810" opacity="0.85"/>'
+    ),
+    'rosie': lambda p: (
+        # BUNNY — long upright pink-lined oval ears
+        '<ellipse cx="100" cy="40" rx="16" ry="50" fill="url(#{prefix}-body)" transform="rotate(-8 100 40)"/>'
+        '<ellipse cx="100" cy="42" rx="9" ry="40" fill="#FFD2DE" transform="rotate(-8 100 42)"/>'
+        '<ellipse cx="100" cy="32" rx="5" ry="28" fill="#FFB8CC" transform="rotate(-8 100 32)" opacity="0.7"/>'
+        '<ellipse cx="220" cy="40" rx="16" ry="50" fill="url(#{prefix}-body)" transform="rotate(8 220 40)"/>'
+        '<ellipse cx="220" cy="42" rx="9" ry="40" fill="#FFD2DE" transform="rotate(8 220 42)"/>'
+        '<ellipse cx="220" cy="32" rx="5" ry="28" fill="#FFB8CC" transform="rotate(8 220 32)" opacity="0.7"/>'
+    ),
+    'milo': lambda p: (
+        # FROG — small green eye-bump pads + crest spots (no side ears)
+        '<ellipse cx="120" cy="48" rx="14" ry="10" fill="url(#{prefix}-body)"/>'
+        '<ellipse cx="116" cy="44" rx="6" ry="4" fill="url(#{prefix}-sheen)"/>'
+        '<ellipse cx="200" cy="48" rx="14" ry="10" fill="url(#{prefix}-body)"/>'
+        '<ellipse cx="196" cy="44" rx="6" ry="4" fill="url(#{prefix}-sheen)"/>'
+        f'<circle cx="160" cy="42" r="4" fill="{p["body"][3]}" opacity="0.8"/>'
+        f'<circle cx="148" cy="46" r="3" fill="{p["body"][3]}" opacity="0.6"/>'
+        f'<circle cx="172" cy="46" r="3" fill="{p["body"][3]}" opacity="0.6"/>'
+    ),
+    'pip': lambda p: (
+        # PANDA — round black ears perched above the head
+        '<circle cx="92" cy="32" r="18" fill="#1A1A22"/>'
+        '<circle cx="92" cy="32" r="12" fill="#2A2A38" opacity="0.6"/>'
+        '<circle cx="88" cy="26" r="5" fill="#3D3D4A" opacity="0.8"/>'
+        '<circle cx="228" cy="32" r="18" fill="#1A1A22"/>'
+        '<circle cx="228" cy="32" r="12" fill="#2A2A38" opacity="0.6"/>'
+        '<circle cx="224" cy="26" r="5" fill="#3D3D4A" opacity="0.8"/>'
+    ),
+    'rex': lambda p: (
+        # ROBOT — square satellite-dish "ears"
+        '<rect x="56" y="100" width="20" height="36" rx="3" fill="url(#{prefix}-body)"/>'
+        f'<rect x="60" y="106" width="12" height="6" rx="1" fill="{p["iris"][1]}" opacity="0.7"/>'
+        '<circle cx="66" cy="124" r="3" fill="#FFD93D"/>'
+        '<rect x="244" y="100" width="20" height="36" rx="3" fill="url(#{prefix}-body)"/>'
+        f'<rect x="248" y="106" width="12" height="6" rx="1" fill="{p["iris"][1]}" opacity="0.7"/>'
+        '<circle cx="254" cy="124" r="3" fill="#FFD93D"/>'
+    ),
 }
 
+# HEAD_OVERLAY — drawn AFTER head ellipse and BEFORE cheeks (eye patches, etc.)
+HEAD_OVERLAYS = {
+    'sunny': lambda p: (
+        # FOX — white snout mask
+        '<path d="M120,150 Q160,200 200,150 Q200,180 160,200 Q120,180 120,150 Z" fill="#FFFAEC" opacity="0.85"/>'
+    ),
+    'rosie': lambda p: '',
+    'milo':  lambda p: '',
+    'pip':   lambda p: (
+        # PANDA — dark eye patches behind the eyes
+        '<ellipse cx="120" cy="135" rx="32" ry="34" fill="#1A1A22" transform="rotate(-12 120 135)"/>'
+        '<ellipse cx="200" cy="135" rx="32" ry="34" fill="#1A1A22" transform="rotate(12 200 135)"/>'
+    ),
+    'rex':   lambda p: '',
+}
+
+# BODY_ACCENT — belly mark (heart for bear, white belly for fox, etc.)
+BODY_ACCENTS = {
+    'sunny': lambda p: (
+        # FOX — white belly patch + chest fluff
+        '<ellipse cx="160" cy="252" rx="32" ry="28" fill="#FFFAEC" opacity="0.7"/>'
+        '<path d="M148,228 Q160,222 172,228 Q170,236 160,238 Q150,236 148,228 Z" fill="#FFFFFF" opacity="0.85"/>'
+    ),
+    'rosie': lambda p: (
+        # BUNNY — small white flower
+        '<circle cx="160" cy="240" r="3.5" fill="#FFD93D"/>'
+        '<circle cx="155" cy="236" r="3" fill="#FFFFFF"/>'
+        '<circle cx="165" cy="236" r="3" fill="#FFFFFF"/>'
+        '<circle cx="155" cy="244" r="3" fill="#FFFFFF"/>'
+        '<circle cx="165" cy="244" r="3" fill="#FFFFFF"/>'
+    ),
+    'milo': lambda p: (
+        # FROG — darker spots on belly
+        f'<circle cx="142" cy="245" r="4" fill="{p["body"][4]}" opacity="0.6"/>'
+        f'<circle cx="178" cy="245" r="4" fill="{p["body"][4]}" opacity="0.6"/>'
+        f'<circle cx="160" cy="262" r="3.5" fill="{p["body"][4]}" opacity="0.6"/>'
+    ),
+    'pip': lambda p: (
+        # PANDA — black tummy patch (iconic panda body mark)
+        '<ellipse cx="160" cy="248" rx="42" ry="38" fill="#1A1A22" opacity="0.92"/>'
+        '<ellipse cx="155" cy="240" rx="22" ry="14" fill="#3D3D4A" opacity="0.4"/>'
+    ),
+    'rex': lambda p: (
+        # ROBOT — chest panel with indicator lights
+        f'<rect x="142" y="225" width="36" height="22" rx="4" fill="{p["iris"][1]}" opacity="0.6"/>'
+        '<circle cx="152" cy="236" r="2" fill="#FFD93D"/>'
+        '<circle cx="160" cy="236" r="2" fill="#FF6B6B"/>'
+        '<circle cx="168" cy="236" r="2" fill="#4ECDC4"/>'
+    ),
+}
+
+# MOUTH_ACCENT — drawn over the default smile
+MOUTH_ACCENTS = {
+    'sunny': lambda p: (
+        # FOX — slim snout outline
+        '<path d="M150,168 Q160,178 170,168" fill="none" stroke="#3D1810" stroke-width="1.2" opacity="0.7"/>'
+    ),
+    'rosie': lambda p: (
+        # BUNNY — two front teeth
+        '<rect x="156" y="183" width="3.5" height="6" rx="0.8" fill="#FFFFFF" stroke="#3D2818" stroke-width="0.5"/>'
+        '<rect x="160.5" y="183" width="3.5" height="6" rx="0.8" fill="#FFFFFF" stroke="#3D2818" stroke-width="0.5"/>'
+    ),
+    'milo': lambda p: (
+        # FROG — extra-wide mouth replacing the smile
+        '<path d="M120,176 Q160,200 200,176" fill="none" stroke="#1A0F08" stroke-width="4" stroke-linecap="round"/>'
+        '<circle cx="135" cy="180" r="2" fill="#1A0F08" opacity="0.7"/>'
+        '<circle cx="185" cy="180" r="2" fill="#1A0F08" opacity="0.7"/>'
+    ),
+    'pip': lambda p: '',
+    'rex': lambda p: (
+        # ROBOT — grille mouth
+        '<rect x="148" y="180" width="24" height="6" rx="1" fill="#1F3D4A" opacity="0.8"/>'
+        f'<line x1="152" y1="180" x2="152" y2="186" stroke="{p["body"][0]}" stroke-width="0.8"/>'
+        f'<line x1="156" y1="180" x2="156" y2="186" stroke="{p["body"][0]}" stroke-width="0.8"/>'
+        f'<line x1="160" y1="180" x2="160" y2="186" stroke="{p["body"][0]}" stroke-width="0.8"/>'
+        f'<line x1="164" y1="180" x2="164" y2="186" stroke="{p["body"][0]}" stroke-width="0.8"/>'
+        f'<line x1="168" y1="180" x2="168" y2="186" stroke="{p["body"][0]}" stroke-width="0.8"/>'
+    ),
+}
+
+# HEAD_ACCENT — drawn above head (antenna, etc.)
 HEAD_ACCENTS = {
-    'sunny': '',
-    'rosie': '',
-    'milo':  '',
-    'pip':   '',
-    'rex':   '<line x1="160" y1="44" x2="160" y2="20" stroke="#2C7388" stroke-width="2.5"/><circle cx="160" cy="16" r="6" fill="#FF6B6B"/>',
+    'sunny': lambda p: '',
+    'rosie': lambda p: '',
+    'milo':  lambda p: '',
+    'pip':   lambda p: '',
+    'rex':   lambda p: (
+        '<line x1="160" y1="44" x2="160" y2="20" stroke="#2C7388" stroke-width="2.5"/>'
+        '<circle cx="160" cy="16" r="6" fill="#FF6B6B"/>'
+    ),
 }
 
 
 def make_svg(prefix, palette_key):
     p = PALETTES[palette_key]
-    accent = ACCENTS[palette_key]
-    head_accent = HEAD_ACCENTS[palette_key]
+    ears         = EARS[palette_key](p).replace('{prefix}', prefix)
+    head_overlay = HEAD_OVERLAYS[palette_key](p).replace('{prefix}', prefix)
+    body_accent  = BODY_ACCENTS[palette_key](p).replace('{prefix}', prefix)
+    mouth_accent = MOUTH_ACCENTS[palette_key](p).replace('{prefix}', prefix)
+    head_accent  = HEAD_ACCENTS[palette_key](p).replace('{prefix}', prefix)
     return (
         '<svg viewBox="0 0 320 380" style="width:100%;height:100%">\n'
         '              <defs>\n'
@@ -86,18 +217,14 @@ def make_svg(prefix, palette_key):
         f'                <ellipse cx="160" cy="240" rx="68" ry="58" fill="url(#{prefix}-body)"/>\n'
         f'                <ellipse cx="142" cy="222" rx="42" ry="32" fill="url(#{prefix}-sheen)"/>\n'
         f'                <ellipse cx="160" cy="248" rx="44" ry="42" fill="url(#{prefix}-belly)"/>\n'
-        f'                {accent}\n'
+        f'                {body_accent}\n'
         '              </g>\n'
         '              <g class="h-head" style="transform-origin:160px 200px">\n'
-        f'                <path d="M92,38 C72,38 65,55 70,72 C74,84 88,90 92,90 C96,90 110,84 114,72 C119,55 112,38 92,38 Z" fill="url(#{prefix}-body)"/>\n'
-        f'                <path d="M92,55 C82,55 78,65 81,75 C84,82 90,86 92,86 C94,86 100,82 103,75 C106,65 102,55 92,55 Z" fill="url(#{prefix}-belly)"/>\n'
-        '                <ellipse cx="92" cy="74" rx="6" ry="8" fill="#A87530" opacity="0.45"/>\n'
-        f'                <path d="M228,38 C208,38 201,55 206,72 C210,84 224,90 228,90 C232,90 246,84 250,72 C255,55 248,38 228,38 Z" fill="url(#{prefix}-body)"/>\n'
-        f'                <path d="M228,55 C218,55 214,65 217,75 C220,82 226,86 228,86 C230,86 236,82 239,75 C242,65 238,55 228,55 Z" fill="url(#{prefix}-belly)"/>\n'
-        '                <ellipse cx="228" cy="74" rx="6" ry="8" fill="#A87530" opacity="0.45"/>\n'
+        f'                {ears}\n'
         f'                <ellipse cx="160" cy="130" rx="92" ry="86" fill="url(#{prefix}-body)"/>\n'
         f'                <ellipse cx="135" cy="95" rx="58" ry="40" fill="url(#{prefix}-sheen)"/>\n'
         '                <ellipse cx="125" cy="75" rx="28" ry="11" fill="white" opacity="0.32"/>\n'
+        f'                {head_overlay}\n'
         f'                {head_accent}\n'
         f'                <circle cx="80" cy="155" r="22" fill="url(#{prefix}-cheek)"/>\n'
         f'                <circle cx="240" cy="155" r="22" fill="url(#{prefix}-cheek)"/>\n'
@@ -119,6 +246,7 @@ def make_svg(prefix, palette_key):
         '                <ellipse cx="160" cy="167" rx="6" ry="4" fill="#3D2818"/>\n'
         '                <ellipse cx="158" cy="165" rx="2.5" ry="1.5" fill="white" opacity="0.7"/>\n'
         '                <path d="M148,180 Q160,193 172,180" fill="none" stroke="#1A0F08" stroke-width="3.5" stroke-linecap="round"/>\n'
+        f'                {mouth_accent}\n'
         '              </g>\n'
         '              <g class="h-left-arm" style="transform-origin:108px 218px">\n'
         f'                <path d="M108,196 Q132,196 134,222 Q138,250 132,276 Q140,298 122,308 Q108,314 94,308 Q76,298 84,276 Q78,250 82,222 Q84,196 108,196 Z" fill="url(#{prefix}-body)"/>\n'
@@ -153,12 +281,12 @@ with open('landing/index.html', 'r', encoding='utf-8') as f:
     s = f.read()
 
 print('Hero dancers...')
-s = replace_svg_at_marker(s, 'id="hs-shell"', make_svg('hs', 'sunny'))
+s = replace_svg_at_marker(s, 'id="hs-body"', make_svg('hs', 'sunny'))
 s = replace_svg_at_marker(s, 'id="hr-body"', make_svg('hr', 'rosie'))
 s = replace_svg_at_marker(s, 'id="hm-body"', make_svg('hm', 'milo'))
 
 print('Meet the Pals dancers...')
-s = replace_svg_at_marker(s, 'id="sb-shell"', make_svg('sb', 'sunny'))
+s = replace_svg_at_marker(s, 'id="sb-body"', make_svg('sb', 'sunny'))
 s = replace_svg_at_marker(s, 'id="ro-body"', make_svg('ro', 'rosie'))
 s = replace_svg_at_marker(s, 'id="mf-body"', make_svg('mf', 'milo'))
 s = replace_svg_at_marker(s, 'id="pz-body"', make_svg('pz', 'pip'))

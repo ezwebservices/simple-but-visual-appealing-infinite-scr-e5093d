@@ -79,6 +79,9 @@ function getSpokenText(problem: MathProblem): string {
     return `What comes ${dir} ${num1}?`;
   }
   if (concept === 'counting-on') return `Start at ${num1}, count ${num2} more!`;
+  if (concept === 'doubles') return `Double ${num1}! ${num1} plus ${num1}?`;
+  if (concept === 'make-10') return `${num1} plus what makes 10?`;
+  if (concept === 'decomposition') return `${num2} equals ${num1} plus what?`;
   if (concept.startsWith('addition')) return `How many is ${num1} plus ${num2}?`;
   if (concept.startsWith('subtraction')) return `How many is ${num1} minus ${num2}?`;
   return 'How many?';
@@ -98,6 +101,9 @@ function getQuestionText(problem: MathProblem): string {
     return `What comes ${dir} ${num1}?`;
   }
   if (concept === 'counting-on') return `${num1} + ${num2} more = ?`;
+  if (concept === 'doubles') return `${num1} + ${num1} = ?`;
+  if (concept === 'make-10') return `${num1} + ? = 10`;
+  if (concept === 'decomposition') return `${num2} = ${num1} + ?`;
   const sym = operator === 'plus' ? '+' : '\u2212';
   return `${num1} ${sym} ${num2} = ?`;
 }
@@ -213,10 +219,14 @@ export default function LessonCard({ problem, isActive, onCorrect, onWrong, onAd
   const isComparing = concept.startsWith('comparing');
   const isCountingOn = concept === 'counting-on';
   const isAddition = concept.startsWith('addition');
+  const isDoubles = concept === 'doubles';
+  const isMakeTen = concept === 'make-10';
+  const isDecomposition = concept === 'decomposition';
+  const isMissingAddend = isMakeTen || isDecomposition;
   const isOneToOne = concept.startsWith('one-to-one');
   const isRoteCounting = concept.startsWith('rote-counting');
   const showStagger = isOneToOne || isRoteCounting;
-  const showTwoGroups = isComparing || isCountingOn || isAddition;
+  const showTwoGroups = isComparing || isCountingOn || isAddition || isDoubles || isMissingAddend;
 
   return (
     <div
@@ -311,6 +321,50 @@ export default function LessonCard({ problem, isActive, onCorrect, onWrong, onAd
             <ObjectGroup count={problem.num1} objectType={problem.objectType} />
             <span style={{ fontSize: '2rem', fontWeight: 700, color: colors.charcoal, fontFamily: fontStack }}>+</span>
             <ObjectGroup count={problem.num2} objectType={problem.objectType} />
+          </>
+        ) : isDoubles ? (
+          /* Doubles — both groups are the same number, visually emphasising
+             the "same amount" idea. */
+          <>
+            <ObjectGroup count={problem.num1} objectType={problem.objectType} />
+            <span style={{ fontSize: '2rem', fontWeight: 700, color: colors.charcoal, fontFamily: fontStack }}>+</span>
+            <ObjectGroup count={problem.num1} objectType={problem.objectType} />
+          </>
+        ) : isMakeTen ? (
+          /* Make 10 — given part, missing part drawn as a dashed ? box,
+             target total shown as a numeral for context. */
+          <>
+            <ObjectGroup count={problem.num1} objectType={problem.objectType} />
+            <span style={{ fontSize: '2rem', fontWeight: 700, color: colors.charcoal, fontFamily: fontStack }}>+</span>
+            <div style={{
+              width: 80, height: 80, borderRadius: 16,
+              border: `4px dashed ${colors.charcoal}`,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              fontSize: '3rem', fontWeight: 900, color: colors.charcoal,
+              fontFamily: fontStack,
+              opacity: 0.6,
+            }}>?</div>
+            <span style={{ fontSize: '2rem', fontWeight: 700, color: colors.charcoal, fontFamily: fontStack }}>= 10</span>
+          </>
+        ) : isDecomposition ? (
+          /* Decomposition — total on the left, one part given, missing part as ?.
+             The kid learns numbers can be broken into parts. */
+          <>
+            <div style={{
+              fontSize: '4rem', fontWeight: 900, color: colors.charcoal,
+              fontFamily: fontStack, lineHeight: 1,
+            }}>{problem.num2}</div>
+            <span style={{ fontSize: '2rem', fontWeight: 700, color: colors.charcoal, fontFamily: fontStack }}>=</span>
+            <ObjectGroup count={problem.num1} objectType={problem.objectType} />
+            <span style={{ fontSize: '2rem', fontWeight: 700, color: colors.charcoal, fontFamily: fontStack }}>+</span>
+            <div style={{
+              width: 72, height: 72, borderRadius: 14,
+              border: `4px dashed ${colors.charcoal}`,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              fontSize: '2.5rem', fontWeight: 900, color: colors.charcoal,
+              fontFamily: fontStack,
+              opacity: 0.6,
+            }}>?</div>
           </>
         ) : concept.startsWith('subtraction') ? (
           <ObjectGroup count={problem.num1} objectType={problem.objectType} />

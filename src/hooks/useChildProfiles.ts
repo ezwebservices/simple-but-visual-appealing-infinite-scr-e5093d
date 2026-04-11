@@ -68,6 +68,33 @@ function reconcileProgress(raw: unknown): Record<SubConcept, SubConceptProgress>
       fresh[target] = { ...value, subConcept: target };
     }
   }
+
+  // Auto-activate the next concept after any mastered chain. Needed when new
+  // sub-concepts are inserted mid-order — existing kids who had mastered
+  // everything past the insertion point would otherwise find the new
+  // concepts stuck as 'locked'.
+  let foundActive = false;
+  for (let i = 0; i < SUB_CONCEPT_ORDER.length; i++) {
+    const key = SUB_CONCEPT_ORDER[i];
+    const cur = fresh[key];
+    if (cur.status === 'active' || cur.status === 'practicing') {
+      foundActive = true;
+      break;
+    }
+    if (cur.status === 'locked') {
+      // The previous concept (if any) determines whether to auto-activate.
+      const prev = i > 0 ? fresh[SUB_CONCEPT_ORDER[i - 1]] : null;
+      if (!prev || prev.status === 'mastered') {
+        fresh[key] = { ...cur, status: 'active' };
+        foundActive = true;
+      }
+      break;
+    }
+  }
+  // If everything is mastered and nothing is active, leave it — the app
+  // treats all-mastered as "keep practicing the last one".
+  void foundActive;
+
   return fresh;
 }
 
