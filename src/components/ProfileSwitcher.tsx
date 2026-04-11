@@ -47,7 +47,7 @@ export default function ProfileSwitcher({ children, activeChildId, onSwitchChild
 
   return (
     <>
-      {/* Tappable active avatar — bottom-left */}
+      {/* Tappable active avatar — top-left (moved from bottom to clear answer buttons on mobile) */}
       <motion.button
         type="button"
         onClick={() => setOpen(true)}
@@ -55,7 +55,7 @@ export default function ProfileSwitcher({ children, activeChildId, onSwitchChild
         aria-label={`Switch profile, current: ${activeChild.name}`}
         style={{
           position: 'fixed',
-          bottom: 16,
+          top: 16,
           left: 16,
           zIndex: 40,
           width: 56,

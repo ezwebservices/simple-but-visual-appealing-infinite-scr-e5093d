@@ -106,14 +106,14 @@ function GameView() {
     >
       {/* Streak counter removed — replaced by the unlock button below */}
 
-      {/* Parent dashboard button — bottom-right */}
+      {/* Parent dashboard button — top-left, next to profile switcher (clears answer buttons on mobile) */}
       <button
         type="button"
         onClick={() => setView('dashboard')}
         style={{
           position: 'fixed',
-          bottom: 20,
-          right: 20,
+          top: 20,
+          left: 84,
           zIndex: 40,
           width: 48,
           height: 48,

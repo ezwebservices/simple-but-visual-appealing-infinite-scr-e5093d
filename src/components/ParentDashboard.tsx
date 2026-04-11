@@ -1,13 +1,63 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { signOut, fetchAuthSession } from 'aws-amplify/auth';
+import { generateClient } from 'aws-amplify/data';
+import type { Schema } from '../../amplify/data/resource';
 import type { ChildProfile, SubConcept, CharacterName } from '../types';
 import { SUB_CONCEPT_ORDER } from '../types';
 import { colors, fontStack, dashboard } from '../styles/theme';
 import CharacterDisplay from './characters/CharacterDisplay';
 import outputs from '../../amplify_outputs.json';
 
-const PIN_STORAGE_KEY = 'numpals-parent-pin';
+// Local cache key — not authoritative. The cloud UserSettings row is the
+// source of truth so a parent who signs in on a new device doesn't get
+// prompted to set a fresh PIN.
+const PIN_CACHE_KEY = 'numpals-parent-pin-hash';
+
+/** SHA-256 hex of the input — used so we never store the raw PIN. */
+async function hashPin(pin: string): Promise<string> {
+  const bytes = new TextEncoder().encode(pin);
+  const digest = await crypto.subtle.digest('SHA-256', bytes);
+  return Array.from(new Uint8Array(digest)).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+/**
+ * Loads the hashed parent PIN from the cloud (UserSettings model) with a
+ * localStorage fallback for offline / first-load. Returns null when no PIN
+ * has been set yet (first-time flow).
+ */
+async function loadParentPinHash(): Promise<string | null> {
+  try {
+    const client = generateClient<Schema>();
+    const { data } = await client.models.UserSettings.list({ limit: 1 });
+    const row = data?.[0];
+    if (row?.parentPinHash) {
+      localStorage.setItem(PIN_CACHE_KEY, row.parentPinHash);
+      return row.parentPinHash;
+    }
+    return null;
+  } catch (e) {
+    console.warn('[NumPals] Could not load parent PIN from cloud, falling back to cache:', e);
+    return localStorage.getItem(PIN_CACHE_KEY);
+  }
+}
+
+/** Upserts the cloud UserSettings row with the hashed PIN. */
+async function saveParentPinHash(hash: string): Promise<void> {
+  localStorage.setItem(PIN_CACHE_KEY, hash);
+  try {
+    const client = generateClient<Schema>();
+    const { data } = await client.models.UserSettings.list({ limit: 1 });
+    const existing = data?.[0];
+    if (existing) {
+      await client.models.UserSettings.update({ id: existing.id, parentPinHash: hash });
+    } else {
+      await client.models.UserSettings.create({ parentPinHash: hash });
+    }
+  } catch (e) {
+    console.warn('[NumPals] Could not save parent PIN to cloud:', e);
+  }
+}
 
 /** Lightweight GraphQL fetch — calls a custom mutation against AppSync. */
 async function callGraphQL(token: string, operationName: string, query: string) {
@@ -283,14 +333,27 @@ function AddChildForm({ onAdd, onCancel }: { onAdd: (name: string, avatar: Chara
   );
 }
 
-/** PIN entry gate */
+/** PIN entry gate — cloud-synced via UserSettings, so the PIN follows the parent across devices. */
 function PinGate({ onSuccess, onClose }: { onSuccess: () => void; onClose: () => void }) {
-  const storedPin = localStorage.getItem(PIN_STORAGE_KEY);
-  const isFirstTime = !storedPin;
+  // While we're fetching the cloud PIN, show a quick loading state and
+  // seed with the cached hash so offline use still works.
+  const [storedHash, setStoredHash] = useState<string | null>(() => localStorage.getItem(PIN_CACHE_KEY));
+  const [loading, setLoading] = useState(true);
   const [pin, setPin] = useState('');
   const [confirmPin, setConfirmPin] = useState('');
-  const [phase, setPhase] = useState<'enter' | 'set' | 'confirm'>(isFirstTime ? 'set' : 'enter');
+  const [phase, setPhase] = useState<'enter' | 'set' | 'confirm'>('enter');
   const [error, setError] = useState('');
+
+  useEffect(() => {
+    let cancelled = false;
+    loadParentPinHash().then(hash => {
+      if (cancelled) return;
+      setStoredHash(hash);
+      setPhase(hash ? 'enter' : 'set');
+      setLoading(false);
+    });
+    return () => { cancelled = true; };
+  }, []);
 
   const handleDigit = (d: string) => {
     setError('');
@@ -310,7 +373,7 @@ function PinGate({ onSuccess, onClose }: { onSuccess: () => void; onClose: () =>
     }
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (phase === 'set') {
       if (pin.length !== 4) { setError('Enter 4 digits'); return; }
       setPhase('confirm');
@@ -318,12 +381,15 @@ function PinGate({ onSuccess, onClose }: { onSuccess: () => void; onClose: () =>
     }
     if (phase === 'confirm') {
       if (confirmPin !== pin) { setError('PINs do not match'); setConfirmPin(''); return; }
-      localStorage.setItem(PIN_STORAGE_KEY, pin);
+      const hash = await hashPin(pin);
+      await saveParentPinHash(hash);
+      setStoredHash(hash);
       onSuccess();
       return;
     }
     // phase === 'enter'
-    if (pin === storedPin) {
+    const hash = await hashPin(pin);
+    if (hash === storedHash) {
       onSuccess();
     } else {
       setError('Wrong PIN');
@@ -332,7 +398,11 @@ function PinGate({ onSuccess, onClose }: { onSuccess: () => void; onClose: () =>
   };
 
   const currentValue = phase === 'confirm' ? confirmPin : pin;
-  const title = phase === 'set' ? 'Set a 4-digit PIN' : phase === 'confirm' ? 'Confirm your PIN' : 'Enter Parent PIN';
+  const title = loading
+    ? 'Loading…'
+    : phase === 'set' ? 'Set a 4-digit PIN'
+    : phase === 'confirm' ? 'Confirm your PIN'
+    : 'Enter Parent PIN';
 
   return (
     <motion.div

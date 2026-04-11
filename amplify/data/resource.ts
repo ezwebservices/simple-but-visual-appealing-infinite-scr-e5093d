@@ -25,6 +25,18 @@ const schema = a.schema({
     .authorization((allow) => [allow.owner()]),
 
   // ────────────────────────────────────────────────────────────
+  // USER SETTINGS — per-user account-wide preferences that should
+  // sync across devices. Currently stores the hashed parent PIN so a
+  // parent isn't forced to set a new PIN on each device they sign in on.
+  // One row per user; the Cognito sub is used as the owner automatically.
+  // ────────────────────────────────────────────────────────────
+  UserSettings: a
+    .model({
+      parentPinHash: a.string(),              // SHA-256 hex of the 4-digit PIN
+    })
+    .authorization((allow) => [allow.owner()]),
+
+  // ────────────────────────────────────────────────────────────
   // USER SUBSCRIPTION — per-user mirror of the Stripe subscription state.
   // Named UserSubscription (not Subscription) because "Subscription" is
   // a reserved GraphQL root operation type and cannot be used as a model.

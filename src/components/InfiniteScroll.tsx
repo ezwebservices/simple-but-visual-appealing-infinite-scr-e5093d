@@ -1,4 +1,5 @@
-import { useState, useCallback, useRef, useEffect } from 'react';
+import { useState, useCallback } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import type { MathProblem, SubConcept, CharacterName } from '../types';
 import LessonCard from './LessonCard';
 import useProblemGenerator from '../hooks/useProblemGenerator';
@@ -15,98 +16,60 @@ interface InfiniteScrollProps {
   unlockedDanceMoves?: number;
 }
 
-const BUFFER_AHEAD = 3;
-
-export default function InfiniteScroll({ onCorrect, onWrong, onSpeak, isSpeaking, concept, availableCharacters, unlockedDanceMoves = 1 }: InfiniteScrollProps) {
+/**
+ * Single-question pager. Shows exactly one problem at a time — no scroll, no
+ * back button, no forward skip. When the child answers correctly, LessonCard
+ * calls `onAdvance` (after its celebration) which swaps to the next problem
+ * with a slide transition. This is the learning loop for every mastery concept.
+ *
+ * Previous versions used IntersectionObserver + scroll-snap but the list could
+ * desync and "freeze," and users could scroll past questions without answering.
+ */
+export default function InfiniteScroll({
+  onCorrect,
+  onWrong,
+  onSpeak,
+  isSpeaking,
+  concept,
+  availableCharacters,
+  unlockedDanceMoves = 1,
+}: InfiniteScrollProps) {
   const generate = useProblemGenerator(availableCharacters);
-  const [cards, setCards] = useState<MathProblem[]>(() =>
-    Array.from({ length: BUFFER_AHEAD + 1 }, () => generate(concept)),
-  );
-  const [activeIndex, setActiveIndex] = useState(0);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const observerRef = useRef<IntersectionObserver | null>(null);
-  const cardRefsMap = useRef<Map<string, HTMLDivElement>>(new Map());
+  const [problem, setProblem] = useState<MathProblem>(() => generate(concept));
 
-  // Grow the list when user scrolls near the end
-  const maybeGrow = useCallback(
-    (visibleIndex: number) => {
-      setActiveIndex(visibleIndex);
-      setCards((prev) => {
-        const remaining = prev.length - visibleIndex - 1;
-        if (remaining < BUFFER_AHEAD) {
-          const needed = BUFFER_AHEAD - remaining;
-          return [...prev, ...Array.from({ length: needed }, () => generate(concept))];
-        }
-        return prev;
-      });
-    },
-    [generate, concept],
-  );
-
-  // Intersection Observer to detect which card is in view
-  useEffect(() => {
-    observerRef.current = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) {
-            const idx = Number(entry.target.getAttribute('data-index'));
-            if (!isNaN(idx)) maybeGrow(idx);
-          }
-        }
-      },
-      { threshold: 0.6 },
-    );
-
-    return () => observerRef.current?.disconnect();
-  }, [maybeGrow]);
-
-  // Attach observer to each card ref
-  const setCardRef = useCallback(
-    (id: string, index: number) => (node: HTMLDivElement | null) => {
-      if (node) {
-        node.setAttribute('data-index', String(index));
-        cardRefsMap.current.set(id, node);
-        observerRef.current?.observe(node);
-      }
-    },
-    [],
-  );
-
-  const scrollToCard = useCallback(
-    (index: number) => {
-      const container = containerRef.current;
-      if (!container) return;
-      const nextCard = Array.from(container.children)[index] as HTMLElement | undefined;
-      if (!nextCard) return;
-      container.scrollTo({ top: nextCard.offsetTop, behavior: 'smooth' });
-    },
-    [],
-  );
+  const handleAdvance = useCallback(() => {
+    setProblem(generate(concept));
+  }, [generate, concept]);
 
   return (
     <div
-      ref={containerRef}
       style={{
-        height: '100vh',
-        overflowY: 'scroll',
-        scrollSnapType: 'y mandatory',
-        WebkitOverflowScrolling: 'touch',
+        position: 'fixed',
+        inset: 0,
+        overflow: 'hidden',
       }}
     >
-      {cards.map((problem, i) => (
-        <div key={problem.id} ref={setCardRef(problem.id, i)}>
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={problem.id}
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -40 }}
+          transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+          style={{ position: 'absolute', inset: 0 }}
+        >
           <LessonCard
             problem={problem}
-            isActive={i === activeIndex}
+            isActive={true}
             onCorrect={() => onCorrect(problem)}
             onWrong={() => onWrong(problem)}
-            onAdvance={() => scrollToCard(i + 1)}
+            onAdvance={handleAdvance}
             onSpeak={onSpeak}
-            isSpeaking={i === activeIndex ? isSpeaking : false}
+            isSpeaking={isSpeaking}
             unlockedDanceMoves={unlockedDanceMoves}
           />
-        </div>
-      ))}
+        </motion.div>
+      </AnimatePresence>
     </div>
   );
 }
