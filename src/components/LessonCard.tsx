@@ -10,6 +10,48 @@ import QuickLessonCard from './animations/QuickLessonCard';
 
 type ButtonState = 'default' | 'correct' | 'wrong-selected' | 'wrong-unselected' | 'correct-reveal';
 
+/**
+ * Canonical dice/domino dot positions for 1–10 on a 100×100 viewBox.
+ * Patterns 1–6 follow standard dice; 7–10 extend by adding rows so the kid
+ * still recognizes a stable shape rather than counting in a line.
+ */
+const DOT_PATTERNS: Record<number, [number, number][]> = {
+  1:  [[50,50]],
+  2:  [[28,28],[72,72]],
+  3:  [[28,28],[50,50],[72,72]],
+  4:  [[28,28],[72,28],[28,72],[72,72]],
+  5:  [[28,28],[72,28],[50,50],[28,72],[72,72]],
+  6:  [[28,22],[72,22],[28,50],[72,50],[28,78],[72,78]],
+  7:  [[28,22],[72,22],[28,50],[50,50],[72,50],[28,78],[72,78]],
+  8:  [[28,22],[72,22],[28,42],[72,42],[28,62],[72,62],[28,82],[72,82]],
+  9:  [[25,22],[50,22],[75,22],[25,50],[50,50],[75,50],[25,78],[50,78],[75,78]],
+  10: [[22,28],[40,28],[58,28],[76,28],[94,28],[22,72],[40,72],[58,72],[76,72],[94,72]],
+};
+
+/** SubitizingPattern — renders 1..10 dots in a canonical pattern. */
+function SubitizingPattern({ count, animateIn }: { count: number; animateIn: boolean }) {
+  const dots = DOT_PATTERNS[count] ?? DOT_PATTERNS[1];
+  return (
+    <div style={{ width: 220, height: 220 }}>
+      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style={{ width: '100%', height: '100%' }}>
+        <rect x="4" y="4" width="92" height="92" rx="14" fill="rgba(255,255,255,0.85)" stroke="rgba(0,0,0,0.08)" strokeWidth="1.5" />
+        {dots.map(([cx, cy], i) => (
+          <motion.circle
+            key={i}
+            cx={cx}
+            cy={cy}
+            r={count >= 9 ? 5.5 : 7.5}
+            fill="#3D2818"
+            initial={animateIn ? { scale: 0, opacity: 0 } : { scale: 1, opacity: 1 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={animateIn ? { delay: 0.05 + i * 0.04, type: 'spring', stiffness: 320, damping: 18 } : { duration: 0 }}
+          />
+        ))}
+      </svg>
+    </div>
+  );
+}
+
 interface LessonCardProps {
   problem: MathProblem;
   isActive: boolean;
@@ -29,7 +71,7 @@ function getSpokenText(problem: MathProblem): string {
     const seq = Array.from({ length: num1 }, (_, i) => i + 1).join(', ');
     return `What comes next? ${seq}...`;
   }
-  if (concept.startsWith('number-recognition')) return 'Which number is this?';
+  if (concept.startsWith('subitizing')) return 'Quick! How many dots?';
   if (concept.startsWith('one-to-one') || concept.startsWith('cardinality')) return 'How many?';
   if (concept.startsWith('comparing')) return 'Which group has more?';
   if (concept.startsWith('number-order')) {
@@ -48,7 +90,7 @@ function getQuestionText(problem: MathProblem): string {
     const seq = Array.from({ length: num1 }, (_, i) => i + 1).join(', ');
     return `${seq}, ___?`;
   }
-  if (concept.startsWith('number-recognition')) return 'Which number?';
+  if (concept.startsWith('subitizing')) return 'How many?';
   if (concept.startsWith('one-to-one') || concept.startsWith('cardinality')) return 'How many?';
   if (concept.startsWith('comparing')) return 'Which has MORE?';
   if (concept.startsWith('number-order')) {
@@ -167,7 +209,7 @@ export default function LessonCard({ problem, isActive, onCorrect, onWrong, onAd
 
   const questionText = getQuestionText(problem);
   const concept = problem.concept;
-  const isNumberRecognition = concept.startsWith('number-recognition');
+  const isSubitizing = concept.startsWith('subitizing');
   const isComparing = concept.startsWith('comparing');
   const isCountingOn = concept === 'counting-on';
   const isAddition = concept.startsWith('addition');
@@ -240,17 +282,12 @@ export default function LessonCard({ problem, isActive, onCorrect, onWrong, onAd
           width: '100%',
         }}
       >
-        {isNumberRecognition ? (
-          /* Large numeral display */
-          <div style={{
-            fontSize: '10rem',
-            fontWeight: 900,
-            color: colors.charcoal,
-            lineHeight: 1,
-            fontFamily: fontStack,
-          }}>
-            {problem.num1}
-          </div>
+        {isSubitizing ? (
+          /* Subitizing — quick dot-pattern recognition. Dots are arranged in
+             classic dice/domino patterns so the kid recognizes the quantity
+             at a glance instead of counting one by one. The numeral is NEVER
+             shown — that would defeat the whole exercise. */
+          <SubitizingPattern count={problem.num1} animateIn={isActive} />
         ) : isComparing ? (
           /* Two groups side by side */
           <>

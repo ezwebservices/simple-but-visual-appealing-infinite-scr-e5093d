@@ -53,8 +53,8 @@ export const dashboard = {
   conceptColors: {
     'rote-counting-5': '#87CEEB',
     'rote-counting-10': '#87CEEB',
-    'number-recognition-5': '#A8D8EA',
-    'number-recognition-10': '#A8D8EA',
+    'subitizing-5': '#A8D8EA',
+    'subitizing-10': '#A8D8EA',
     'one-to-one-5': '#88C9A1',
     'one-to-one-10': '#88C9A1',
     'cardinality-5': '#B5D99C',

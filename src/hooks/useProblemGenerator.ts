@@ -70,22 +70,26 @@ export default function useProblemGenerator(availableCharacters?: CharacterName[
           explanation = `Let's count! ${Array.from({ length: num1 }, (_, i) => i + 1).join(', ')}, ${answer}! The next number after ${num1} is ${answer}!`;
           break;
         }
-        case 'number-recognition-5': {
+        case 'subitizing-5': {
+          // Subitizing = instant quantity recognition from a dot pattern.
+          // Visual is a dice/domino arrangement (NOT countable in a row), so
+          // the kid has to recognize the quantity at a glance — the answer
+          // is never shown numerically.
           num1 = randInt(1, 5);
           num2 = 0;
           operator = 'plus';
           answer = num1;
-          wrongAnswers = generateWrongAnswers(answer, 1, 5);
-          explanation = `This is the number ${num1}!`;
+          wrongAnswers = generateWrongAnswers(answer, 1, 6);
+          explanation = `That's ${num1} dots! Quick eyes!`;
           break;
         }
-        case 'number-recognition-10': {
+        case 'subitizing-10': {
           num1 = randInt(1, 10);
           num2 = 0;
           operator = 'plus';
           answer = num1;
-          wrongAnswers = generateWrongAnswers(answer, 1, 10);
-          explanation = `This is the number ${num1}!`;
+          wrongAnswers = generateWrongAnswers(answer, 1, 11);
+          explanation = `That's ${num1} dots! Quick eyes!`;
           break;
         }
         case 'one-to-one-5': {

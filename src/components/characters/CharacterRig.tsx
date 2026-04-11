@@ -133,11 +133,60 @@ export default function CharacterRig({
       {/* ═══════ CHARACTER (front view only — animation system handles rotations via transform) ═══════ */}
       <g className="char-all" style={{ transformOrigin: '160px 200px' }} filter={`url(#${id('drop')})`}>
 
-        {/* TAIL — drawn first (behind body), pivots from base */}
+        {/* TAIL — character-specific shape, pivots from base */}
         <g className="char-tail" style={{ transformOrigin: '218px 248px' }}>
-          <ellipse cx="232" cy="240" rx="14" ry="12" fill={`url(#${id('body')})`} />
-          <ellipse cx="232" cy="240" rx="14" ry="12" fill={`url(#${id('fur')})`} opacity="0.55" />
-          <ellipse cx="232" cy="237" rx="11" ry="9" fill={`url(#${id('sheen')})`} />
+          {characterId === 'sunny' && (
+            // FOX — long bushy tail with white tip
+            <>
+              <path
+                d="M225,250 Q260,235 268,210 Q272,195 260,188 Q248,196 240,212 Q232,228 225,250 Z"
+                fill={`url(#${id('body')})`}
+              />
+              <path
+                d="M225,250 Q260,235 268,210 Q272,195 260,188 Q248,196 240,212 Q232,228 225,250 Z"
+                fill={`url(#${id('fur')})`}
+                opacity="0.6"
+              />
+              <ellipse cx="262" cy="194" rx="10" ry="8" fill="#FFFFFF" />
+              <ellipse cx="262" cy="192" rx="6" ry="4" fill="#F8F4EA" />
+            </>
+          )}
+          {characterId === 'rosie' && (
+            // BUNNY — round cotton-ball tail
+            <>
+              <circle cx="232" cy="240" r="13" fill="#FFFFFF" />
+              <circle cx="232" cy="240" r="13" fill={`url(#${id('fur')})`} opacity="0.4" />
+              <circle cx="228" cy="236" r="7" fill="#FFFFFF" opacity="0.85" />
+              <circle cx="237" cy="244" r="5" fill="#F0F0F0" opacity="0.7" />
+            </>
+          )}
+          {characterId === 'pip' && (
+            // PANDA — small black-tipped tail
+            <>
+              <ellipse cx="232" cy="240" rx="13" ry="11" fill="#FFFFFF" />
+              <ellipse cx="237" cy="240" rx="7" ry="9" fill="#1A1A22" />
+            </>
+          )}
+          {characterId === 'rex' && (
+            // ROBOT — segmented metal tail
+            <>
+              <rect x="220" y="234" width="16" height="14" rx="3" fill={`url(#${id('body')})`} />
+              <rect x="236" y="236" width="10" height="10" rx="2" fill={`url(#${id('body')})`} />
+              <circle cx="244" cy="241" r="2.5" fill={palette.padAccent} />
+            </>
+          )}
+          {characterId === 'milo' && (
+            // FROG — no tail, but a small back-bump
+            <ellipse cx="225" cy="245" rx="6" ry="4" fill={`url(#${id('body')})`} opacity="0.7" />
+          )}
+          {characterId === 'bloo' && (
+            // BEAR — short stubby tail (default)
+            <>
+              <ellipse cx="232" cy="240" rx="14" ry="12" fill={`url(#${id('body')})`} />
+              <ellipse cx="232" cy="240" rx="14" ry="12" fill={`url(#${id('fur')})`} opacity="0.55" />
+              <ellipse cx="232" cy="237" rx="11" ry="9" fill={`url(#${id('sheen')})`} />
+            </>
+          )}
         </g>
 
         {/* LEFT LEG — single continuous path from hip into foot */}
@@ -198,24 +247,41 @@ export default function CharacterRig({
           {/* Center seam */}
           <path d="M160,184 Q162,240 160,294" fill="none"
                 stroke={palette.stroke} strokeWidth="0.8" strokeDasharray="2,4" opacity="0.5" />
-          {/* Belly accent: heart for most characters, varies by character */}
+          {/* Belly accent — distinct mark per character */}
           {characterId === 'bloo' && (
+            // BEAR — little heart
             <path d="M160,228 l-3,-3 a2,2 0 1,1 3,-2 a2,2 0 1,1 3,2 Z" fill="#FF8FA3" opacity="0.7" />
           )}
           {characterId === 'sunny' && (
+            // FOX — white belly patch + chest fluff
             <>
-              {/* Ladybug black spots */}
-              <circle cx="142" cy="232" r="4" fill="#2A1810" opacity="0.7" />
-              <circle cx="178" cy="232" r="4" fill="#2A1810" opacity="0.7" />
-              <circle cx="160" cy="252" r="3.5" fill="#2A1810" opacity="0.7" />
+              <ellipse cx="160" cy="252" rx="32" ry="28" fill="#FFFAEC" opacity="0.7" />
+              <path d="M148,228 Q160,222 172,228 Q170,236 160,238 Q150,236 148,228 Z" fill="#FFFFFF" opacity="0.85" />
+            </>
+          )}
+          {characterId === 'rosie' && (
+            // BUNNY — small flower on belly
+            <>
+              <circle cx="160" cy="240" r="3.5" fill="#FFD93D" />
+              <circle cx="155" cy="236" r="3" fill="#FFFFFF" />
+              <circle cx="165" cy="236" r="3" fill="#FFFFFF" />
+              <circle cx="155" cy="244" r="3" fill="#FFFFFF" />
+              <circle cx="165" cy="244" r="3" fill="#FFFFFF" />
+            </>
+          )}
+          {characterId === 'milo' && (
+            // FROG — darker spots on belly
+            <>
+              <circle cx="142" cy="245" r="4" fill={palette.body[4]} opacity="0.6" />
+              <circle cx="178" cy="245" r="4" fill={palette.body[4]} opacity="0.6" />
+              <circle cx="160" cy="262" r="3.5" fill={palette.body[4]} opacity="0.6" />
             </>
           )}
           {characterId === 'pip' && (
+            // PANDA — black tummy patch (the iconic panda body marking)
             <>
-              {/* Zebra stripes */}
-              <path d="M130,225 Q160,221 190,225" stroke="#2A2A38" strokeWidth="3" fill="none" opacity="0.7" strokeLinecap="round" />
-              <path d="M125,245 Q160,242 195,245" stroke="#2A2A38" strokeWidth="3" fill="none" opacity="0.7" strokeLinecap="round" />
-              <path d="M130,265 Q160,268 190,265" stroke="#2A2A38" strokeWidth="3" fill="none" opacity="0.7" strokeLinecap="round" />
+              <ellipse cx="160" cy="248" rx="42" ry="38" fill="#1A1A22" opacity="0.92" />
+              <ellipse cx="155" cy="240" rx="22" ry="14" fill="#3D3D4A" opacity="0.4" />
             </>
           )}
           {characterId === 'rex' && (
@@ -232,33 +298,90 @@ export default function CharacterRig({
         {/* HEAD (no fur filter — keeps face crisp) */}
         <g className="char-head" style={{ transformOrigin: '160px 200px' }}>
 
-          {/* Ears with anatomical teardrop shape */}
+          {/* Ears — distinct per animal */}
           <g className="char-ears" style={{ transformOrigin: '160px 70px' }}>
-            <path
-              d="M92,38 C72,38 65,55 70,72 C74,84 88,90 92,90 C96,90 110,84 114,72 C119,55 112,38 92,38 Z"
-              fill={`url(#${id('body')})`}
-            />
-            <ellipse cx="84" cy="58" rx="14" ry="20" fill={`url(#${id('sheen')})`} />
-            <path
-              d="M92,55 C82,55 78,65 81,75 C84,82 90,86 92,86 C94,86 100,82 103,75 C106,65 102,55 92,55 Z"
-              fill={`url(#${id('belly')})`}
-            />
-            <ellipse cx="92" cy="74" rx="6" ry="8" fill="#A87530" opacity="0.45" />
-            <path d="M76,82 Q92,90 108,82" fill="none"
-                  stroke={palette.stroke} strokeWidth="0.8" strokeDasharray="2,3" opacity="0.55" />
+            {characterId === 'bloo' && (
+              // BEAR — round teardrop ears
+              <>
+                <path d="M92,38 C72,38 65,55 70,72 C74,84 88,90 92,90 C96,90 110,84 114,72 C119,55 112,38 92,38 Z"
+                      fill={`url(#${id('body')})`} />
+                <path d="M92,55 C82,55 78,65 81,75 C84,82 90,86 92,86 C94,86 100,82 103,75 C106,65 102,55 92,55 Z"
+                      fill={`url(#${id('belly')})`} />
+                <ellipse cx="92" cy="74" rx="6" ry="8" fill="#A87530" opacity="0.45" />
 
-            <path
-              d="M228,38 C208,38 201,55 206,72 C210,84 224,90 228,90 C232,90 246,84 250,72 C255,55 248,38 228,38 Z"
-              fill={`url(#${id('body')})`}
-            />
-            <ellipse cx="220" cy="58" rx="14" ry="20" fill={`url(#${id('sheen')})`} />
-            <path
-              d="M228,55 C218,55 214,65 217,75 C220,82 226,86 228,86 C230,86 236,82 239,75 C242,65 238,55 228,55 Z"
-              fill={`url(#${id('belly')})`}
-            />
-            <ellipse cx="228" cy="74" rx="6" ry="8" fill="#A87530" opacity="0.45" />
-            <path d="M212,82 Q228,90 244,82" fill="none"
-                  stroke={palette.stroke} strokeWidth="0.8" strokeDasharray="2,3" opacity="0.55" />
+                <path d="M228,38 C208,38 201,55 206,72 C210,84 224,90 228,90 C232,90 246,84 250,72 C255,55 248,38 228,38 Z"
+                      fill={`url(#${id('body')})`} />
+                <path d="M228,55 C218,55 214,65 217,75 C220,82 226,86 228,86 C230,86 236,82 239,75 C242,65 238,55 228,55 Z"
+                      fill={`url(#${id('belly')})`} />
+                <ellipse cx="228" cy="74" rx="6" ry="8" fill="#A87530" opacity="0.45" />
+              </>
+            )}
+            {characterId === 'sunny' && (
+              // FOX — pointy upright triangle ears with dark tips
+              <>
+                <path d="M70,68 L92,5 L116,68 Z" fill={`url(#${id('body')})`} />
+                <path d="M82,55 L92,18 L104,55 Z" fill={`url(#${id('belly')})`} />
+                <path d="M84,30 L92,5 L100,30 Z" fill="#3D1810" opacity="0.85" />
+
+                <path d="M204,68 L228,5 L250,68 Z" fill={`url(#${id('body')})`} />
+                <path d="M216,55 L228,18 L240,55 Z" fill={`url(#${id('belly')})`} />
+                <path d="M220,30 L228,5 L236,30 Z" fill="#3D1810" opacity="0.85" />
+              </>
+            )}
+            {characterId === 'rosie' && (
+              // BUNNY — long upright oval ears with pink inner
+              <>
+                <ellipse cx="100" cy="40" rx="16" ry="50" fill={`url(#${id('body')})`} transform="rotate(-8, 100, 40)" />
+                <ellipse cx="100" cy="42" rx="9" ry="40" fill="#FFD2DE" transform="rotate(-8, 100, 42)" />
+                <ellipse cx="100" cy="32" rx="5" ry="28" fill="#FFB8CC" transform="rotate(-8, 100, 32)" opacity="0.7" />
+
+                <ellipse cx="220" cy="40" rx="16" ry="50" fill={`url(#${id('body')})`} transform="rotate(8, 220, 40)" />
+                <ellipse cx="220" cy="42" rx="9" ry="40" fill="#FFD2DE" transform="rotate(8, 220, 42)" />
+                <ellipse cx="220" cy="32" rx="5" ry="28" fill="#FFB8CC" transform="rotate(8, 220, 32)" opacity="0.7" />
+              </>
+            )}
+            {characterId === 'milo' && (
+              // FROG — small green dome bumps on top (the 'eye bumps' that frogs have);
+              // the face still has the main eyes so the rig animations work normally.
+              <>
+                <ellipse cx="120" cy="48" rx="14" ry="10" fill={`url(#${id('body')})`} />
+                <ellipse cx="120" cy="48" rx="14" ry="10" fill={`url(#${id('fur')})`} opacity="0.5" />
+                <ellipse cx="116" cy="44" rx="6" ry="4" fill={`url(#${id('sheen')})`} />
+
+                <ellipse cx="200" cy="48" rx="14" ry="10" fill={`url(#${id('body')})`} />
+                <ellipse cx="200" cy="48" rx="14" ry="10" fill={`url(#${id('fur')})`} opacity="0.5" />
+                <ellipse cx="196" cy="44" rx="6" ry="4" fill={`url(#${id('sheen')})`} />
+
+                {/* Small green crest spots */}
+                <circle cx="160" cy="42" r="4" fill={palette.body[3]} opacity="0.8" />
+                <circle cx="148" cy="46" r="3" fill={palette.body[3]} opacity="0.6" />
+                <circle cx="172" cy="46" r="3" fill={palette.body[3]} opacity="0.6" />
+              </>
+            )}
+            {characterId === 'pip' && (
+              // PANDA — round black ears perched above the head silhouette
+              <>
+                <circle cx="92" cy="32" r="18" fill="#1A1A22" />
+                <circle cx="92" cy="32" r="12" fill="#2A2A38" opacity="0.6" />
+                <circle cx="88" cy="26" r="5" fill="#3D3D4A" opacity="0.8" />
+
+                <circle cx="228" cy="32" r="18" fill="#1A1A22" />
+                <circle cx="228" cy="32" r="12" fill="#2A2A38" opacity="0.6" />
+                <circle cx="224" cy="26" r="5" fill="#3D3D4A" opacity="0.8" />
+              </>
+            )}
+            {characterId === 'rex' && (
+              // ROBOT — square satellite-dish "ears" on the sides
+              <>
+                <rect x="56" y="100" width="20" height="36" rx="3" fill={`url(#${id('body')})`} />
+                <rect x="60" y="106" width="12" height="6" rx="1" fill={palette.iris[1]} opacity="0.7" />
+                <circle cx="66" cy="124" r="3" fill={palette.padAccent} />
+
+                <rect x="244" y="100" width="20" height="36" rx="3" fill={`url(#${id('body')})`} />
+                <rect x="248" y="106" width="12" height="6" rx="1" fill={palette.iris[1]} opacity="0.7" />
+                <circle cx="254" cy="124" r="3" fill={palette.padAccent} />
+              </>
+            )}
           </g>
 
           {/* Big round head */}
@@ -266,6 +389,20 @@ export default function CharacterRig({
           <ellipse cx="160" cy="130" rx="92" ry="86" fill={`url(#${id('fur')})`} opacity="0.55" />
           <ellipse cx="135" cy="95" rx="58" ry="40" fill={`url(#${id('sheen')})`} />
           <ellipse cx="125" cy="75" rx="28" ry="11" fill="white" opacity="0.32" />
+
+          {/* Panda eye patches — dark ovals behind the eyes */}
+          {characterId === 'pip' && (
+            <>
+              <ellipse cx="120" cy="135" rx="32" ry="34" fill="#1A1A22" transform="rotate(-12, 120, 135)" />
+              <ellipse cx="200" cy="135" rx="32" ry="34" fill="#1A1A22" transform="rotate(12, 200, 135)" />
+            </>
+          )}
+
+          {/* Fox face mask — white snout area */}
+          {characterId === 'sunny' && (
+            <path d="M120,150 Q160,200 200,150 Q200,180 160,200 Q120,180 120,150 Z"
+                  fill="#FFFAEC" opacity="0.85" />
+          )}
 
           {/* Cheeks */}
           <circle cx="80" cy="155" r="22" fill={`url(#${id('cheek')})`} />
@@ -397,6 +534,40 @@ export default function CharacterRig({
           {mood === 'thinking' && (
             <ellipse cx="160" cy="188" rx="2.5" ry="2" fill="#1A0F08" opacity="0.7" />
           )}
+
+          {/* Per-character face accents — drawn over the default mouth */}
+          {characterId === 'rosie' && (
+            // BUNNY — two front teeth under the smile
+            <>
+              <rect x="156" y="183" width="3.5" height="6" rx="0.8" fill="#FFFFFF" stroke="#3D2818" strokeWidth="0.5" />
+              <rect x="160.5" y="183" width="3.5" height="6" rx="0.8" fill="#FFFFFF" stroke="#3D2818" strokeWidth="0.5" />
+            </>
+          )}
+          {characterId === 'sunny' && (
+            // FOX — slim pointed snout outline
+            <path d="M150,168 Q160,178 170,168" fill="none"
+                  stroke="#3D1810" strokeWidth="1.2" opacity="0.7" />
+          )}
+          {characterId === 'milo' && (
+            // FROG — extra wide mouth replacing the small smile
+            <>
+              <path d="M120,176 Q160,200 200,176" fill="none"
+                    stroke="#1A0F08" strokeWidth="4" strokeLinecap="round" />
+              <circle cx="135" cy="180" r="2" fill="#1A0F08" opacity="0.7" />
+              <circle cx="185" cy="180" r="2" fill="#1A0F08" opacity="0.7" />
+            </>
+          )}
+          {characterId === 'rex' && (
+            // ROBOT — small mouth grille
+            <>
+              <rect x="148" y="180" width="24" height="6" rx="1" fill="#1F3D4A" opacity="0.8" />
+              <line x1="152" y1="180" x2="152" y2="186" stroke={palette.body[0]} strokeWidth="0.8" />
+              <line x1="156" y1="180" x2="156" y2="186" stroke={palette.body[0]} strokeWidth="0.8" />
+              <line x1="160" y1="180" x2="160" y2="186" stroke={palette.body[0]} strokeWidth="0.8" />
+              <line x1="164" y1="180" x2="164" y2="186" stroke={palette.body[0]} strokeWidth="0.8" />
+              <line x1="168" y1="180" x2="168" y2="186" stroke={palette.body[0]} strokeWidth="0.8" />
+            </>
+          )}
         </g>
 
         {/* ARMS — single continuous path so no gradient seam */}
@@ -467,12 +638,13 @@ export const PALETTES: Record<string, CharacterPalette> = {
     padAccent: '#7A2A1A',
   },
   rosie: {
-    body: ['#F5E5FB', '#E5C8F0', '#CFA8E0', '#B689CC', '#9D6FB5'],
-    belly: ['#FFF6F8', '#FBE3EC', '#F5C9D8', '#E8AABC'],
-    cheek: '#FFA0B5',
-    iris: ['#1A0820', '#3D1F4A', '#5C3868', '#7A4F8C'],
-    stroke: '#7A4FA0',
-    padAccent: '#E8A830',
+    // BUNNY — soft pink with cream belly
+    body: ['#FFF0F4', '#FFD8E2', '#FFB8CC', '#F594B0', '#E07898'],
+    belly: ['#FFFAFC', '#FFEEF2', '#FFDCE5', '#F5B8C8'],
+    cheek: '#FF9FB8',
+    iris: ['#1A0820', '#3D1F2A', '#6A3A4A', '#9D5870'],
+    stroke: '#C26088',
+    padAccent: '#FF8FA8',
   },
   milo: {
     body: ['#E8FBE8', '#C8F0CC', '#A2DCA8', '#7BC587', '#5BA868'],

@@ -48,6 +48,29 @@ function createDefaultProgress(): Record<SubConcept, SubConceptProgress> {
   return progress;
 }
 
+/**
+ * Map any legacy sub-concept keys (e.g. `number-recognition-5`) onto the
+ * current schema. Old saved profiles must continue to load — we copy the old
+ * row's progress into the new key so the kid doesn't lose mastery state.
+ */
+const LEGACY_KEY_MAP: Record<string, SubConcept> = {
+  'number-recognition-5': 'subitizing-5',
+  'number-recognition-10': 'subitizing-10',
+};
+
+function reconcileProgress(raw: unknown): Record<SubConcept, SubConceptProgress> {
+  const fresh = createDefaultProgress();
+  if (!raw || typeof raw !== 'object') return fresh;
+  const src = raw as Record<string, SubConceptProgress>;
+  for (const [key, value] of Object.entries(src)) {
+    const target = (LEGACY_KEY_MAP[key] ?? key) as SubConcept;
+    if (target in fresh && value && typeof value === 'object') {
+      fresh[target] = { ...value, subConcept: target };
+    }
+  }
+  return fresh;
+}
+
 function createChild(name: string, avatar: CharacterName): ChildProfile {
   return {
     id: `child-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
@@ -67,7 +90,7 @@ function migrateV1Profile(oldChild: Record<string, unknown>): ChildProfile {
 
   const countingSubConcepts: SubConcept[] = [
     'rote-counting-5', 'rote-counting-10',
-    'number-recognition-5', 'number-recognition-10',
+    'subitizing-5', 'subitizing-10',
     'one-to-one-5', 'one-to-one-10',
     'cardinality-5', 'cardinality-10',
   ];
@@ -144,6 +167,11 @@ function loadStored(): StoredChildren {
     }
 
     if (parsed.version !== SCHEMA_VERSION) return { version: SCHEMA_VERSION, activeChildId: null, children: [] };
+    // Reconcile legacy sub-concept keys (e.g. number-recognition → subitizing)
+    parsed.children = (parsed.children ?? []).map((c: ChildProfile) => ({
+      ...c,
+      conceptProgress: reconcileProgress(c.conceptProgress),
+    }));
     return parsed;
   } catch {
     return { version: SCHEMA_VERSION, activeChildId: null, children: [] };
@@ -181,7 +209,7 @@ function cloudRowToProfile(row: CloudChildRow): ChildProfile {
     name: row.name,
     avatar: row.avatar as CharacterName,
     createdAt: row.createdAt,
-    conceptProgress: (row.conceptProgress as Record<SubConcept, SubConceptProgress>) ?? createDefaultProgress(),
+    conceptProgress: reconcileProgress(row.conceptProgress),
     accuracyHistory: (row.accuracyHistory as ChildProfile['accuracyHistory']) ?? [],
     recentActivity: (row.recentActivity as ChildProfile['recentActivity']) ?? [],
   };

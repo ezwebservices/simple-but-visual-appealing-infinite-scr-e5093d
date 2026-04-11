@@ -12,8 +12,8 @@ export type CharacterAnimation = 'idle' | 'dance' | 'dance-1' | 'dance-2' | 'dan
 export type SubConcept =
   | 'rote-counting-5'
   | 'rote-counting-10'
-  | 'number-recognition-5'
-  | 'number-recognition-10'
+  | 'subitizing-5'
+  | 'subitizing-10'
   | 'one-to-one-5'
   | 'one-to-one-10'
   | 'cardinality-5'
@@ -32,8 +32,8 @@ export type SubConcept =
 export const SUB_CONCEPT_ORDER: SubConcept[] = [
   'rote-counting-5',
   'rote-counting-10',
-  'number-recognition-5',
-  'number-recognition-10',
+  'subitizing-5',
+  'subitizing-10',
   'one-to-one-5',
   'one-to-one-10',
   'cardinality-5',

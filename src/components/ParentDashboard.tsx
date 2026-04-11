@@ -86,8 +86,8 @@ interface ParentDashboardProps {
 const SUB_CONCEPT_LABELS: Record<SubConcept, string> = {
   'rote-counting-5': 'Count to 5',
   'rote-counting-10': 'Count to 10',
-  'number-recognition-5': 'Recognize 1-5',
-  'number-recognition-10': 'Recognize 1-10',
+  'subitizing-5': 'Quick Dots (1-5)',
+  'subitizing-10': 'Quick Dots (1-10)',
   'one-to-one-5': 'Count Objects (1-5)',
   'one-to-one-10': 'Count Objects (1-10)',
   'cardinality-5': 'How Many? (1-5)',
@@ -111,7 +111,7 @@ interface ConceptGroup {
 
 const CONCEPT_GROUPS: ConceptGroup[] = [
   { label: 'Number Words', color: '#87CEEB', concepts: ['rote-counting-5', 'rote-counting-10'] },
-  { label: 'Number Recognition', color: '#B8A9C9', concepts: ['number-recognition-5', 'number-recognition-10'] },
+  { label: 'Subitizing', color: '#B8A9C9', concepts: ['subitizing-5', 'subitizing-10'] },
   { label: 'Counting Objects', color: '#FFBE76', concepts: ['one-to-one-5', 'one-to-one-10'] },
   { label: 'Cardinality', color: '#A8E6CF', concepts: ['cardinality-5', 'cardinality-10'] },
   { label: 'Comparing', color: '#FFE66D', concepts: ['comparing-easy', 'comparing-close'] },
