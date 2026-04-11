@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import type { ChildProfile, CharacterName } from '../types';
-import { CHARACTER_UNLOCK_ORDER, CHARACTER_UNLOCK_THRESHOLDS, DANCE_MOVE_THRESHOLDS } from '../types';
+import type { ChildProfile, CharacterName, SubConcept } from '../types';
+import { CHARACTER_UNLOCK_ORDER, CHARACTER_UNLOCK_THRESHOLDS, DANCE_MOVE_THRESHOLDS, SUB_CONCEPT_ORDER } from '../types';
 import {
   getUnlockedCharacters,
   getUnlockedDanceMoves,
@@ -9,8 +9,48 @@ import {
   progressToNextCharacter,
   progressToNextDance,
 } from '../hooks/useUnlocks';
+import {
+  MIN_ATTEMPTS,
+  MASTERY_WINDOW,
+  MASTERY_ACCURACY,
+  STREAK_SHORTCUT,
+} from '../hooks/useMastery';
 import CharacterDisplay from './characters/CharacterDisplay';
 import { PALETTES } from './characters/CharacterRig';
+
+/**
+ * Current-concept progress toward mastery, 0..1. Updates every problem so the
+ * kid sees the ring move after every answer.
+ *
+ * The mastery algorithm accepts EITHER a streak shortcut (STREAK_SHORTCUT
+ * correct in a row) OR a combined "enough attempts + accuracy window"
+ * condition. We surface the more optimistic of those two paths so the ring
+ * always reflects the closest route to mastery.
+ */
+function getCurrentConceptProgress(child: ChildProfile): number {
+  // Find the first 'active' concept — same logic as useMastery.getActiveConcept
+  let active: SubConcept | null = null;
+  for (const c of SUB_CONCEPT_ORDER) {
+    if (child.conceptProgress[c]?.status === 'active') { active = c; break; }
+  }
+  if (!active) {
+    // Everything mastered — show full ring
+    return 1;
+  }
+  const cp = child.conceptProgress[active];
+  if (!cp) return 0;
+
+  const streakProgress = Math.min(1, cp.streak / STREAK_SHORTCUT);
+
+  const correctInWindow = cp.recentAttempts.filter(Boolean).length;
+  const correctNeeded = Math.ceil(MASTERY_WINDOW * MASTERY_ACCURACY);
+  const accuracyProgress = Math.min(1, correctInWindow / correctNeeded);
+  const attemptsProgress = Math.min(1, cp.totalAttempted / MIN_ATTEMPTS);
+  // Accuracy path requires BOTH enough attempts AND enough correct answers
+  const pathTwoProgress = Math.min(accuracyProgress, attemptsProgress);
+
+  return Math.max(streakProgress, pathTwoProgress);
+}
 
 interface UnlockProgressProps {
   child: ChildProfile;
@@ -37,9 +77,17 @@ export default function UnlockProgress({ child }: UnlockProgressProps) {
     unlockedChars.has(child.avatar) ? child.avatar : 'bloo',
   );
 
+  // Progress toward mastering the CURRENT active concept (0..1). Updates every
+  // problem, so the ring visibly moves after each answer.
+  const conceptProgress = getCurrentConceptProgress(child);
+  // Ring geometry — SVG viewBox 100x100 so we can place everything in %-like coords
+  const ringRadius = 44;
+  const ringCircumference = 2 * Math.PI * ringRadius;
+
   return (
     <>
-      {/* Floating button — top-right corner */}
+      {/* Floating button — top-right corner. SVG-based so a progress ring
+          can wrap the star and update every problem. */}
       <button
         type="button"
         onClick={() => setOpen(true)}
@@ -50,31 +98,63 @@ export default function UnlockProgress({ child }: UnlockProgressProps) {
           top: 16,
           right: 16,
           zIndex: 40,
-          width: 56,
-          height: 56,
+          width: 64,
+          height: 64,
           borderRadius: '50%',
-          border: '3px solid white',
-          background: 'linear-gradient(145deg, #FFD93D, #FF9500)',
+          border: 'none',
+          background: 'transparent',
           boxShadow: '0 4px 16px rgba(0,0,0,0.18)',
           cursor: 'pointer',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
           padding: 0,
           WebkitTapHighlightColor: 'transparent',
         }}
       >
-        {/* Star icon — represents collection / rewards */}
-        <svg viewBox="0 0 24 24" width="32" height="32">
+        <svg viewBox="0 0 100 100" width="64" height="64">
+          <defs>
+            <radialGradient id="unlock-btn-bg" cx="50%" cy="35%" r="70%">
+              <stop offset="0%" stopColor="#FFE37B" />
+              <stop offset="100%" stopColor="#FF9500" />
+            </radialGradient>
+            <linearGradient id="unlock-btn-ring" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#4ECDC4" />
+              <stop offset="100%" stopColor="#9BE3DE" />
+            </linearGradient>
+          </defs>
+          {/* Background circle */}
+          <circle cx="50" cy="50" r="46" fill="url(#unlock-btn-bg)" stroke="white" strokeWidth="3" />
+          {/* Track for the progress ring */}
+          <circle
+            cx="50"
+            cy="50"
+            r={ringRadius}
+            fill="none"
+            stroke="rgba(255,255,255,0.35)"
+            strokeWidth="6"
+          />
+          {/* Animated progress ring — rotates -90° so it starts at 12 o'clock */}
+          <motion.circle
+            cx="50"
+            cy="50"
+            r={ringRadius}
+            fill="none"
+            stroke="url(#unlock-btn-ring)"
+            strokeWidth="6"
+            strokeLinecap="round"
+            strokeDasharray={ringCircumference}
+            animate={{ strokeDashoffset: ringCircumference * (1 - conceptProgress) }}
+            transition={{ type: 'spring', stiffness: 120, damping: 18 }}
+            style={{ transform: 'rotate(-90deg)', transformOrigin: '50px 50px' }}
+          />
+          {/* Star icon in the center */}
           <path
-            d="M12 2 L14.4 8.4 L21 8.4 L15.8 12.6 L17.6 19.2 L12 15 L6.4 19.2 L8.2 12.6 L3 8.4 L9.6 8.4 Z"
+            d="M50 22 L58.5 42.5 L80 42.5 L62.75 55.5 L68.75 76 L50 63 L31.25 76 L37.25 55.5 L20 42.5 L41.5 42.5 Z"
             fill="white"
             stroke="#C49C00"
-            strokeWidth="1.2"
+            strokeWidth="2.2"
             strokeLinejoin="round"
           />
         </svg>
-        {/* Tiny badge — number of unlocks (no text, just count of stars) */}
+        {/* Tiny badge — still shows total rewards earned so far */}
         <span
           style={{
             position: 'absolute',
@@ -92,6 +172,7 @@ export default function UnlockProgress({ child }: UnlockProgressProps) {
             justifyContent: 'center',
             border: '2px solid white',
             boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
+            padding: '0 5px',
           }}
         >
           {unlockedChars.size + unlockedDance}
