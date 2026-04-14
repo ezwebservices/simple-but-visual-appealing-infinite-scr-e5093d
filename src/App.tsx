@@ -54,19 +54,6 @@ function GameView() {
   const [view, setView] = useState<AppView>('game');
   const [unlockEvent, setUnlockEvent] = useState<UnlockEvent | null>(null);
 
-  // Wait for cloud sync to complete before creating defaults. This was the
-  // race condition: on a new device, children=[] because cloud hasn't
-  // resolved yet, so "Player 1" got created before the user's real
-  // profiles arrived — hiding all their progress.
-  if (cloudLoading) {
-    return <LoadingScreen />;
-  }
-
-  // Only AFTER cloud sync: if no children exist (truly new user), create default
-  if (children.length === 0) {
-    addChild('Player 1', 'bloo');
-  }
-
   const currentConcept: SubConcept = activeChild ? getActiveConcept(activeChild) : 'rote-counting-5';
   const unlockedCharacters = activeChild ? getUnlockedCharacters(activeChild) : ['bloo' as const];
   const unlockedDanceMoves = activeChild ? getUnlockedDanceMoves(activeChild) : 1;
@@ -106,6 +93,16 @@ function GameView() {
       updateChild(activeChildId, () => updatedChild);
     }
   }, [activeChild, activeChildId, recordWrong, recordAnswer, updateChild]);
+
+  // ── Cloud sync gate (placed AFTER all hooks to avoid React error #310) ──
+  // Wait for cloud fetch before rendering. This prevents the race condition
+  // where "Player 1" was created on a new device before real profiles loaded.
+  if (cloudLoading) {
+    return <LoadingScreen />;
+  }
+  if (children.length === 0) {
+    addChild('Player 1', 'bloo');
+  }
 
   return (
     <div
