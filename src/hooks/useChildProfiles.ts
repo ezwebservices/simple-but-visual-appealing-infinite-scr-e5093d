@@ -304,39 +304,62 @@ async function deleteCloudProfile(childId: string): Promise<void> {
 
 export default function useChildProfiles() {
   const [stored, setStored] = useState<StoredChildren>(loadStored);
+  // `cloudLoading` is TRUE until the initial cloud fetch completes. While
+  // true, the app should show a loading screen and NOT create default
+  // profiles — that was the race condition: "Player 1" was created before
+  // the cloud data arrived, permanently hiding the user's real profiles.
+  const [cloudLoading, setCloudLoading] = useState(true);
   const cloudSyncStarted = useRef(false);
 
   // ── Initial cloud hydration ──
-  // On mount, fetch profiles from the cloud. If cloud has more recent data
-  // (or any data when local has none), use it. Otherwise migrate localStorage
-  // → cloud so the user's existing data is preserved.
+  // On mount, fetch profiles from the cloud BEFORE the app can create
+  // defaults. The `cloudLoading` flag blocks GameView's "auto-create
+  // Player 1" logic until this resolves.
   useEffect(() => {
     if (cloudSyncStarted.current) return;
     cloudSyncStarted.current = true;
 
     (async () => {
-      const cloudProfiles = await fetchCloudProfiles();
-      if (cloudProfiles === null) return; // cloud unavailable, keep using local
-
-      if (cloudProfiles.length > 0) {
-        // Cloud has data → adopt it as the source of truth
-        setStored((prev) => {
-          const next: StoredChildren = {
-            version: SCHEMA_VERSION,
-            // Preserve active selection if it still exists in cloud profiles
-            activeChildId: cloudProfiles.find(c => c.id === prev.activeChildId)?.id
-              ?? cloudProfiles[0]?.id
-              ?? null,
-            children: cloudProfiles,
-          };
-          saveStored(next);
-          return next;
-        });
-      } else if (stored.children.length > 0) {
-        // Cloud is empty but local has data → push local up to the cloud
-        for (const profile of stored.children) {
-          await upsertCloudProfile(profile);
+      try {
+        const cloudProfiles = await fetchCloudProfiles();
+        if (cloudProfiles === null) {
+          // Cloud unavailable — fall through to localStorage (already loaded)
+          return;
         }
+
+        if (cloudProfiles.length > 0) {
+          // Cloud has data → merge with local. Cloud wins on conflicts (same
+          // childId), but any local-only profiles are preserved and pushed up.
+          setStored((prev) => {
+            const cloudMap = new Map(cloudProfiles.map(c => [c.id, c]));
+            const localOnly = prev.children.filter(c => !cloudMap.has(c.id));
+            const merged = [...cloudProfiles, ...localOnly];
+
+            // Push any local-only profiles up to the cloud
+            for (const profile of localOnly) {
+              upsertCloudProfile(profile);
+            }
+
+            const next: StoredChildren = {
+              version: SCHEMA_VERSION,
+              activeChildId: merged.find(c => c.id === prev.activeChildId)?.id
+                ?? merged[0]?.id
+                ?? null,
+              children: merged,
+            };
+            saveStored(next);
+            return next;
+          });
+        } else if (stored.children.length > 0) {
+          // Cloud is empty but local has data → push local up to the cloud
+          for (const profile of stored.children) {
+            await upsertCloudProfile(profile);
+          }
+        }
+      } catch (e) {
+        console.warn('[useChildProfiles] cloud hydration failed:', e);
+      } finally {
+        setCloudLoading(false);
       }
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -426,6 +449,9 @@ export default function useChildProfiles() {
     children: stored.children,
     activeChild,
     activeChildId: stored.activeChildId,
+    /** True while the initial cloud fetch is in progress. The UI should show
+     *  a loading screen and NOT create default profiles until this is false. */
+    cloudLoading,
     addChild,
     switchChild,
     updateChild,

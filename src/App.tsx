@@ -49,12 +49,20 @@ export default function App() {
 function GameView() {
   const { recordCorrect, recordWrong } = useProgress();
   const { speak, isSpeaking, cancelSpeech } = useAudio();
-  const { children, activeChild, activeChildId, addChild, switchChild, updateChild, removeChild, resetChild } = useChildProfiles();
+  const { children, activeChild, activeChildId, cloudLoading, addChild, switchChild, updateChild, removeChild, resetChild } = useChildProfiles();
   const { recordAnswer, getActiveConcept, getNextProblemConcept, getConceptDifficulty } = useMastery();
   const [view, setView] = useState<AppView>('game');
   const [unlockEvent, setUnlockEvent] = useState<UnlockEvent | null>(null);
 
-  // If no children exist, auto-create a default one (always starts with bloo only)
+  // Wait for cloud sync to complete before creating defaults. This was the
+  // race condition: on a new device, children=[] because cloud hasn't
+  // resolved yet, so "Player 1" got created before the user's real
+  // profiles arrived — hiding all their progress.
+  if (cloudLoading) {
+    return <LoadingScreen />;
+  }
+
+  // Only AFTER cloud sync: if no children exist (truly new user), create default
   if (children.length === 0) {
     addChild('Player 1', 'bloo');
   }
