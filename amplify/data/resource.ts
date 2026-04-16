@@ -21,6 +21,14 @@ const schema = a.schema({
       conceptProgress: a.json().required(),   // Record<SubConcept, SubConceptProgress>
       accuracyHistory: a.json(),              // Array<{ date, accuracy, concept }>
       recentActivity: a.json(),               // Array<ActivityEntry>
+      // Aggregate per-kid stats (totalCorrect, streaks, sessionCount, …).
+      // Optional so existing rows for the paying user keep loading without
+      // a backfill — `cloudRowToProfile` supplies a default when absent.
+      stats: a.json(),
+      // Client-set ISO timestamp of the last mutation. Used for profile-level
+      // last-write-wins on hydrate; conceptProgress merges by monotonic
+      // counters instead so mastery never regresses across devices.
+      updatedAt: a.datetime(),
     })
     .authorization((allow) => [allow.owner()]),
 

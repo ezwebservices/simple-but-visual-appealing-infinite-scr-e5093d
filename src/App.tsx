@@ -47,9 +47,13 @@ export default function App() {
 }
 
 function GameView() {
-  const { recordCorrect, recordWrong } = useProgress();
   const { speak, isSpeaking, cancelSpeech } = useAudio();
   const { children, activeChild, activeChildId, cloudLoading, addChild, switchChild, updateChild, removeChild, resetChild } = useChildProfiles();
+  // useProgress now operates on `activeChild.stats` via `updateChild`, which
+  // routes through the same debounced cloud write-through as the rest of the
+  // profile. Old behaviour (global localStorage key) leaked one kid's streak
+  // onto another on shared devices and never synced across devices at all.
+  const { recordCorrect, recordWrong } = useProgress(activeChild, updateChild);
   const { recordAnswer, getActiveConcept, getNextProblemConcept, getConceptDifficulty } = useMastery();
   const [view, setView] = useState<AppView>('game');
   const [unlockEvent, setUnlockEvent] = useState<UnlockEvent | null>(null);

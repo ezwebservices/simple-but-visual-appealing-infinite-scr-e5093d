@@ -1,7 +1,7 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { generateClient } from 'aws-amplify/data';
 import type { Schema } from '../../amplify/data/resource';
-import type { ChildProfile, SubConcept, SubConceptProgress, CharacterName } from '../types';
+import type { ChildProfile, ChildStats, SubConcept, SubConceptProgress, CharacterName, ActivityEntry } from '../types';
 import { SUB_CONCEPT_ORDER } from '../types';
 
 const STORAGE_KEY = 'numpals-children';
@@ -228,6 +228,37 @@ interface CloudChildRow {
   conceptProgress: unknown;
   accuracyHistory: unknown;
   recentActivity: unknown;
+  stats?: unknown;
+  // The schema's auto-generated `updatedAt` is server-set; our client-set
+  // mutation timestamp lives on the same column name (we overwrite it in
+  // `upsertCloudProfile`). Either way it round-trips as an ISO string.
+  updatedAt?: string | null;
+}
+
+export function defaultStats(): ChildStats {
+  return {
+    totalCorrect: 0,
+    totalAttempted: 0,
+    currentStreak: 0,
+    bestStreak: 0,
+    longestStreak: 0,
+    sessionCount: 0,
+    lastPlayed: new Date().toISOString(),
+  };
+}
+
+function reconcileStats(raw: unknown): ChildStats {
+  if (!raw || typeof raw !== 'object') return defaultStats();
+  const r = raw as Partial<ChildStats>;
+  return {
+    totalCorrect: r.totalCorrect ?? 0,
+    totalAttempted: r.totalAttempted ?? 0,
+    currentStreak: r.currentStreak ?? 0,
+    bestStreak: r.bestStreak ?? 0,
+    longestStreak: r.longestStreak ?? r.bestStreak ?? 0,
+    sessionCount: r.sessionCount ?? 0,
+    lastPlayed: r.lastPlayed ?? new Date().toISOString(),
+  };
 }
 
 function cloudRowToProfile(row: CloudChildRow): ChildProfile {
@@ -239,6 +270,95 @@ function cloudRowToProfile(row: CloudChildRow): ChildProfile {
     conceptProgress: reconcileProgress(row.conceptProgress),
     accuracyHistory: (row.accuracyHistory as ChildProfile['accuracyHistory']) ?? [],
     recentActivity: (row.recentActivity as ChildProfile['recentActivity']) ?? [],
+    stats: reconcileStats(row.stats),
+    updatedAt: row.updatedAt ?? row.createdAt,
+  };
+}
+
+// ─────────────────────────────────────────────────────────────────
+// Per-field merge for cloud↔local conflict resolution.
+// See .orchestrator/_sync_contract.md §4.
+// ─────────────────────────────────────────────────────────────────
+
+function mergeConceptProgress(
+  local: Record<SubConcept, SubConceptProgress>,
+  cloud: Record<SubConcept, SubConceptProgress>,
+): Record<SubConcept, SubConceptProgress> {
+  const out = {} as Record<SubConcept, SubConceptProgress>;
+  const keys = new Set<SubConcept>([
+    ...(Object.keys(local) as SubConcept[]),
+    ...(Object.keys(cloud) as SubConcept[]),
+  ]);
+  for (const k of keys) {
+    const l = local[k];
+    const c = cloud[k];
+    if (!l) { out[k] = c; continue; }
+    if (!c) { out[k] = l; continue; }
+    // Monotonic: keep whichever has more attempts. Tie → later masteredAt.
+    if (c.totalAttempted > l.totalAttempted) out[k] = c;
+    else if (l.totalAttempted > c.totalAttempted) out[k] = l;
+    else if ((c.masteredAt ?? '') > (l.masteredAt ?? '')) out[k] = c;
+    else out[k] = l;
+  }
+  return out;
+}
+
+function mergeStats(local: ChildStats | undefined, cloud: ChildStats | undefined): ChildStats {
+  if (!local) return cloud ?? defaultStats();
+  if (!cloud) return local;
+  const winner = cloud.totalAttempted > local.totalAttempted ? cloud : local;
+  return {
+    ...winner,
+    bestStreak: Math.max(local.bestStreak, cloud.bestStreak),
+    longestStreak: Math.max(local.longestStreak, cloud.longestStreak),
+    sessionCount: Math.max(local.sessionCount, cloud.sessionCount),
+  };
+}
+
+function mergeActivity(local: ActivityEntry[], cloud: ActivityEntry[]): ActivityEntry[] {
+  const seen = new Set<string>();
+  const out: ActivityEntry[] = [];
+  for (const e of [...cloud, ...local]) {
+    const key = `${e.timestamp}|${e.concept}|${e.num1}|${e.num2}|${e.operator}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    out.push(e);
+  }
+  // Preserve newest-first; the existing cap is 50 entries.
+  out.sort((a, b) => (a.timestamp < b.timestamp ? 1 : -1));
+  return out.slice(0, 50);
+}
+
+function mergeAccuracyHistory(
+  local: ChildProfile['accuracyHistory'],
+  cloud: ChildProfile['accuracyHistory'],
+): ChildProfile['accuracyHistory'] {
+  const seen = new Set<string>();
+  const out: ChildProfile['accuracyHistory'] = [];
+  for (const e of [...cloud, ...local]) {
+    const key = `${e.date}|${e.concept}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    out.push(e);
+  }
+  // Keep stable date order (oldest → newest); cap at the same 90-day-ish window
+  // the dashboard renders. We don't know the exact cap here, so keep all unique
+  // entries and let the consumer truncate.
+  out.sort((a, b) => (a.date < b.date ? -1 : 1));
+  return out;
+}
+
+function mergeProfiles(local: ChildProfile, cloud: ChildProfile): ChildProfile {
+  const localTs = local.updatedAt ?? local.createdAt;
+  const cloudTs = cloud.updatedAt ?? cloud.createdAt;
+  const profileWinner = cloudTs > localTs ? cloud : local;
+  return {
+    ...profileWinner,
+    conceptProgress: mergeConceptProgress(local.conceptProgress, cloud.conceptProgress),
+    accuracyHistory: mergeAccuracyHistory(local.accuracyHistory, cloud.accuracyHistory),
+    recentActivity: mergeActivity(local.recentActivity, cloud.recentActivity),
+    stats: mergeStats(local.stats, cloud.stats),
+    updatedAt: cloudTs > localTs ? cloudTs : localTs,
   };
 }
 
@@ -274,6 +394,8 @@ async function upsertCloudProfile(profile: ChildProfile): Promise<void> {
       conceptProgress: profile.conceptProgress as unknown as object,
       accuracyHistory: profile.accuracyHistory as unknown as object,
       recentActivity: profile.recentActivity as unknown as object,
+      stats: (profile.stats ?? defaultStats()) as unknown as object,
+      updatedAt: profile.updatedAt ?? new Date().toISOString(),
     };
     if (existing.data && existing.data.length > 0) {
       const existingRow = existing.data[0] as unknown as { id: string };
@@ -284,6 +406,45 @@ async function upsertCloudProfile(profile: ChildProfile): Promise<void> {
   } catch (e) {
     console.warn('[useChildProfiles] cloud upsert failed:', e);
   }
+}
+
+// ─────────────────────────────────────────────────────────────────
+// Debounced cloud write-through for high-frequency mutations
+// (every correct/wrong answer fires `updateChild`).
+//   • Per-child trailing-edge debounce, 1.5 s.
+//   • `pagehide` / `visibilitychange:hidden` flushes pending writes so
+//     closing the tab mid-debounce doesn't lose the last answer.
+//   • Module-scope so the timers survive component re-renders.
+// ─────────────────────────────────────────────────────────────────
+const DEBOUNCE_MS = 1500;
+const pendingWrites = new Map<string, { timeout: ReturnType<typeof setTimeout>; profile: ChildProfile }>();
+
+function flushPendingWrites(): void {
+  for (const [, entry] of pendingWrites) {
+    clearTimeout(entry.timeout);
+    upsertCloudProfile(entry.profile);
+  }
+  pendingWrites.clear();
+}
+
+function debouncedUpsert(profile: ChildProfile): void {
+  const prev = pendingWrites.get(profile.id);
+  if (prev) clearTimeout(prev.timeout);
+  const timeout = setTimeout(() => {
+    pendingWrites.delete(profile.id);
+    upsertCloudProfile(profile);
+  }, DEBOUNCE_MS);
+  // Store the latest snapshot; the next call replaces it.
+  pendingWrites.set(profile.id, { timeout, profile });
+}
+
+if (typeof window !== 'undefined') {
+  // Both events because Safari iOS only fires pagehide reliably; desktop
+  // browsers fire visibilitychange when the tab is backgrounded.
+  window.addEventListener('pagehide', flushPendingWrites);
+  window.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'hidden') flushPendingWrites();
+  });
 }
 
 async function deleteCloudProfile(childId: string): Promise<void> {
@@ -328,15 +489,36 @@ export default function useChildProfiles() {
         }
 
         if (cloudProfiles.length > 0) {
-          // Cloud has data → merge with local. Cloud wins on conflicts (same
-          // childId), but any local-only profiles are preserved and pushed up.
+          // Cloud has data → per-field merge against local (see _sync_contract.md §4):
+          //   - Profile-level fields use updatedAt LWW.
+          //   - conceptProgress merges by monotonic totalAttempted so a stale
+          //     write from one device cannot roll back mastery on another.
+          //   - stats / accuracyHistory / recentActivity merge per §4.
+          // Local-only profiles (created offline before login) are preserved
+          // and pushed up. Profiles that merge to a different shape than the
+          // cloud row are written back so the cloud catches up.
           setStored((prev) => {
-            const cloudMap = new Map(cloudProfiles.map(c => [c.id, c]));
-            const localOnly = prev.children.filter(c => !cloudMap.has(c.id));
-            const merged = [...cloudProfiles, ...localOnly];
+            const localMap = new Map(prev.children.map(c => [c.id, c]));
+            const merged: ChildProfile[] = [];
+            const seen = new Set<string>();
 
-            // Push any local-only profiles up to the cloud
+            for (const cloud of cloudProfiles) {
+              const local = localMap.get(cloud.id);
+              if (local) {
+                const result = mergeProfiles(local, cloud);
+                merged.push(result);
+                // If the merge produced a stricter superset than the cloud row
+                // (more attempts on some sub-concept, more recent activity),
+                // push the merged row back up so other devices see it.
+                debouncedUpsert(result);
+              } else {
+                merged.push(cloud);
+              }
+              seen.add(cloud.id);
+            }
+            const localOnly = prev.children.filter(c => !seen.has(c.id));
             for (const profile of localOnly) {
+              merged.push(profile);
               upsertCloudProfile(profile);
             }
 
@@ -367,14 +549,19 @@ export default function useChildProfiles() {
 
   const addChild = useCallback((name: string, avatar: CharacterName) => {
     setStored(prev => {
-      const child = createChild(name, avatar);
+      const child: ChildProfile = {
+        ...createChild(name, avatar),
+        stats: defaultStats(),
+        updatedAt: new Date().toISOString(),
+      };
       const next: StoredChildren = {
         ...prev,
         children: [...prev.children, child],
         activeChildId: prev.activeChildId ?? child.id,
       };
       saveStored(next);
-      // Fire-and-forget cloud sync
+      // Immediate (not debounced) — addChild is rare and user-intent-driven;
+      // it must not be lost if the user closes the tab right away.
       upsertCloudProfile(child);
       return next;
     });
@@ -395,15 +582,19 @@ export default function useChildProfiles() {
         ...prev,
         children: prev.children.map(c => {
           if (c.id === childId) {
-            updated = updater(c);
+            // Stamp updatedAt on every mutation so the per-field merge has a
+            // tiebreaker for profile-level fields (name, avatar, etc.).
+            updated = { ...updater(c), updatedAt: new Date().toISOString() };
             return updated;
           }
           return c;
         }),
       };
       saveStored(next);
-      // Cloud sync (debounced via fire-and-forget — last write wins)
-      if (updated) upsertCloudProfile(updated);
+      // Debounced — every correct/wrong answer flows through here, so a kid
+      // answering ~1/sec used to issue 1 DDB write/sec. Trailing-edge 1.5 s
+      // collapses bursts; pagehide flush guarantees the last answer lands.
+      if (updated) debouncedUpsert(updated);
       return next;
     });
   }, []);
@@ -431,14 +622,30 @@ export default function useChildProfiles() {
         ...prev,
         children: prev.children.map(c => {
           if (c.id === childId) {
-            updated = { ...c, conceptProgress: createDefaultProgress(), accuracyHistory: [], recentActivity: [] };
+            updated = {
+              ...c,
+              conceptProgress: createDefaultProgress(),
+              accuracyHistory: [],
+              recentActivity: [],
+              stats: defaultStats(),
+              updatedAt: new Date().toISOString(),
+            };
             return updated;
           }
           return c;
         }),
       };
       saveStored(next);
-      if (updated) upsertCloudProfile(updated);
+      // Cancel any pending debounced write so the reset isn't immediately
+      // overwritten by stale stats from before the reset.
+      if (updated) {
+        const pending = pendingWrites.get(childId);
+        if (pending) {
+          clearTimeout(pending.timeout);
+          pendingWrites.delete(childId);
+        }
+        upsertCloudProfile(updated);
+      }
       return next;
     });
   }, []);

@@ -33879,6 +33879,727 @@
     {
       "type": "employee_status",
       "message": "Installer finished"
+    },
+    {
+      "type": "phase_progress",
+      "message": "Orchestrator planning change",
+      "phase": 1,
+      "total_phases": 0
+    },
+    {
+      "type": "status",
+      "message": "Orchestrator starting..."
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 16K cached  ~$0.0350"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 16K cached  ~$0.0350"
+    },
+    {
+      "type": "command_run",
+      "message": "$ ls .orchestrator/ 2>&1 | head -30"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 24K cached  ~$0.0090"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 24K cached  ~$0.0219"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 24K cached  ~$0.0219"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out  ~$0.0574"
+    },
+    {
+      "type": "command_run",
+      "message": "$ find /c/Users/brand/Documents/Orchestrator/workspaces/e5093d12-3cfb-4aa9-b285-aa4534608197 -type f -name \"*.ts\" -o -name \"*.tsx\" -o -name \"*.js\" -o -name \"*.jsx\" | head -30"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 15K cached  ~$0.0151"
+    },
+    {
+      "type": "command_run",
+      "message": "$ git log --oneline | grep -i \"child\\|profile\\|race\\|device\\|sync\" | head -20"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 18K cached  ~$0.0063"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 18K cached  ~$0.0063"
+    },
+    {
+      "type": "command_run",
+      "message": "$ git show 85959ab"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 18K cached  ~$0.0063"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 18K cached  ~$0.0063"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 18K cached  ~$0.0216"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 18K cached  ~$0.0216"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 18K cached  ~$0.0216"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 18K cached  ~$0.0216"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 22K cached  ~$0.0083"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 22K cached  ~$0.0083"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 22K cached  ~$0.0083"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 22K cached  ~$0.0460"
+    },
+    {
+      "type": "command_run",
+      "message": "$ grep -r \"cloudLoading\\|LoadingScreen\\|useChildProfiles\" /c/Users/brand/Documents/Orchestrator/workspaces/e5093d12-3cfb-4aa9-b285-aa4534608197/src --include=\"*.tsx\" --include=\"*.ts\" -l"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 33K cached  ~$0.0120"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 33K cached  ~$0.0120"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 33K cached  ~$0.0194"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 36K cached  ~$0.0158"
+    },
+    {
+      "type": "command_run",
+      "message": "$ grep -A 15 \"interface ChildProfile\\|type ChildProfile\" /c/Users/brand/Documents/Orchestrator/workspaces/e5093d12-3cfb-4aa9-b285-aa4534608197/src/types.ts | head -30"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 28K cached  ~$0.0160"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 28K cached  ~$0.0160"
+    },
+    {
+      "type": "file_created",
+      "message": "Created C:/Users/brand/Documents/Orchestrator/workspaces/e5093d12-3cfb-4aa9-b285-aa4534608197/.orchestrator/_iteration_plan.json",
+      "file_path": "C:/Users/brand/Documents/Orchestrator/workspaces/e5093d12-3cfb-4aa9-b285-aa4534608197/.orchestrator/_iteration_plan.json"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 30K cached  ~$0.0194"
+    },
+    {
+      "type": "thinking",
+      "message": "Plan written. Three sequenced subtasks: Architect defines the sync contract (schema diff, conflict rules, backward-compat checklist for the 1 paying user), Engineer implements write-through cloud sync for progress + mastery mutations, QA verifies cross-device parity on a two-device matrix including "
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 3K out / 122K cached  ~$0.1532"
+    },
+    {
+      "type": "status",
+      "message": "Orchestrator finished (exit 0)"
+    },
+    {
+      "type": "thinking",
+      "message": "Investigation shows cloud sync is partially wired: ChildProfile is stored in DynamoDB (owner-auth) and commit 85959ab added a cloudLoading gate to prevent the 'new device' race condition. But real gaps remain for true cross-device parity: (1) useProgress.ts aggregate stats (totalCorrect, bestStreak, currentStreak) are localStorage-only — never sync, (2) need to verify that every mastery/conceptProgress/accuracyHistory/recentActivity mutation actually writes through to DynamoDB (not just on explicit save), (3) the merge logic on sign-in must resolve conflicts correctly (most-recent-wins per child). Given the blast radius (1 paying subscriber, data-loss risk) I'm keeping the plan lean but sequenced: Architect defines the sync contract + conflict strategy first (prevents Engineer from guessing on merge semantics), Engineer implements the write-through + useProgress cloud persistence, QA verifies cross-device parity on two browsers/devices. Designer/Polish/Marketing/etc. are not involved — this is pure data-layer work with no UI surface changes beyond possibly a tiny 'Syncing…' indicator which the Engineer can handle inline."
+    },
+    {
+      "type": "status",
+      "message": "Orchestrator split this into 3 subtask(s)"
+    },
+    {
+      "type": "phase_progress",
+      "message": "Architect",
+      "phase": 2,
+      "total_phases": 4
+    },
+    {
+      "type": "employee_status",
+      "message": "Architect is working: Define the cross-device sync contract for child profiles and progress. Current state: ChildProfile model exists in amplify/data/resource.ts:13-25 with owner-auth, and src/hooks/useChildProfiles.ts has cloudLoading + merge logic (commit 85959ab). Gaps to resolve: (a) src/hooks/useProgress.ts is localStorage-only — decide whether to fold aggregate stats (totalCorrect, bestStreak, currentStreak, longestStreak, sessionCount) into the existing ChildProfile model as new JSON fields OR create a separate Progress model; recommend the simpler option that avoids breaking the 1 paying user's existing cloud data. (b) Audit useChildProfiles.ts updateProfile / addActivity / updateMastery paths — confirm every mutation debounce-writes to DynamoDB, not just on explicit save. (c) Specify the conflict-resolution rule when the same child is modified on two devices (recommend last-write-wins using an updatedAt timestamp added to ChildProfile, with per-field merge for conceptProgress so mastery gains on device A aren't overwritten by a stale read on device B). (d) Specify backward-compat: any new schema fields must be optional so existing records keep loading. Deliverable: write a short spec to .orchestrator/_sync_contract.md (≤200 lines) with: data model diff, write-through triggers, conflict rules, migration-safety checklist, and explicit list of files the Engineer will touch. Do NOT modify code."
+    },
+    {
+      "type": "status",
+      "message": "Architect starting..."
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 16K cached  ~$0.0347"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 16K cached  ~$0.0347"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 24K cached  ~$0.0177"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 24K cached  ~$0.0454"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 34K cached  ~$0.0154"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 34K cached  ~$0.0154"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 34K cached  ~$0.0154"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 35K cached  ~$0.0199"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 35K cached  ~$0.0199"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 37K cached  ~$0.0244"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 37K cached  ~$0.0244"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 37K cached  ~$0.0244"
+    },
+    {
+      "type": "command_run",
+      "message": "$ ls \"C:/Users/brand/Documents/Orchestrator/workspaces/e5093d12-3cfb-4aa9-b285-aa4534608197/.orchestrator/\""
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 40K cached  ~$0.0164"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 40K cached  ~$0.0164"
+    },
+    {
+      "type": "thinking",
+      "message": "I have enough context. Writing the spec now."
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 40K cached  ~$0.0164"
+    },
+    {
+      "type": "file_created",
+      "message": "Created C:/Users/brand/Documents/Orchestrator/workspaces/e5093d12-3cfb-4aa9-b285-aa4534608197/.orchestrator/_sync_contract.md",
+      "file_path": "C:/Users/brand/Documents/Orchestrator/workspaces/e5093d12-3cfb-4aa9-b285-aa4534608197/.orchestrator/_sync_contract.md"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 41K cached  ~$0.0326"
+    },
+    {
+      "type": "command_run",
+      "message": "$ wc -l \"C:/Users/brand/Documents/Orchestrator/workspaces/e5093d12-3cfb-4aa9-b285-aa4534608197/.orchestrator/_sync_contract.md\""
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 46K cached  ~$0.0150"
+    },
+    {
+      "type": "thinking",
+      "message": "Spec written (144 lines, under the 200-line cap). No code changed, so `npm run build` isn't applicable.\n\n**Key decisions:**\n- **(a)** Fold aggregate stats into `ChildProfile` as optional `stats: a.json()` + `updatedAt: a.datetime()` — zero migration for the paying user; also fixes latent per-child s"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 7K out / 300K cached  ~$0.3248"
+    },
+    {
+      "type": "status",
+      "message": "Architect finished (exit 0)"
+    },
+    {
+      "type": "employee_status",
+      "message": "Architect finished"
+    },
+    {
+      "type": "phase_progress",
+      "message": "Engineer",
+      "phase": 3,
+      "total_phases": 4
+    },
+    {
+      "type": "employee_status",
+      "message": "Engineer is working: Implement cross-device sync per .orchestrator/_sync_contract.md (written by Architect in the previous subtask — read it first). Core work: (1) extend Amplify schema in amplify/data/resource.ts to persist whatever the contract specifies (likely additional JSON fields on ChildProfile + an updatedAt timestamp) — keep every new field optional so existing records for the 1 paying subscriber continue to load without migration. (2) Wire useProgress.ts to read/write through the cloud via the same pattern as useChildProfiles.ts (initial cloud fetch gated by cloudLoading, debounced write-through on every mutation, localStorage as offline cache). (3) Ensure every mutation in useChildProfiles.ts (addActivity, updateMastery, updateProfile, recentActivity updates) debounce-writes to DynamoDB — not only on explicit save. (4) Implement the conflict-resolution rule from the contract (most-recent updatedAt wins at the profile level; per-concept merge inside conceptProgress so mastery never regresses). (5) Run `npm run build` locally and fix any type errors. Do NOT alter auth flow, subscription logic, or the Stripe/webhook lambdas. Do NOT commit/push — QA runs next."
+    },
+    {
+      "type": "status",
+      "message": "Engineer starting..."
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 16K cached  ~$0.0345"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 16K cached  ~$0.0345"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 16K cached  ~$0.0345"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 16K cached  ~$0.0345"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 24K cached  ~$0.0321"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 24K cached  ~$0.0321"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 24K cached  ~$0.0321"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 24K cached  ~$0.0321"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 30K cached  ~$0.0613"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 44K cached  ~$0.0275"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 44K cached  ~$0.0275"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 44K cached  ~$0.0275"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 44K cached  ~$0.0275"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 47K cached  ~$0.0276"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 16K cached  ~$0.1489"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 16K cached  ~$0.1489"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 54K cached  ~$0.0182"
+    },
+    {
+      "type": "thinking",
+      "message": "Starting with the Amplify schema."
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 54K cached  ~$0.0182"
+    },
+    {
+      "type": "file_created",
+      "message": "Created C:/Users/brand/Documents/Orchestrator/workspaces/e5093d12-3cfb-4aa9-b285-aa4534608197/amplify/data/resource.ts",
+      "file_path": "C:/Users/brand/Documents/Orchestrator/workspaces/e5093d12-3cfb-4aa9-b285-aa4534608197/amplify/data/resource.ts"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 55K cached  ~$0.0201"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 55K cached  ~$0.0195"
+    },
+    {
+      "type": "file_created",
+      "message": "Created C:/Users/brand/Documents/Orchestrator/workspaces/e5093d12-3cfb-4aa9-b285-aa4534608197/src/types.ts",
+      "file_path": "C:/Users/brand/Documents/Orchestrator/workspaces/e5093d12-3cfb-4aa9-b285-aa4534608197/src/types.ts"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 56K cached  ~$0.0217"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 57K cached  ~$0.0189"
+    },
+    {
+      "type": "thinking",
+      "message": "Now patch useChildProfiles.ts — add the debounce, per-field merge, and new field handling."
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 57K cached  ~$0.0189"
+    },
+    {
+      "type": "file_created",
+      "message": "Created C:/Users/brand/Documents/Orchestrator/workspaces/e5093d12-3cfb-4aa9-b285-aa4534608197/src/hooks/useChildProfiles.ts",
+      "file_path": "C:/Users/brand/Documents/Orchestrator/workspaces/e5093d12-3cfb-4aa9-b285-aa4534608197/src/hooks/useChildProfiles.ts"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 57K cached  ~$0.0207"
+    },
+    {
+      "type": "file_created",
+      "message": "Created C:/Users/brand/Documents/Orchestrator/workspaces/e5093d12-3cfb-4aa9-b285-aa4534608197/src/hooks/useChildProfiles.ts",
+      "file_path": "C:/Users/brand/Documents/Orchestrator/workspaces/e5093d12-3cfb-4aa9-b285-aa4534608197/src/hooks/useChildProfiles.ts"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 58K cached  ~$0.0285"
+    },
+    {
+      "type": "thinking",
+      "message": "Now update `upsertCloudProfile` to write the new fields and add the debounce machinery, then update `addChild`/`updateChild`/`resetChild` to use it."
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 58K cached  ~$0.0285"
+    },
+    {
+      "type": "file_created",
+      "message": "Created C:/Users/brand/Documents/Orchestrator/workspaces/e5093d12-3cfb-4aa9-b285-aa4534608197/src/hooks/useChildProfiles.ts",
+      "file_path": "C:/Users/brand/Documents/Orchestrator/workspaces/e5093d12-3cfb-4aa9-b285-aa4534608197/src/hooks/useChildProfiles.ts"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 61K cached  ~$0.0253"
+    },
+    {
+      "type": "thinking",
+      "message": "Now wire the merge into hydration and use `debouncedUpsert` for `updateChild` (immediate writes still for `addChild`/`removeChild`/`resetChild` per the contract)."
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 61K cached  ~$0.0253"
+    },
+    {
+      "type": "file_created",
+      "message": "Created C:/Users/brand/Documents/Orchestrator/workspaces/e5093d12-3cfb-4aa9-b285-aa4534608197/src/hooks/useChildProfiles.ts",
+      "file_path": "C:/Users/brand/Documents/Orchestrator/workspaces/e5093d12-3cfb-4aa9-b285-aa4534608197/src/hooks/useChildProfiles.ts"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 63K cached  ~$0.0241"
+    },
+    {
+      "type": "thinking",
+      "message": "Now switch `updateChild` to debounced sync, and stamp `updatedAt` on every mutation:"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 63K cached  ~$0.0241"
+    },
+    {
+      "type": "file_created",
+      "message": "Created C:/Users/brand/Documents/Orchestrator/workspaces/e5093d12-3cfb-4aa9-b285-aa4534608197/src/hooks/useChildProfiles.ts",
+      "file_path": "C:/Users/brand/Documents/Orchestrator/workspaces/e5093d12-3cfb-4aa9-b285-aa4534608197/src/hooks/useChildProfiles.ts"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 64K cached  ~$0.0232"
+    },
+    {
+      "type": "file_created",
+      "message": "Created C:/Users/brand/Documents/Orchestrator/workspaces/e5093d12-3cfb-4aa9-b285-aa4534608197/src/hooks/useChildProfiles.ts",
+      "file_path": "C:/Users/brand/Documents/Orchestrator/workspaces/e5093d12-3cfb-4aa9-b285-aa4534608197/src/hooks/useChildProfiles.ts"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 65K cached  ~$0.0252"
+    },
+    {
+      "type": "file_created",
+      "message": "Created C:/Users/brand/Documents/Orchestrator/workspaces/e5093d12-3cfb-4aa9-b285-aa4534608197/src/hooks/useChildProfiles.ts",
+      "file_path": "C:/Users/brand/Documents/Orchestrator/workspaces/e5093d12-3cfb-4aa9-b285-aa4534608197/src/hooks/useChildProfiles.ts"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 66K cached  ~$0.0239"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 67K cached  ~$0.0219"
+    },
+    {
+      "type": "thinking",
+      "message": "Refactor useProgress to operate on `activeChild.stats` via `updateChild`."
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 67K cached  ~$0.0219"
+    },
+    {
+      "type": "file_created",
+      "message": "Created C:/Users/brand/Documents/Orchestrator/workspaces/e5093d12-3cfb-4aa9-b285-aa4534608197/src/hooks/useProgress.ts",
+      "file_path": "C:/Users/brand/Documents/Orchestrator/workspaces/e5093d12-3cfb-4aa9-b285-aa4534608197/src/hooks/useProgress.ts"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 67K cached  ~$0.0284"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 67K cached  ~$0.0284"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 69K cached  ~$0.0254"
+    },
+    {
+      "type": "file_created",
+      "message": "Created C:/Users/brand/Documents/Orchestrator/workspaces/e5093d12-3cfb-4aa9-b285-aa4534608197/src/App.tsx",
+      "file_path": "C:/Users/brand/Documents/Orchestrator/workspaces/e5093d12-3cfb-4aa9-b285-aa4534608197/src/App.tsx"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 70K cached  ~$0.0244"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 71K cached  ~$0.0240"
+    },
+    {
+      "type": "command_run",
+      "message": "$ cd \"C:/Users/brand/Documents/Orchestrator/workspaces/e5093d12-3cfb-4aa9-b285-aa4534608197\" && npm run build 2>&1"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 71K cached  ~$0.0239"
+    },
+    {
+      "type": "thinking",
+      "message": "Build passes clean. Let me also verify no other files reference `useProgress` with the old zero-arg signature."
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 71K cached  ~$0.0239"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 72K cached  ~$0.0232"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 72K cached  ~$0.0234"
+    },
+    {
+      "type": "thinking",
+      "message": "Cross-device sync implemented per the contract — `tsc && vite build` passes clean. No commit per instructions; QA runs next.\n\nSummary of changes:\n- **`amplify/data/resource.ts`** — added optional `stats: a.json()` and `updatedAt: a.datetime()` to `ChildProfile`. Zero-migration for the existing payin"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 18K out / 1457K cached  ~$1.0529"
+    },
+    {
+      "type": "status",
+      "message": "Engineer finished (exit 0)"
+    },
+    {
+      "type": "employee_status",
+      "message": "Engineer finished"
+    },
+    {
+      "type": "phase_progress",
+      "message": "QA",
+      "phase": 4,
+      "total_phases": 4
+    },
+    {
+      "type": "employee_status",
+      "message": "QA is working: Verify cross-device sync end-to-end. Test matrix: (1) Sign in on Device A (or browser profile A), create child 'TestA', play a lesson to raise mastery on 'counting to 5', log out. Sign in on Device B with the same account — confirm TestA appears with the SAME mastery, activity history, and aggregate progress (totalCorrect, bestStreak). (2) With both devices signed in, update the child's avatar on A — confirm it appears on B after a refresh/re-sign-in. (3) Offline test: disconnect Device A, play a session, reconnect — confirm writes flush to cloud and land on Device B. (4) Conflict test: modify same child on A and B while both are online — verify the most-recent update wins and no mastery regression occurs. (5) Regression: confirm existing paying-user flow still works — sign-in, child list loads, subscription gate functions, no data loss on upgrade. Also run `npm run build` to confirm it passes clean for Amplify deploy. Report pass/fail per scenario plus any console errors; if any fail, file the exact repro steps so Engineer can patch before commit."
+    },
+    {
+      "type": "status",
+      "message": "QA starting..."
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 16K cached  ~$0.0346"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 16K cached  ~$0.0346"
+    },
+    {
+      "type": "command_run",
+      "message": "$ ls C:\\\\Users\\\\brand\\\\.claude\\\\projects\\\\C--Users-brand-Documents-Orchestrator-workspaces-e5093d12-3cfb-4aa9-b285-aa4534608197\\\\memory\\\\ 2>/dev/null"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 16K cached  ~$0.0346"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 16K cached  ~$0.0346"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 16K cached  ~$0.0346"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 24K cached  ~$0.0118"
+    },
+    {
+      "type": "command_run",
+      "message": "$ ls \"C:/Users/brand/.claude/projects/C--Users-brand-Documents-Orchestrator-workspaces-e5093d12-3cfb-4aa9-b285-aa4534608197/memory/\" 2>/dev/null || echo \"empty\""
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 24K cached  ~$0.0118"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 24K cached  ~$0.0118"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 24K cached  ~$0.0118"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 25K cached  ~$0.0326"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 25K cached  ~$0.0326"
+    },
+    {
+      "type": "command_run",
+      "message": "$ ls \"C:/Users/brand/.claude/projects/C--Users-brand-Documents-Orchestrator-workspaces-e5093d12-3cfb-4aa9-b285-aa4534608197/memory/\""
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 25K cached  ~$0.0326"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 25K cached  ~$0.0326"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 31K cached  ~$0.0331"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 16K cached  ~$0.0986"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 16K cached  ~$0.0986"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 16K cached  ~$0.0986"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 41K cached  ~$0.0585"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 41K cached  ~$0.0585"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 53K cached  ~$0.0377"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 53K cached  ~$0.0377"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 53K cached  ~$0.0377"
+    },
+    {
+      "type": "command_run",
+      "message": "$ cd \"C:/Users/brand/Documents/Orchestrator/workspaces/e5093d12-3cfb-4aa9-b285-aa4534608197\" && npm run build 2>&1 | tail -100"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 58K cached  ~$0.0253"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 58K cached  ~$0.0253"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 60K cached  ~$0.0262"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 0K out / 60K cached  ~$0.0262"
+    },
+    {
+      "type": "thinking",
+      "message": "## QA Report — Cross-Device Sync\n\n**Environment:** Static code audit + `npm run build` only. I cannot spin up two real browsers against the deployed Amplify sandbox from this CLI, so the per-scenario verdicts below are from code inspection, not live multi-device runs. The user should smoke-test on t"
+    },
+    {
+      "type": "token_usage",
+      "message": "0K in / 6K out / 327K cached  ~$0.4565"
+    },
+    {
+      "type": "status",
+      "message": "QA finished (exit 0)"
+    },
+    {
+      "type": "employee_status",
+      "message": "QA finished"
     }
   ],
   "created_at": "2026-04-07T23:18:41.935868600+00:00",
@@ -33886,5 +34607,6 @@
   "published": false,
   "repo_url": "https://github.com/ezwebservices/simple-but-visual-appealing-infinite-scr-e5093d",
   "live_url": "https://main.d378sxzdjrhmnm.amplifyapp.com",
-  "amplify_app_id": "d378sxzdjrhmnm"
+  "amplify_app_id": "d378sxzdjrhmnm",
+  "amplify_region": "us-east-1"
 }

@@ -115,6 +115,20 @@ export interface ActivityEntry {
   operator: Operator;
 }
 
+/** Aggregate per-child stats — synced via ChildProfile.stats JSON column */
+export interface ChildStats {
+  totalCorrect: number;
+  totalAttempted: number;
+  currentStreak: number;
+  bestStreak: number;
+  /** Monotonic record — never decreases (cross-device max-merged) */
+  longestStreak: number;
+  /** +1 per new calendar-day open */
+  sessionCount: number;
+  /** ISO of the last answered question */
+  lastPlayed: string;
+}
+
 /** Child profile for multi-child accounts */
 export interface ChildProfile {
   id: string;
@@ -130,6 +144,10 @@ export interface ChildProfile {
   unlockedCharacters?: CharacterName[];
   /** Highest dance move number unlocked (1–5). Starts at 1. */
   unlockedDanceMoves?: number;
+  /** Aggregate stats — optional so old cloud rows still hydrate */
+  stats?: ChildStats;
+  /** ISO of the last client-side mutation — used for profile-level LWW */
+  updatedAt?: string;
 }
 
 /** Unlock thresholds — how many sub-concepts must be mastered to unlock each reward */
