@@ -8,7 +8,8 @@ interface SunnyBugProps {
 }
 
 /**
- * SunnyBug — Cheerful coral ladybug character with black belly spots.
+ * SunnyBug — Scout, Guardian of Patterns. Coral rhino-beetle creature with
+ * a hard elytra shell and a horn-stub on the head.
  */
 export default function SunnyBug(props: SunnyBugProps) {
   return <CharacterRig palette={PALETTES.sunny} characterId="sunny" {...props} />;

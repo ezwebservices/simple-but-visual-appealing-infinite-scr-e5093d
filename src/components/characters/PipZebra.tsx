@@ -8,7 +8,8 @@ interface PipZebraProps {
 }
 
 /**
- * PipZebra — Plush white-and-grey zebra character with belly stripes.
+ * PipZebra — Speedster, Guardian of Sequencing. Humanoid racer kid in a
+ * zebra-stripe jacket and visored helmet, ponytail flying out the back.
  */
 export default function PipZebra(props: PipZebraProps) {
   return <CharacterRig palette={PALETTES.pip} characterId="pip" {...props} />;

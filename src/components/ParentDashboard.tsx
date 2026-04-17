@@ -130,10 +130,10 @@ const CONCEPT_GROUPS: ConceptGroup[] = [
 const AVATAR_OPTIONS: CharacterName[] = ['bloo', 'sunny', 'rosie', 'milo', 'pip', 'rex', 'robo'];
 const AVATAR_LABELS: Record<CharacterName, string> = {
   bloo: 'Bloo Bear',
-  sunny: 'Sunny Fox',
-  rosie: 'Rosie Bunny',
+  sunny: 'Sunny Bug',
+  rosie: 'Rosie Owl',
   milo: 'Milo Frog',
-  pip: 'Pip Panda',
+  pip: 'Pip Zebra',
   rex: 'Rex Robot',
   robo: 'Robo Rocket',
 };

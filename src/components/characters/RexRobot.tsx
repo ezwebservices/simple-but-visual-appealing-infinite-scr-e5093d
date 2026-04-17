@@ -8,7 +8,8 @@ interface RexRobotProps {
 }
 
 /**
- * RexRobot — Friendly cyan robot character with antenna and chest panel.
+ * RexRobot — Inventor, Guardian of Shapes & Geometry. Compact kid-shaped
+ * mech with exposed joint wiring, a bent antenna, and an amber-lit chest HUD.
  */
 export default function RexRobot(props: RexRobotProps) {
   return <CharacterRig palette={PALETTES.rex} characterId="rex" {...props} />;

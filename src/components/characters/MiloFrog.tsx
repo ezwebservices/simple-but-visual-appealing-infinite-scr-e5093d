@@ -8,7 +8,8 @@ interface MiloFrogProps {
 }
 
 /**
- * MiloFrog — Bouncy plush green frog character.
+ * MiloFrog — Athlete, Guardian of Measurement. Bipedal frog in an athletic
+ * tank with sweatband, taped fingers, and hot-pink-laced Leap-Meter Sneakers.
  */
 export default function MiloFrog(props: MiloFrogProps) {
   return <CharacterRig palette={PALETTES.milo} characterId="milo" {...props} />;

@@ -8,8 +8,8 @@ interface BlooBearProps {
 }
 
 /**
- * BlooBear — Kawaii plush blue bear, the hero NumPal.
- * Wraps the shared CharacterRig with the blue palette + heart belly accent.
+ * BlooBear — Captain of Team Prime, Guardian of Counting. Humanoid hero-kid
+ * in an ice-blue bear-hooded jacket, Tally Gauntlet on the right hand.
  */
 export default function BlooBear(props: BlooBearProps) {
   return <CharacterRig palette={PALETTES.bloo} characterId="bloo" {...props} />;

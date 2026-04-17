@@ -1,111 +1,155 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
   <defs>
     <filter id="logo-shadow" x="-10%" y="-10%" width="130%" height="130%">
-      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#00000020"/>
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#00000022"/>
     </filter>
-    <radialGradient id="logo-bg" cx="50%" cy="35%" r="65%">
-      <stop offset="0%" stop-color="#A8E0FF"/>
-      <stop offset="100%" stop-color="#6BB8E8"/>
+    <radialGradient id="logo-bg" cx="50%" cy="32%" r="72%">
+      <stop offset="0%" stop-color="#B7E5FF"/>
+      <stop offset="100%" stop-color="#62B0E2"/>
     </radialGradient>
-    <!-- Polished BlooBear pastel palette -->
-    <radialGradient id="logo-body" cx="42%" cy="32%" r="80%">
-      <stop offset="0%" stop-color="#E8F2FF"/>
-      <stop offset="30%" stop-color="#C8E0F5"/>
-      <stop offset="65%" stop-color="#A5C8E5"/>
-      <stop offset="90%" stop-color="#86B0D2"/>
-      <stop offset="100%" stop-color="#7AA5C7"/>
-    </radialGradient>
-    <radialGradient id="logo-sheen" cx="35%" cy="22%" r="55%">
-      <stop offset="0%" stop-color="white" stop-opacity="0.4"/>
-      <stop offset="55%" stop-color="white" stop-opacity="0.08"/>
-      <stop offset="100%" stop-color="white" stop-opacity="0"/>
-    </radialGradient>
-    <radialGradient id="logo-belly" cx="50%" cy="40%" r="70%">
-      <stop offset="0%" stop-color="#FFFAEC"/>
-      <stop offset="50%" stop-color="#FCEFD0"/>
-      <stop offset="90%" stop-color="#F5E0B0"/>
-      <stop offset="100%" stop-color="#EBCF95"/>
-    </radialGradient>
-    <radialGradient id="logo-cheek" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#FFB3C1" stop-opacity="0.85"/>
-      <stop offset="60%" stop-color="#FFB3C1" stop-opacity="0.35"/>
-      <stop offset="100%" stop-color="#FFB3C1" stop-opacity="0"/>
-    </radialGradient>
-    <radialGradient id="logo-iris" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#2A1A0A"/>
-      <stop offset="55%" stop-color="#4A3220"/>
-      <stop offset="100%" stop-color="#8A5F40"/>
-    </radialGradient>
-    <pattern id="logo-fur" x="0" y="0" width="6" height="6" patternUnits="userSpaceOnUse">
-      <line x1="1" y1="0" x2="2.5" y2="4" stroke="#5C8DAE" stroke-width="0.7" opacity="0.55" stroke-linecap="round"/>
-      <line x1="4" y1="1" x2="5.5" y2="5" stroke="#5C8DAE" stroke-width="0.7" opacity="0.55" stroke-linecap="round"/>
-    </pattern>
+
+    <!-- Per-character body gradients (cel-shade ramp: light → hero → shadow) -->
+    <linearGradient id="bloo-body" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#A8CFE8"/>
+      <stop offset="55%" stop-color="#7AA5C7"/>
+      <stop offset="100%" stop-color="#5A87AE"/>
+    </linearGradient>
+    <linearGradient id="sunny-body" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#F4A68A"/>
+      <stop offset="55%" stop-color="#E2806A"/>
+      <stop offset="100%" stop-color="#C05E48"/>
+    </linearGradient>
+    <linearGradient id="rosie-body" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#F0B5C9"/>
+      <stop offset="55%" stop-color="#E07898"/>
+      <stop offset="100%" stop-color="#B85A7E"/>
+    </linearGradient>
+    <linearGradient id="milo-body" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#8ED19A"/>
+      <stop offset="55%" stop-color="#5BA868"/>
+      <stop offset="100%" stop-color="#3D854A"/>
+    </linearGradient>
+    <linearGradient id="pip-body" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="60%" stop-color="#F2F4F8"/>
+      <stop offset="100%" stop-color="#D5DBE4"/>
+    </linearGradient>
+    <linearGradient id="rex-body" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#A8E2F2"/>
+      <stop offset="55%" stop-color="#6DC8DD"/>
+      <stop offset="100%" stop-color="#4AA6BC"/>
+    </linearGradient>
   </defs>
 
-  <!-- Background circle -->
+  <!-- Background sky disc -->
   <circle cx="200" cy="200" r="190" fill="url(#logo-bg)" filter="url(#logo-shadow)"/>
 
-  <!-- Polished BlooBear (centered, scaled to fit the logo) -->
-  <g transform="translate(40, 30) scale(1)">
-
-    <!-- Ears (teardrop shape with inner ear) -->
-    <path d="M92,38 C72,38 65,55 70,72 C74,84 88,90 92,90 C96,90 110,84 114,72 C119,55 112,38 92,38 Z" fill="url(#logo-body)"/>
-    <path d="M92,55 C82,55 78,65 81,75 C84,82 90,86 92,86 C94,86 100,82 103,75 C106,65 102,55 92,55 Z" fill="url(#logo-belly)"/>
-    <ellipse cx="92" cy="74" rx="6" ry="8" fill="#A87530" opacity="0.45"/>
-
-    <path d="M228,38 C208,38 201,55 206,72 C210,84 224,90 228,90 C232,90 246,84 250,72 C255,55 248,38 228,38 Z" fill="url(#logo-body)"/>
-    <path d="M228,55 C218,55 214,65 217,75 C220,82 226,86 228,86 C230,86 236,82 239,75 C242,65 238,55 228,55 Z" fill="url(#logo-belly)"/>
-    <ellipse cx="228" cy="74" rx="6" ry="8" fill="#A87530" opacity="0.45"/>
-
-    <!-- Big round head -->
-    <ellipse cx="160" cy="130" rx="92" ry="86" fill="url(#logo-body)"/>
-    <ellipse cx="160" cy="130" rx="92" ry="86" fill="url(#logo-fur)" opacity="0.5"/>
-    <ellipse cx="135" cy="95" rx="58" ry="40" fill="url(#logo-sheen)"/>
-    <ellipse cx="125" cy="75" rx="28" ry="11" fill="white" opacity="0.32"/>
-
-    <!-- Cheeks -->
-    <circle cx="80" cy="155" r="22" fill="url(#logo-cheek)"/>
-    <circle cx="240" cy="155" r="22" fill="url(#logo-cheek)"/>
-
-    <!-- Muzzle -->
-    <ellipse cx="160" cy="160" rx="42" ry="30" fill="url(#logo-belly)"/>
-    <ellipse cx="155" cy="152" rx="22" ry="14" fill="white" opacity="0.3"/>
-
-    <!-- Eyes — gradient iris with sparkles -->
-    <ellipse cx="120" cy="130" rx="23" ry="27" fill="#3D2818" opacity="0.4"/>
-    <ellipse cx="120" cy="130" rx="22" ry="26" fill="#FFFFFF"/>
-    <circle cx="120" cy="135" r="18" fill="url(#logo-iris)"/>
-    <circle cx="120" cy="136" r="6" fill="#0A0500"/>
-    <ellipse cx="125" cy="127" rx="8" ry="6" fill="white"/>
-    <circle cx="114" cy="143" r="3" fill="white" opacity="0.9"/>
-
-    <ellipse cx="200" cy="130" rx="23" ry="27" fill="#3D2818" opacity="0.4"/>
-    <ellipse cx="200" cy="130" rx="22" ry="26" fill="#FFFFFF"/>
-    <circle cx="200" cy="135" r="18" fill="url(#logo-iris)"/>
-    <circle cx="200" cy="136" r="6" fill="#0A0500"/>
-    <ellipse cx="205" cy="127" rx="8" ry="6" fill="white"/>
-    <circle cx="194" cy="143" r="3" fill="white" opacity="0.9"/>
-
-    <!-- Nose -->
-    <ellipse cx="160" cy="168" rx="7" ry="5" fill="#1A0F08"/>
-    <ellipse cx="160" cy="167" rx="6" ry="4" fill="#3D2818"/>
-    <ellipse cx="158" cy="165" rx="2.5" ry="1.5" fill="white" opacity="0.7"/>
-
-    <!-- Smile -->
-    <path d="M148,180 Q160,193 172,180" fill="none" stroke="#1A0F08" stroke-width="3.5" stroke-linecap="round"/>
-  </g>
-
-  <!-- "123" floating around the bear — pulled up so they sit inside the
-       circle instead of hanging off the bottom edge -->
-  <text x="70" y="320" font-family="Fredoka One, Baloo 2, Arial Rounded MT Bold, sans-serif" font-size="54" font-weight="800" fill="#FFD54F" transform="rotate(-12, 70, 320)">1</text>
-  <text x="178" y="335" font-family="Fredoka One, Baloo 2, Arial Rounded MT Bold, sans-serif" font-size="60" font-weight="800" fill="#FFFFFF">2</text>
-  <text x="290" y="320" font-family="Fredoka One, Baloo 2, Arial Rounded MT Bold, sans-serif" font-size="54" font-weight="800" fill="#FF8A80" transform="rotate(12, 290, 320)">3</text>
-
-  <!-- Small stars -->
-  <polygon points="55,85 59,75 63,85 53,79 67,79" fill="#FFD54F"/>
-  <polygon points="345,90 349,80 353,90 343,84 357,84" fill="#FFD54F"/>
+  <!-- Decorative stars (kept from prior layout) -->
+  <polygon points="48,80 52,68 56,80 44,73 60,73" fill="#FFE17A" stroke="#1A2A3A" stroke-width="1.4" stroke-linejoin="round"/>
+  <polygon points="350,86 354,74 358,86 346,79 362,79" fill="#FFE17A" stroke="#1A2A3A" stroke-width="1.4" stroke-linejoin="round"/>
 
   <!-- Plus / minus accents -->
-  <text x="30" y="220" font-family="Arial Rounded MT Bold, sans-serif" font-size="32" font-weight="800" fill="#7BC587" opacity="0.85">+</text>
-  <text x="350" y="265" font-family="Arial Rounded MT Bold, sans-serif" font-size="32" font-weight="800" fill="#B689CC" opacity="0.85">-</text>
+  <text x="22" y="232" font-family="Fredoka One, Baloo 2, Arial Rounded MT Bold, sans-serif" font-size="30" font-weight="800" fill="#7BC587" stroke="#1A2A3A" stroke-width="1.2">+</text>
+  <text x="358" y="282" font-family="Fredoka One, Baloo 2, Arial Rounded MT Bold, sans-serif" font-size="30" font-weight="800" fill="#C896E0" stroke="#1A2A3A" stroke-width="1.2">−</text>
+
+  <!-- =====================  BACK ROW  ===================== -->
+
+  <!-- PIP — panda (back-left) -->
+  <g>
+    <circle cx="62" cy="132" r="15" fill="#1A1A22" stroke="#0A0A12" stroke-width="2.2"/>
+    <circle cx="112" cy="132" r="15" fill="#1A1A22" stroke="#0A0A12" stroke-width="2.2"/>
+    <circle cx="87" cy="158" r="38" fill="url(#pip-body)" stroke="#0A0A12" stroke-width="2.6"/>
+    <ellipse cx="73" cy="158" rx="10" ry="12" fill="#1A1A22" transform="rotate(-12 73 158)"/>
+    <ellipse cx="101" cy="158" rx="10" ry="12" fill="#1A1A22" transform="rotate(12 101 158)"/>
+    <circle cx="74" cy="160" r="2.6" fill="#FFFFFF"/>
+    <circle cx="100" cy="160" r="2.6" fill="#FFFFFF"/>
+    <ellipse cx="87" cy="174" rx="3.5" ry="2.4" fill="#1A1A22"/>
+    <path d="M81,180 Q87,184 93,180" fill="none" stroke="#1A1A22" stroke-width="2" stroke-linecap="round"/>
+  </g>
+
+  <!-- BLOO — bear (back-center, captain, slightly bigger) -->
+  <g>
+    <circle cx="166" cy="104" r="19" fill="#7AA5C7" stroke="#1A2A3A" stroke-width="2.6"/>
+    <circle cx="166" cy="106" r="9" fill="#F4DFB0"/>
+    <circle cx="234" cy="104" r="19" fill="#7AA5C7" stroke="#1A2A3A" stroke-width="2.6"/>
+    <circle cx="234" cy="106" r="9" fill="#F4DFB0"/>
+    <circle cx="200" cy="142" r="48" fill="url(#bloo-body)" stroke="#1A2A3A" stroke-width="3"/>
+    <ellipse cx="200" cy="158" rx="24" ry="17" fill="#F4DFB0" stroke="#1A2A3A" stroke-width="2"/>
+    <circle cx="184" cy="135" r="5" fill="#1A2A3A"/>
+    <circle cx="216" cy="135" r="5" fill="#1A2A3A"/>
+    <circle cx="186" cy="133" r="1.6" fill="#FFFFFF"/>
+    <circle cx="218" cy="133" r="1.6" fill="#FFFFFF"/>
+    <ellipse cx="200" cy="152" rx="4.5" ry="3.2" fill="#1A2A3A"/>
+    <path d="M190,164 Q200,172 210,164" fill="none" stroke="#1A2A3A" stroke-width="2.6" stroke-linecap="round"/>
+  </g>
+
+  <!-- REX — robot (back-right) -->
+  <g>
+    <line x1="318" y1="120" x2="318" y2="98" stroke="#0F2A36" stroke-width="3" stroke-linecap="round"/>
+    <circle cx="318" cy="94" r="5.5" fill="#FFC23D" stroke="#0F2A36" stroke-width="1.6"/>
+    <rect x="276" y="148" width="9" height="16" rx="2" fill="#6DC8DD" stroke="#0F2A36" stroke-width="2"/>
+    <rect x="351" y="148" width="9" height="16" rx="2" fill="#6DC8DD" stroke="#0F2A36" stroke-width="2"/>
+    <rect x="282" y="124" width="72" height="64" rx="14" fill="url(#rex-body)" stroke="#0F2A36" stroke-width="2.6"/>
+    <rect x="291" y="138" width="54" height="30" rx="6" fill="#0F2A36"/>
+    <circle cx="304" cy="153" r="4.2" fill="#FFC23D"/>
+    <circle cx="332" cy="153" r="4.2" fill="#FFC23D"/>
+    <rect x="310" y="174" width="16" height="4" rx="1" fill="#FFC23D"/>
+  </g>
+
+  <!-- =====================  FRONT ROW  ===================== -->
+
+  <!-- SUNNY — fox (front-left) -->
+  <g>
+    <path d="M82,228 L94,196 L108,232 Z" fill="#E2806A" stroke="#2A0F08" stroke-width="2.6" stroke-linejoin="round"/>
+    <path d="M89,224 L94,206 L102,226 Z" fill="#FFF3DC"/>
+    <path d="M138,228 L126,196 L112,232 Z" fill="#E2806A" stroke="#2A0F08" stroke-width="2.6" stroke-linejoin="round"/>
+    <path d="M131,224 L126,206 L118,226 Z" fill="#FFF3DC"/>
+    <circle cx="110" cy="258" r="40" fill="url(#sunny-body)" stroke="#2A0F08" stroke-width="2.8"/>
+    <path d="M88,262 Q110,294 132,262 Q130,282 110,288 Q90,282 88,262 Z" fill="#FFF3DC"/>
+    <circle cx="97" cy="252" r="5" fill="#2A0F08"/>
+    <circle cx="123" cy="252" r="5" fill="#2A0F08"/>
+    <circle cx="98.5" cy="250" r="1.6" fill="#FFFFFF"/>
+    <circle cx="124.5" cy="250" r="1.6" fill="#FFFFFF"/>
+    <ellipse cx="110" cy="270" rx="3.6" ry="2.5" fill="#2A0F08"/>
+    <path d="M102,278 Q110,284 118,278" fill="none" stroke="#2A0F08" stroke-width="2.2" stroke-linecap="round"/>
+  </g>
+
+  <!-- MILO — frog (front-center) -->
+  <g>
+    <circle cx="200" cy="278" r="40" fill="url(#milo-body)" stroke="#15361A" stroke-width="2.8"/>
+    <ellipse cx="184" cy="244" rx="14" ry="13" fill="#5BA868" stroke="#15361A" stroke-width="2.5"/>
+    <ellipse cx="216" cy="244" rx="14" ry="13" fill="#5BA868" stroke="#15361A" stroke-width="2.5"/>
+    <circle cx="184" cy="244" r="6.5" fill="#FFFFFF"/>
+    <circle cx="216" cy="244" r="6.5" fill="#FFFFFF"/>
+    <circle cx="184" cy="246" r="3.2" fill="#15361A"/>
+    <circle cx="216" cy="246" r="3.2" fill="#15361A"/>
+    <circle cx="185" cy="244.5" r="1" fill="#FFFFFF"/>
+    <circle cx="217" cy="244.5" r="1" fill="#FFFFFF"/>
+    <circle cx="194" cy="274" r="1.6" fill="#15361A" opacity="0.75"/>
+    <circle cx="206" cy="274" r="1.6" fill="#15361A" opacity="0.75"/>
+    <path d="M174,284 Q200,304 226,284" fill="none" stroke="#15361A" stroke-width="3" stroke-linecap="round"/>
+  </g>
+
+  <!-- ROSIE — bunny (front-right) -->
+  <g>
+    <ellipse cx="278" cy="208" rx="8.5" ry="29" fill="#E07898" stroke="#3A1426" stroke-width="2.5" transform="rotate(-9 278 208)"/>
+    <ellipse cx="278" cy="210" rx="4.2" ry="22" fill="#FFD2DE" transform="rotate(-9 278 210)"/>
+    <ellipse cx="304" cy="208" rx="8.5" ry="29" fill="#E07898" stroke="#3A1426" stroke-width="2.5" transform="rotate(9 304 208)"/>
+    <ellipse cx="304" cy="210" rx="4.2" ry="22" fill="#FFD2DE" transform="rotate(9 304 210)"/>
+    <circle cx="291" cy="258" r="38" fill="url(#rosie-body)" stroke="#3A1426" stroke-width="2.8"/>
+    <ellipse cx="291" cy="270" rx="16" ry="10" fill="#FFF4F8"/>
+    <circle cx="279" cy="252" r="5" fill="#3A1426"/>
+    <circle cx="303" cy="252" r="5" fill="#3A1426"/>
+    <circle cx="280.5" cy="250" r="1.6" fill="#FFFFFF"/>
+    <circle cx="304.5" cy="250" r="1.6" fill="#FFFFFF"/>
+    <path d="M287,266 Q291,270 295,266" fill="#E07898" stroke="#3A1426" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+    <line x1="291" y1="269" x2="291" y2="275" stroke="#3A1426" stroke-width="1.6" stroke-linecap="round"/>
+    <rect x="288.2" y="275" width="2.6" height="5" rx="0.6" fill="#FFFFFF" stroke="#3A1426" stroke-width="0.8"/>
+    <rect x="291.2" y="275" width="2.6" height="5" rx="0.6" fill="#FFFFFF" stroke="#3A1426" stroke-width="0.8"/>
+  </g>
+
+  <!-- "1 2 3" wordless brand glyphs along the bottom arc -->
+  <text x="58" y="372" font-family="Fredoka One, Baloo 2, Arial Rounded MT Bold, sans-serif" font-size="34" font-weight="800" fill="#FFD54F" stroke="#1A2A3A" stroke-width="1.4" transform="rotate(-12, 58, 372)">1</text>
+  <text x="190" y="382" font-family="Fredoka One, Baloo 2, Arial Rounded MT Bold, sans-serif" font-size="36" font-weight="800" fill="#FFFFFF" stroke="#1A2A3A" stroke-width="1.4">2</text>
+  <text x="318" y="372" font-family="Fredoka One, Baloo 2, Arial Rounded MT Bold, sans-serif" font-size="34" font-weight="800" fill="#FF8A80" stroke="#1A2A3A" stroke-width="1.4" transform="rotate(12, 318, 372)">3</text>
 </svg>
