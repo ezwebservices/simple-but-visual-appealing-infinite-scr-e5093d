@@ -127,7 +127,7 @@ const CONCEPT_GROUPS: ConceptGroup[] = [
   { label: 'Subtraction', color: '#FF6B6B', concepts: ['subtraction-small', 'subtraction-10'] },
 ];
 
-const AVATAR_OPTIONS: CharacterName[] = ['bloo', 'sunny', 'rosie', 'milo', 'pip', 'rex', 'robo'];
+const AVATAR_OPTIONS: CharacterName[] = ['bloo', 'clementine', 'rosie', 'jax', 'milo', 'vex', 'pip', 'moss', 'rex', 'glitch', 'coralie', 'sunny', 'robo'];
 const AVATAR_LABELS: Record<CharacterName, string> = {
   bloo: 'Bloo Bear',
   sunny: 'Sunny Bug',
@@ -136,6 +136,12 @@ const AVATAR_LABELS: Record<CharacterName, string> = {
   pip: 'Pip Zebra',
   rex: 'Rex Robot',
   robo: 'Robo Rocket',
+  clementine: 'Clementine Cub',
+  jax: 'Jax Fox',
+  vex: 'Vex Bat',
+  moss: 'Moss Turtle',
+  glitch: 'Glitch Sprite',
+  coralie: 'Coralie Axolotl',
 };
 
 // ──────────────────────────────────────────────────────────────────

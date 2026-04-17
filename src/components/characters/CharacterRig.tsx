@@ -804,16 +804,564 @@ function RexArt({ palette: _palette, id }: { palette: CharacterPalette; id: (s: 
   );
 }
 
+/* ══════════════════════════════════════════════════════════════════
+ *  CLEMENTINE CUB — Guardian of Addition. Honey-bee-striped cub hoodie,
+ *  single curled honey-drip forelock, copper Honeycomb Abacus prop.
+ * ══════════════════════════════════════════════════════════════════ */
+function ClementineArt({ palette, id }: { palette: CharacterPalette; id: (s: string) => string }) {
+  const ink = palette.stroke;
+  const stripe = '#4A2810';
+  const copper = palette.padAccent;
+  return (
+    <>
+      <g className="char-tail" style={{ transformOrigin: '218px 248px' }}>
+        {/* Small round cub-tail puff */}
+        <circle cx="224" cy="252" r="10" fill={`url(#${id('body')})`} stroke={ink} strokeWidth="2.2" />
+        <path d="M218,248 Q224,244 230,248" stroke={stripe} strokeWidth="2.4" fill="none" />
+      </g>
+
+      <g className="char-left-leg" style={{ transformOrigin: '138px 280px' }}>
+        <path d="M122,268 L116,338 L156,338 L152,268 Z"
+              fill={`url(#${id('body')})`} stroke={ink} strokeWidth="2.3" strokeLinejoin="round" />
+        <rect x="118" y="288" width="36" height="6" fill={stripe} />
+        <rect x="118" y="310" width="36" height="6" fill={stripe} />
+        <path d="M110,336 L158,336 L162,354 Q136,360 108,354 Z"
+              fill={palette.belly[0]} stroke={ink} strokeWidth="2.2" strokeLinejoin="round" />
+        <rect x="110" y="344" width="52" height="5" fill={copper} />
+      </g>
+      <g className="char-right-leg" style={{ transformOrigin: '182px 280px' }}>
+        <path d="M168,268 L164,338 L204,338 L198,268 Z"
+              fill={`url(#${id('body')})`} stroke={ink} strokeWidth="2.3" strokeLinejoin="round" />
+        <rect x="166" y="288" width="36" height="6" fill={stripe} />
+        <rect x="166" y="310" width="36" height="6" fill={stripe} />
+        <path d="M158,336 L206,336 L210,354 Q184,360 156,354 Z"
+              fill={palette.belly[0]} stroke={ink} strokeWidth="2.2" strokeLinejoin="round" />
+        <rect x="158" y="344" width="52" height="5" fill={copper} />
+      </g>
+
+      <g className="char-torso" style={{ transformOrigin: '160px 240px' }}>
+        <path d="M96,208 Q102,198 122,196 L198,196 Q218,198 224,208 L228,288 Q196,298 160,298 Q124,298 92,288 Z"
+              fill={`url(#${id('body')})`} stroke={ink} strokeWidth="2.5" strokeLinejoin="round" />
+        {/* Bee stripes — two bold bands */}
+        <path d="M94,232 Q160,246 226,232 L228,252 Q160,266 92,252 Z" fill={stripe} opacity="0.95" />
+        <path d="M94,272 Q160,284 226,272 L228,290 Q160,300 92,290 Z" fill={stripe} opacity="0.9" />
+        {/* Cream belly pouch */}
+        <ellipse cx="160" cy="258" rx="36" ry="14" fill={`url(#${id('belly')})`} stroke={ink} strokeWidth="1.6" opacity="0.9" />
+        {/* Copper collar clasp */}
+        <circle cx="160" cy="204" r="7" fill={copper} stroke={ink} strokeWidth="1.8" />
+        <circle cx="160" cy="204" r="3" fill="#FFF4C2" />
+      </g>
+
+      <g className="char-head" style={{ transformOrigin: '160px 130px' }}>
+        <g className="char-ears" style={{ transformOrigin: '160px 70px' }}>
+          {/* Small round cub ears */}
+          <circle cx="102" cy="66" r="18" fill={`url(#${id('body')})`} stroke={ink} strokeWidth="2.4" />
+          <circle cx="102" cy="66" r="9"  fill={palette.belly[1]} stroke={ink} strokeWidth="1.5" />
+          <circle cx="218" cy="66" r="18" fill={`url(#${id('body')})`} stroke={ink} strokeWidth="2.4" />
+          <circle cx="218" cy="66" r="9"  fill={palette.belly[1]} stroke={ink} strokeWidth="1.5" />
+        </g>
+        {/* Hood shell — round cub */}
+        <path d="M66,132 Q64,78 110,62 Q160,54 210,62 Q256,78 254,132 Q254,184 218,202 L102,202 Q66,184 66,132 Z"
+              fill={`url(#${id('body')})`} stroke={ink} strokeWidth="2.8" strokeLinejoin="round" />
+        {/* Kid face */}
+        <ellipse cx="160" cy="140" rx="68" ry="62" fill={`url(#${id('skin')})`} stroke={ink} strokeWidth="2.3" />
+        {/* Signature honey-drip forelock — single curled strand */}
+        <path d="M146,82 Q152,60 168,64 Q176,76 172,94 Q162,100 152,96 Q146,92 146,82 Z"
+              fill={copper} stroke={ink} strokeWidth="2" strokeLinejoin="round" />
+        <path d="M160,72 Q166,72 168,78" stroke="#FFF4C2" strokeWidth="1.4" fill="none" />
+        {/* Cheeks */}
+        <circle cx="102" cy="160" r="13" fill={`url(#${id('cheek')})`} />
+        <circle cx="218" cy="160" r="13" fill={`url(#${id('cheek')})`} />
+        <FaceStates id={id} />
+        <ellipse cx="160" cy="162" rx="3" ry="2" fill="#8E5A3E" opacity="0.8" />
+      </g>
+
+      {/* ARMS — hoodie sleeves with stripe; right arm holds Honeycomb Abacus */}
+      <g className="char-left-arm" style={{ transformOrigin: '108px 218px' }}>
+        <path d="M88,208 Q82,260 94,300 Q108,304 122,300 Q128,260 126,212 Z"
+              fill={`url(#${id('body')})`} stroke={ink} strokeWidth="2.3" strokeLinejoin="round" />
+        <rect x="86" y="244" width="42" height="6" fill={stripe} opacity="0.9" />
+        <circle cx="108" cy="302" r="11" fill={`url(#${id('skin')})`} stroke={ink} strokeWidth="2" />
+      </g>
+      <g className="char-right-arm" style={{ transformOrigin: '212px 218px' }}>
+        <path d="M194,212 Q192,260 200,300 Q214,304 228,300 Q240,260 234,208 Z"
+              fill={`url(#${id('body')})`} stroke={ink} strokeWidth="2.3" strokeLinejoin="round" />
+        <rect x="192" y="244" width="42" height="6" fill={stripe} opacity="0.9" />
+        <circle cx="214" cy="302" r="11" fill={`url(#${id('skin')})`} stroke={ink} strokeWidth="2" />
+        {/* Honeycomb Abacus — copper hex frame with three honey tiles */}
+        <path d="M244,282 L260,274 L276,282 L276,300 L260,308 L244,300 Z"
+              fill={copper} stroke={ink} strokeWidth="2.2" strokeLinejoin="round" />
+        <path d="M250,286 L256,282 L262,286 L262,294 L256,298 L250,294 Z" fill="#FFE27A" stroke={ink} strokeWidth="1" />
+        <path d="M258,290 L264,286 L270,290 L270,298 L264,302 L258,298 Z" fill={palette.body[2]} stroke={ink} strokeWidth="1" />
+        <path d="M234,292 L244,290" stroke={copper} strokeWidth="2.4" />
+      </g>
+    </>
+  );
+}
+
+/* ══════════════════════════════════════════════════════════════════
+ *  JAX FOX — Guardian of Subtraction. Angular fox-hood with sharp
+ *  triangular ears, low tail-swoop, brass Split-Blade Counter ruler.
+ * ══════════════════════════════════════════════════════════════════ */
+function JaxArt({ palette, id }: { palette: CharacterPalette; id: (s: string) => string }) {
+  const ink = palette.stroke;
+  const brass = palette.padAccent;
+  const dark = palette.body[4];
+  return (
+    <>
+      <g className="char-tail" style={{ transformOrigin: '218px 248px' }}>
+        {/* Low fox tail with white tip */}
+        <path d="M212,246 Q248,254 258,282 Q252,296 236,292 Q222,280 212,262 Z"
+              fill={`url(#${id('body')})`} stroke={ink} strokeWidth="2.4" strokeLinejoin="round" />
+        <path d="M248,278 Q258,282 256,292 Q248,292 242,286 Z" fill={palette.belly[0]} stroke={ink} strokeWidth="1.8" />
+      </g>
+
+      <g className="char-left-leg" style={{ transformOrigin: '138px 280px' }}>
+        <path d="M124,268 L118,340 L154,340 L152,268 Z"
+              fill={dark} stroke={ink} strokeWidth="2.3" strokeLinejoin="round" />
+        <path d="M112,336 L158,336 L162,354 Q134,360 108,354 Z"
+              fill={palette.body[4]} stroke={ink} strokeWidth="2.2" strokeLinejoin="round" />
+        <rect x="112" y="344" width="52" height="5" fill={brass} />
+      </g>
+      <g className="char-right-leg" style={{ transformOrigin: '182px 280px' }}>
+        <path d="M168,268 L166,340 L202,340 L196,268 Z"
+              fill={dark} stroke={ink} strokeWidth="2.3" strokeLinejoin="round" />
+        <path d="M158,336 L204,336 L208,354 Q180,360 154,354 Z"
+              fill={palette.body[4]} stroke={ink} strokeWidth="2.2" strokeLinejoin="round" />
+        <rect x="158" y="344" width="52" height="5" fill={brass} />
+      </g>
+
+      <g className="char-torso" style={{ transformOrigin: '160px 240px' }}>
+        {/* Sharp-cut angular jacket */}
+        <path d="M92,210 L124,196 L196,196 L228,210 L232,290 L200,300 L120,300 L88,290 Z"
+              fill={`url(#${id('body')})`} stroke={ink} strokeWidth="2.6" strokeLinejoin="round" />
+        {/* Angular chest V — white underbelly */}
+        <path d="M128,208 L160,246 L192,208 L192,268 L160,282 L128,268 Z"
+              fill={`url(#${id('belly')})`} stroke={ink} strokeWidth="2" strokeLinejoin="round" />
+        {/* Brass shoulder studs */}
+        <circle cx="112" cy="214" r="4" fill={brass} stroke={ink} strokeWidth="1.4" />
+        <circle cx="208" cy="214" r="4" fill={brass} stroke={ink} strokeWidth="1.4" />
+        {/* Realm Mark '2' */}
+        <text x="160" y="260" textAnchor="middle" fontFamily="system-ui,sans-serif" fontWeight="900"
+              fontSize="20" fill={brass} stroke={ink} strokeWidth="1.2">2</text>
+      </g>
+
+      <g className="char-head" style={{ transformOrigin: '160px 130px' }}>
+        <g className="char-ears" style={{ transformOrigin: '160px 70px' }}>
+          {/* Sharp triangular fox ears */}
+          <path d="M78,96 L96,26 L128,92 Z"
+                fill={`url(#${id('body')})`} stroke={ink} strokeWidth="2.5" strokeLinejoin="round" />
+          <path d="M96,44 L100,74 L118,86 Z" fill={palette.belly[0]} stroke={ink} strokeWidth="1.6" />
+          <path d="M242,96 L224,26 L192,92 Z"
+                fill={`url(#${id('body')})`} stroke={ink} strokeWidth="2.5" strokeLinejoin="round" />
+          <path d="M224,44 L220,74 L202,86 Z" fill={palette.belly[0]} stroke={ink} strokeWidth="1.6" />
+        </g>
+        {/* Angular fox-hood — diamond-ish face shape */}
+        <path d="M70,120 Q76,78 120,62 L160,52 L200,62 Q244,78 250,120 Q248,172 210,196 L160,212 L110,196 Q72,172 70,120 Z"
+              fill={`url(#${id('body')})`} stroke={ink} strokeWidth="2.8" strokeLinejoin="round" />
+        {/* Muzzle wedge (belly cream) */}
+        <path d="M108,162 L160,148 L212,162 L200,200 L160,210 L120,200 Z"
+              fill={`url(#${id('belly')})`} stroke={ink} strokeWidth="2" strokeLinejoin="round" />
+        {/* Pointy black nose */}
+        <path d="M152,164 L168,164 L160,176 Z" fill="#0F0A06" stroke={ink} strokeWidth="1.4" strokeLinejoin="round" />
+        {/* Signature fang peeking from smirk */}
+        <path d="M164,190 L168,196 L162,196 Z" fill="#FFFFFF" stroke={ink} strokeWidth="1" />
+        {/* Cheeks — subtle */}
+        <circle cx="102" cy="158" r="10" fill={`url(#${id('cheek')})`} opacity="0.7" />
+        <circle cx="218" cy="158" r="10" fill={`url(#${id('cheek')})`} opacity="0.7" />
+        <FaceStates id={id} />
+      </g>
+
+      {/* ARMS — angular sleeves; right arm holds Split-Blade Counter */}
+      <g className="char-left-arm" style={{ transformOrigin: '108px 218px' }}>
+        <path d="M86,210 L82,264 L94,300 L122,300 L124,260 L126,214 Z"
+              fill={`url(#${id('body')})`} stroke={ink} strokeWidth="2.4" strokeLinejoin="round" />
+        <circle cx="108" cy="302" r="11" fill={dark} stroke={ink} strokeWidth="2" />
+      </g>
+      <g className="char-right-arm" style={{ transformOrigin: '212px 218px' }}>
+        <path d="M194,214 L196,260 L198,300 L226,300 L238,264 L234,208 Z"
+              fill={`url(#${id('body')})`} stroke={ink} strokeWidth="2.4" strokeLinejoin="round" />
+        <circle cx="212" cy="302" r="11" fill={dark} stroke={ink} strokeWidth="2" />
+        {/* Split-Blade Counter — brass folding ruler */}
+        <rect x="228" y="254" width="8" height="46" rx="2" fill={brass} stroke={ink} strokeWidth="1.8" transform="rotate(18 232 278)" />
+        <rect x="238" y="248" width="8" height="40" rx="2" fill="#F0D07A" stroke={ink} strokeWidth="1.8" transform="rotate(-14 242 268)" />
+        <circle cx="232" cy="254" r="3" fill={ink} />
+      </g>
+    </>
+  );
+}
+
+/* ══════════════════════════════════════════════════════════════════
+ *  VEX BAT — Guardian of Greater/Less Than. Folded bat-wing hood with
+ *  two peaks, cloak drape, silver Scale Pendulum.
+ * ══════════════════════════════════════════════════════════════════ */
+function VexArt({ palette, id }: { palette: CharacterPalette; id: (s: string) => string }) {
+  const ink = palette.stroke;
+  const silver = palette.padAccent;
+  const dark = palette.body[4];
+  return (
+    <>
+      <g className="char-tail" style={{ transformOrigin: '218px 248px' }}>
+        {/* Cloak hem point */}
+        <path d="M208,250 L244,270 L232,296 L218,288 L210,272 Z"
+              fill={dark} stroke={ink} strokeWidth="2.3" strokeLinejoin="round" />
+      </g>
+
+      <g className="char-left-leg" style={{ transformOrigin: '138px 280px' }}>
+        <rect x="124" y="286" width="28" height="52" rx="6" fill="#221830" stroke={ink} strokeWidth="2.2" />
+        <rect x="118" y="332" width="40" height="14" rx="4" fill="#120A1C" stroke={ink} strokeWidth="2" />
+        <rect x="124" y="298" width="6" height="8" fill={silver} />
+      </g>
+      <g className="char-right-leg" style={{ transformOrigin: '182px 280px' }}>
+        <rect x="168" y="286" width="28" height="52" rx="6" fill="#221830" stroke={ink} strokeWidth="2.2" />
+        <rect x="162" y="332" width="40" height="14" rx="4" fill="#120A1C" stroke={ink} strokeWidth="2" />
+        <rect x="190" y="298" width="6" height="8" fill={silver} />
+      </g>
+
+      <g className="char-torso" style={{ transformOrigin: '160px 240px' }}>
+        {/* Cloak drape */}
+        <path d="M86,208 Q94,198 124,196 L196,196 Q226,198 234,208 L240,296 Q200,306 160,306 Q120,306 80,296 Z"
+              fill={`url(#${id('body')})`} stroke={ink} strokeWidth="2.6" strokeLinejoin="round" />
+        {/* Shoulder wing-folds */}
+        <path d="M92,212 L110,246 L88,256 Z" fill={dark} stroke={ink} strokeWidth="2" strokeLinejoin="round" />
+        <path d="M228,212 L210,246 L232,256 Z" fill={dark} stroke={ink} strokeWidth="2" strokeLinejoin="round" />
+        {/* V-cut undercloak (belly) */}
+        <path d="M132,210 L160,260 L188,210 L180,280 L160,292 L140,280 Z"
+              fill={`url(#${id('belly')})`} stroke={ink} strokeWidth="2" strokeLinejoin="round" opacity="0.9" />
+        {/* Silver throat clasp — small diamond */}
+        <path d="M160,200 L166,208 L160,216 L154,208 Z" fill={silver} stroke={ink} strokeWidth="1.6" />
+      </g>
+
+      <g className="char-head" style={{ transformOrigin: '160px 130px' }}>
+        <g className="char-ears" style={{ transformOrigin: '160px 70px' }}>
+          {/* Dual wing-peak hood tips */}
+          <path d="M82,102 L60,40 L112,72 Z"
+                fill={dark} stroke={ink} strokeWidth="2.5" strokeLinejoin="round" />
+          <path d="M238,102 L260,40 L208,72 Z"
+                fill={dark} stroke={ink} strokeWidth="2.5" strokeLinejoin="round" />
+          {/* Wing membrane ribs */}
+          <path d="M74,72 L96,88 M90,56 L104,82" stroke={ink} strokeWidth="1.6" opacity="0.5" />
+          <path d="M246,72 L224,88 M230,56 L216,82" stroke={ink} strokeWidth="1.6" opacity="0.5" />
+        </g>
+        {/* Hood shell */}
+        <path d="M70,130 Q66,86 112,70 Q160,60 208,70 Q254,86 250,130 Q248,180 212,198 L108,198 Q72,180 70,130 Z"
+              fill={`url(#${id('body')})`} stroke={ink} strokeWidth="2.8" strokeLinejoin="round" />
+        {/* Kid face */}
+        <ellipse cx="160" cy="142" rx="66" ry="60" fill={`url(#${id('skin')})`} stroke={ink} strokeWidth="2.3" />
+        {/* Cool side-swept bangs */}
+        <path d="M98,112 Q132,92 180,96 Q172,114 138,118 Q112,120 98,112 Z"
+              fill="#1A0F28" stroke={ink} strokeWidth="1.6" />
+        {/* Tiny fang */}
+        <path d="M154,188 L158,196 L150,194 Z" fill="#FFFFFF" stroke={ink} strokeWidth="0.8" />
+        <circle cx="102" cy="162" r="11" fill={`url(#${id('cheek')})`} opacity="0.7" />
+        <circle cx="218" cy="162" r="11" fill={`url(#${id('cheek')})`} opacity="0.7" />
+        <FaceStates id={id} />
+        <ellipse cx="160" cy="164" rx="3" ry="2" fill="#8E5A3E" opacity="0.8" />
+      </g>
+
+      <g className="char-left-arm" style={{ transformOrigin: '108px 218px' }}>
+        <path d="M84,210 Q78,262 88,302 Q104,306 120,300 Q128,260 124,214 Z"
+              fill={`url(#${id('body')})`} stroke={ink} strokeWidth="2.4" strokeLinejoin="round" />
+        <circle cx="104" cy="304" r="10" fill={`url(#${id('skin')})`} stroke={ink} strokeWidth="2" />
+      </g>
+      <g className="char-right-arm" style={{ transformOrigin: '212px 218px' }}>
+        <path d="M196,214 Q194,262 200,302 Q216,306 232,300 Q240,260 236,210 Z"
+              fill={`url(#${id('body')})`} stroke={ink} strokeWidth="2.4" strokeLinejoin="round" />
+        <circle cx="216" cy="304" r="10" fill={`url(#${id('skin')})`} stroke={ink} strokeWidth="2" />
+        {/* Scale Pendulum — silver chain + two weighted orbs */}
+        <line x1="224" y1="296" x2="224" y2="244" stroke={silver} strokeWidth="2" />
+        <line x1="206" y1="252" x2="242" y2="252" stroke={silver} strokeWidth="2" />
+        <line x1="206" y1="252" x2="206" y2="272" stroke={silver} strokeWidth="1.6" />
+        <line x1="242" y1="252" x2="242" y2="272" stroke={silver} strokeWidth="1.6" />
+        <circle cx="206" cy="278" r="7" fill={silver} stroke={ink} strokeWidth="1.6" />
+        <circle cx="242" cy="278" r="7" fill={silver} stroke={ink} strokeWidth="1.6" />
+        <circle cx="224" cy="244" r="3" fill={silver} stroke={ink} strokeWidth="1.2" />
+      </g>
+    </>
+  );
+}
+
+/* ══════════════════════════════════════════════════════════════════
+ *  MOSS TURTLE — Guardian of Place Value. Shell hump above head line,
+ *  leaf sprig, three copper-banded Stacking Stones.
+ * ══════════════════════════════════════════════════════════════════ */
+function MossArt({ palette, id }: { palette: CharacterPalette; id: (s: string) => string }) {
+  const ink = palette.stroke;
+  const copper = palette.padAccent;
+  const shell = '#8B6A3A';
+  return (
+    <>
+      <g className="char-tail" style={{ transformOrigin: '218px 248px' }}>
+        {/* Short turtle tail */}
+        <path d="M216,248 Q230,252 232,266 Q224,270 216,262 Z"
+              fill={`url(#${id('body')})`} stroke={ink} strokeWidth="2.2" strokeLinejoin="round" />
+      </g>
+
+      <g className="char-left-leg" style={{ transformOrigin: '138px 280px' }}>
+        <path d="M120,268 Q114,300 118,336 L154,336 Q158,300 152,268 Z"
+              fill={`url(#${id('body')})`} stroke={ink} strokeWidth="2.3" strokeLinejoin="round" />
+        <path d="M112,334 L158,334 L162,352 Q136,358 108,352 Z"
+              fill={palette.belly[1]} stroke={ink} strokeWidth="2.2" strokeLinejoin="round" />
+        <path d="M122,348 L128,354 M134,346 L140,354 M146,346 L152,354" stroke={ink} strokeWidth="1.6" />
+      </g>
+      <g className="char-right-leg" style={{ transformOrigin: '182px 280px' }}>
+        <path d="M168,268 Q162,300 166,336 L202,336 Q206,300 200,268 Z"
+              fill={`url(#${id('body')})`} stroke={ink} strokeWidth="2.3" strokeLinejoin="round" />
+        <path d="M158,334 L204,334 L208,352 Q182,358 154,352 Z"
+              fill={palette.belly[1]} stroke={ink} strokeWidth="2.2" strokeLinejoin="round" />
+        <path d="M168,348 L174,354 M180,346 L186,354 M192,346 L198,354" stroke={ink} strokeWidth="1.6" />
+      </g>
+
+      <g className="char-torso" style={{ transformOrigin: '160px 240px' }}>
+        {/* Cream plastron front */}
+        <ellipse cx="160" cy="248" rx="72" ry="56" fill={`url(#${id('belly')})`} stroke={ink} strokeWidth="2.5" />
+        {/* Plastron segments */}
+        <line x1="160" y1="196" x2="160" y2="300" stroke={ink} strokeWidth="1.6" opacity="0.5" />
+        <path d="M94,236 Q160,250 226,236" stroke={ink} strokeWidth="1.6" fill="none" opacity="0.5" />
+        <path d="M94,270 Q160,284 226,270" stroke={ink} strokeWidth="1.6" fill="none" opacity="0.5" />
+        {/* Shoulder ring from shell edge */}
+        <path d="M88,208 Q96,196 124,194 L196,194 Q224,196 232,208 L234,224 Q160,234 86,224 Z"
+              fill={palette.body[4]} stroke={ink} strokeWidth="2.4" strokeLinejoin="round" />
+      </g>
+
+      <g className="char-head" style={{ transformOrigin: '160px 130px' }}>
+        <g className="char-ears" style={{ transformOrigin: '160px 70px' }}>
+          {/* The shell hump rises ABOVE head line — signature silhouette */}
+          <path d="M86,84 Q100,22 160,14 Q220,22 234,84 Q234,96 200,98 L120,98 Q86,96 86,84 Z"
+                fill={shell} stroke={ink} strokeWidth="2.8" strokeLinejoin="round" />
+          {/* Shell hex plates */}
+          <path d="M130,44 L160,32 L190,44 L190,72 L160,84 L130,72 Z"
+                fill="#A6824C" stroke={ink} strokeWidth="1.8" />
+          <path d="M104,62 L126,50 L128,78 L108,86 Z" fill="#A6824C" stroke={ink} strokeWidth="1.6" />
+          <path d="M216,62 L194,50 L192,78 L212,86 Z" fill="#A6824C" stroke={ink} strokeWidth="1.6" />
+          {/* Leaf sprig on top of shell */}
+          <path d="M160,14 Q152,0 146,8 Q148,18 158,20 Z" fill="#7BC268" stroke={ink} strokeWidth="1.6" strokeLinejoin="round" />
+          <path d="M160,14 Q170,-2 176,8 Q172,18 162,18 Z" fill="#9AD08A" stroke={ink} strokeWidth="1.6" strokeLinejoin="round" />
+          <line x1="160" y1="14" x2="160" y2="24" stroke={ink} strokeWidth="1.6" />
+        </g>
+        {/* Round head poking out below shell */}
+        <ellipse cx="160" cy="138" rx="72" ry="60" fill={`url(#${id('body')})`} stroke={ink} strokeWidth="2.8" />
+        {/* Cream beak */}
+        <path d="M148,168 Q160,180 172,168 Q166,184 160,186 Q154,184 148,168 Z"
+              fill={palette.belly[0]} stroke={ink} strokeWidth="1.6" strokeLinejoin="round" />
+        <circle cx="100" cy="160" r="12" fill={`url(#${id('cheek')})`} />
+        <circle cx="220" cy="160" r="12" fill={`url(#${id('cheek')})`} />
+        <FaceStates id={id} />
+      </g>
+
+      <g className="char-left-arm" style={{ transformOrigin: '108px 218px' }}>
+        <path d="M88,212 Q82,260 92,298 Q106,304 120,298 Q126,260 122,216 Z"
+              fill={`url(#${id('body')})`} stroke={ink} strokeWidth="2.3" strokeLinejoin="round" />
+        <circle cx="104" cy="300" r="11" fill={palette.belly[1]} stroke={ink} strokeWidth="2" />
+      </g>
+      <g className="char-right-arm" style={{ transformOrigin: '212px 218px' }}>
+        <path d="M198,216 Q196,260 200,298 Q214,304 228,298 Q238,260 232,212 Z"
+              fill={`url(#${id('body')})`} stroke={ink} strokeWidth="2.3" strokeLinejoin="round" />
+        <circle cx="216" cy="300" r="11" fill={palette.belly[1]} stroke={ink} strokeWidth="2" />
+        {/* Stacking Stones — three copper-banded */}
+        <ellipse cx="244" cy="298" rx="22" ry="8" fill="#B8A47A" stroke={ink} strokeWidth="2" />
+        <rect x="222" y="276" width="44" height="18" rx="6" fill="#D4C092" stroke={ink} strokeWidth="2" />
+        <rect x="222" y="284" width="44" height="4" fill={copper} />
+        <rect x="228" y="260" width="32" height="14" rx="5" fill="#E2D0A4" stroke={ink} strokeWidth="2" />
+        <rect x="228" y="266" width="32" height="3" fill={copper} />
+        <text x="244" y="271" textAnchor="middle" fontFamily="system-ui,sans-serif" fontWeight="900"
+              fontSize="9" fill={ink}>1</text>
+        <text x="244" y="289" textAnchor="middle" fontFamily="system-ui,sans-serif" fontWeight="900"
+              fontSize="10" fill={ink}>10</text>
+      </g>
+    </>
+  );
+}
+
+/* ══════════════════════════════════════════════════════════════════
+ *  GLITCH SPRITE — Guardian of Equations. Pixel-floating companion at
+ *  ~75% scale, three pixel tufts on head, Equation Prism cube floats.
+ * ══════════════════════════════════════════════════════════════════ */
+function GlitchArt({ palette, id }: { palette: CharacterPalette; id: (s: string) => string }) {
+  const ink = palette.stroke;
+  const rainbow1 = '#FF6B6B';
+  const rainbow2 = '#4ECDC4';
+  const rainbow3 = '#FFD93D';
+  const rainbow4 = '#A78BFA';
+  return (
+    <>
+      {/* Scale-down container is simulated by drawing smaller; groups stay at rig anchors */}
+      <g className="char-tail" style={{ transformOrigin: '218px 248px' }}>
+        {/* Pixel fleck trail */}
+        <rect x="218" y="244" width="6" height="6" fill={rainbow1} />
+        <rect x="228" y="252" width="5" height="5" fill={rainbow2} />
+        <rect x="236" y="244" width="4" height="4" fill={rainbow3} />
+      </g>
+
+      {/* LEGS — floating, so we draw small glow-orbs where feet would be */}
+      <g className="char-left-leg" style={{ transformOrigin: '138px 280px' }}>
+        <ellipse cx="138" cy="320" rx="22" ry="6" fill={`url(#${id('glow')})`} opacity="0.7" />
+        <circle cx="138" cy="316" r="6" fill="#FFFFFF" stroke={ink} strokeWidth="1.8" />
+      </g>
+      <g className="char-right-leg" style={{ transformOrigin: '182px 280px' }}>
+        <ellipse cx="182" cy="320" rx="22" ry="6" fill={`url(#${id('glow')})`} opacity="0.7" />
+        <circle cx="182" cy="316" r="6" fill="#FFFFFF" stroke={ink} strokeWidth="1.8" />
+      </g>
+
+      <g className="char-torso" style={{ transformOrigin: '160px 240px' }}>
+        {/* Compact pixel body (smaller to imply ~75% scale) */}
+        <rect x="128" y="216" width="64" height="72" rx="10" fill={`url(#${id('body')})`} stroke={ink} strokeWidth="2.6" />
+        {/* Pixel grid overlay */}
+        <rect x="136" y="224" width="6" height="6" fill={rainbow1} opacity="0.8" />
+        <rect x="176" y="232" width="6" height="6" fill={rainbow2} opacity="0.8" />
+        <rect x="146" y="260" width="6" height="6" fill={rainbow3} opacity="0.8" />
+        <rect x="168" y="272" width="6" height="6" fill={rainbow4} opacity="0.8" />
+        {/* Belly core */}
+        <rect x="144" y="240" width="32" height="28" rx="4" fill={`url(#${id('belly')})`} stroke={ink} strokeWidth="1.8" />
+        {/* Realm Mark '=' */}
+        <rect x="150" y="248" width="20" height="3" fill={ink} />
+        <rect x="150" y="258" width="20" height="3" fill={ink} />
+      </g>
+
+      <g className="char-head" style={{ transformOrigin: '160px 130px' }}>
+        <g className="char-ears" style={{ transformOrigin: '160px 70px' }}>
+          {/* Three pixelated tuft squares — signature crest */}
+          <rect x="130" y="40" width="14" height="14" fill={rainbow1} stroke={ink} strokeWidth="1.8" />
+          <rect x="152" y="28" width="16" height="16" fill={rainbow3} stroke={ink} strokeWidth="1.8" />
+          <rect x="176" y="40" width="14" height="14" fill={rainbow2} stroke={ink} strokeWidth="1.8" />
+        </g>
+        {/* Pixel-block head (rounded square) */}
+        <rect x="88" y="76" width="144" height="128" rx="18" fill={`url(#${id('body')})`} stroke={ink} strokeWidth="2.8" />
+        {/* Scanline shimmer */}
+        <rect x="92" y="102" width="136" height="3" fill={rainbow4} opacity="0.4" />
+        <rect x="92" y="152" width="136" height="3" fill={rainbow2} opacity="0.4" />
+        {/* Cheeks as pixel blocks */}
+        <rect x="92"  y="152" width="14" height="14" fill={palette.cheek} opacity="0.8" />
+        <rect x="214" y="152" width="14" height="14" fill={palette.cheek} opacity="0.8" />
+        <FaceStates id={id} />
+      </g>
+
+      <g className="char-left-arm" style={{ transformOrigin: '108px 218px' }}>
+        <rect x="100" y="228" width="24" height="56" rx="8" fill={`url(#${id('body')})`} stroke={ink} strokeWidth="2.3" />
+        <circle cx="112" cy="288" r="9" fill="#FFFFFF" stroke={ink} strokeWidth="2" />
+      </g>
+      <g className="char-right-arm" style={{ transformOrigin: '212px 218px' }}>
+        <rect x="196" y="228" width="24" height="56" rx="8" fill={`url(#${id('body')})`} stroke={ink} strokeWidth="2.3" />
+        <circle cx="208" cy="288" r="9" fill="#FFFFFF" stroke={ink} strokeWidth="2" />
+        {/* Equation Prism — floating holographic cube */}
+        <g transform="translate(238 262)">
+          <path d="M0,-12 L14,-6 L14,10 L0,16 L-14,10 L-14,-6 Z"
+                fill={`url(#${id('glow')})`} stroke={ink} strokeWidth="2" strokeLinejoin="round" opacity="0.9" />
+          <path d="M-14,-6 L0,0 L14,-6 M0,0 L0,16"
+                stroke={ink} strokeWidth="1.6" fill="none" />
+          <text x="0" y="4" textAnchor="middle" fontFamily="system-ui,sans-serif" fontWeight="900"
+                fontSize="12" fill={ink}>=</text>
+        </g>
+      </g>
+    </>
+  );
+}
+
+/* ══════════════════════════════════════════════════════════════════
+ *  CORALIE AXOLOTL — Guardian of Fractions. Three frilled gill-fronds
+ *  per side (6 total fan), rose-gold Slice Shell clam prop.
+ * ══════════════════════════════════════════════════════════════════ */
+function CoralieArt({ palette, id }: { palette: CharacterPalette; id: (s: string) => string }) {
+  const ink = palette.stroke;
+  const rose = palette.padAccent;
+  const frill = '#F5B8D2';
+  return (
+    <>
+      <g className="char-tail" style={{ transformOrigin: '218px 248px' }}>
+        {/* Axolotl tail-fin */}
+        <path d="M210,248 Q244,246 252,272 Q242,290 222,284 Q214,270 210,258 Z"
+              fill={`url(#${id('bodyAccent')})`} stroke={ink} strokeWidth="2.4" strokeLinejoin="round" />
+        <path d="M220,258 Q240,264 244,278" stroke={frill} strokeWidth="1.6" fill="none" opacity="0.8" />
+      </g>
+
+      <g className="char-left-leg" style={{ transformOrigin: '138px 280px' }}>
+        <path d="M122,268 Q116,300 122,336 L154,336 Q158,300 152,268 Z"
+              fill={`url(#${id('body')})`} stroke={ink} strokeWidth="2.3" strokeLinejoin="round" />
+        <path d="M112,332 L160,332 L162,352 Q136,358 108,352 Z"
+              fill={palette.belly[0]} stroke={ink} strokeWidth="2.2" strokeLinejoin="round" />
+        <rect x="112" y="342" width="52" height="4" fill={rose} />
+      </g>
+      <g className="char-right-leg" style={{ transformOrigin: '182px 280px' }}>
+        <path d="M168,268 Q162,300 168,336 L200,336 Q206,300 198,268 Z"
+              fill={`url(#${id('body')})`} stroke={ink} strokeWidth="2.3" strokeLinejoin="round" />
+        <path d="M158,332 L206,332 L208,352 Q182,358 154,352 Z"
+              fill={palette.belly[0]} stroke={ink} strokeWidth="2.2" strokeLinejoin="round" />
+        <rect x="158" y="342" width="52" height="4" fill={rose} />
+      </g>
+
+      <g className="char-torso" style={{ transformOrigin: '160px 240px' }}>
+        <path d="M92,208 Q98,198 122,196 L198,196 Q222,198 228,208 L232,290 Q198,300 160,300 Q122,300 88,290 Z"
+              fill={`url(#${id('body')})`} stroke={ink} strokeWidth="2.5" strokeLinejoin="round" />
+        {/* Belly scallop bands */}
+        <path d="M100,240 Q120,250 140,240 Q160,250 180,240 Q200,250 220,240 L224,264 Q160,274 96,264 Z"
+              fill={`url(#${id('belly')})`} stroke={ink} strokeWidth="1.6" opacity="0.85" />
+        {/* Rose-gold pearl clasp */}
+        <circle cx="160" cy="210" r="6" fill={rose} stroke={ink} strokeWidth="1.6" />
+        <circle cx="160" cy="210" r="2.5" fill="#FFEFDC" />
+      </g>
+
+      <g className="char-head" style={{ transformOrigin: '160px 130px' }}>
+        <g className="char-ears" style={{ transformOrigin: '160px 70px' }}>
+          {/* Six frilled gill-fronds — 3 per side */}
+          <path d="M90,98 Q58,88 50,58 Q76,60 92,80 Z" fill={frill} stroke={ink} strokeWidth="2.2" strokeLinejoin="round" />
+          <path d="M86,86 Q58,70 64,40 Q82,50 94,72 Z" fill="#FFD4E4" stroke={ink} strokeWidth="2.2" strokeLinejoin="round" />
+          <path d="M98,74 Q82,50 96,22 Q108,44 110,66 Z" fill={frill} stroke={ink} strokeWidth="2.2" strokeLinejoin="round" />
+          <path d="M230,98 Q262,88 270,58 Q244,60 228,80 Z" fill={frill} stroke={ink} strokeWidth="2.2" strokeLinejoin="round" />
+          <path d="M234,86 Q262,70 256,40 Q238,50 226,72 Z" fill="#FFD4E4" stroke={ink} strokeWidth="2.2" strokeLinejoin="round" />
+          <path d="M222,74 Q238,50 224,22 Q212,44 210,66 Z" fill={frill} stroke={ink} strokeWidth="2.2" strokeLinejoin="round" />
+        </g>
+        {/* Hood/head — round axolotl kid */}
+        <path d="M72,134 Q68,80 116,64 Q160,56 204,64 Q252,80 248,134 Q246,184 212,202 L108,202 Q74,184 72,134 Z"
+              fill={`url(#${id('body')})`} stroke={ink} strokeWidth="2.8" strokeLinejoin="round" />
+        {/* Kid face */}
+        <ellipse cx="160" cy="142" rx="68" ry="60" fill={`url(#${id('skin')})`} stroke={ink} strokeWidth="2.3" />
+        {/* Soft bangs */}
+        <path d="M110,108 Q150,92 196,100 Q180,120 146,122 Q122,122 110,108 Z"
+              fill="#8A5A6E" stroke={ink} strokeWidth="1.6" opacity="0.9" />
+        {/* Cheeks — extra blushy */}
+        <circle cx="102" cy="164" r="14" fill={`url(#${id('cheek')})`} />
+        <circle cx="218" cy="164" r="14" fill={`url(#${id('cheek')})`} />
+        <FaceStates id={id} />
+        <ellipse cx="160" cy="164" rx="3" ry="2" fill="#8E5A3E" opacity="0.8" />
+      </g>
+
+      <g className="char-left-arm" style={{ transformOrigin: '108px 218px' }}>
+        <path d="M88,210 Q80,262 92,302 Q108,306 122,302 Q128,260 124,214 Z"
+              fill={`url(#${id('body')})`} stroke={ink} strokeWidth="2.4" strokeLinejoin="round" />
+        <circle cx="106" cy="304" r="11" fill={`url(#${id('skin')})`} stroke={ink} strokeWidth="2" />
+      </g>
+      <g className="char-right-arm" style={{ transformOrigin: '212px 218px' }}>
+        <path d="M196,214 Q194,262 200,302 Q216,306 230,302 Q240,260 234,210 Z"
+              fill={`url(#${id('body')})`} stroke={ink} strokeWidth="2.4" strokeLinejoin="round" />
+        <circle cx="214" cy="304" r="11" fill={`url(#${id('skin')})`} stroke={ink} strokeWidth="2" />
+        {/* Slice Shell — rose-gold clamshell opened into fraction wedges */}
+        <path d="M232,296 Q250,264 274,296 Q252,302 232,296 Z"
+              fill={rose} stroke={ink} strokeWidth="2.2" strokeLinejoin="round" />
+        <line x1="253" y1="270" x2="253" y2="296" stroke={ink} strokeWidth="1.6" />
+        <line x1="244" y1="286" x2="262" y2="286" stroke={ink} strokeWidth="1.4" opacity="0.6" />
+        <path d="M232,296 Q250,310 274,296" fill="#F5D4B8" stroke={ink} strokeWidth="1.8" />
+        <circle cx="253" cy="296" r="2.4" fill="#FFEFDC" />
+      </g>
+    </>
+  );
+}
+
 /* ────────────────────────── router ────────────────────────── */
 function Art({ characterId, palette, id }: { characterId: string; palette: CharacterPalette; id: (s: string) => string }) {
   switch (characterId) {
-    case 'bloo':  return <BlooArt  palette={palette} id={id} />;
-    case 'sunny': return <SunnyArt palette={palette} id={id} />;
-    case 'rosie': return <RosieArt palette={palette} id={id} />;
-    case 'milo':  return <MiloArt  palette={palette} id={id} />;
-    case 'pip':   return <PipArt   palette={palette} id={id} />;
+    case 'bloo':       return <BlooArt       palette={palette} id={id} />;
+    case 'sunny':      return <SunnyArt      palette={palette} id={id} />;
+    case 'rosie':      return <RosieArt      palette={palette} id={id} />;
+    case 'milo':       return <MiloArt       palette={palette} id={id} />;
+    case 'pip':        return <PipArt        palette={palette} id={id} />;
+    case 'clementine': return <ClementineArt palette={palette} id={id} />;
+    case 'jax':        return <JaxArt        palette={palette} id={id} />;
+    case 'vex':        return <VexArt        palette={palette} id={id} />;
+    case 'moss':       return <MossArt       palette={palette} id={id} />;
+    case 'glitch':     return <GlitchArt     palette={palette} id={id} />;
+    case 'coralie':    return <CoralieArt    palette={palette} id={id} />;
     case 'rex':
-    default:      return <RexArt   palette={palette} id={id} />;
+    default:           return <RexArt        palette={palette} id={id} />;
   }
 }
 
@@ -906,5 +1454,59 @@ export const PALETTES: Record<string, CharacterPalette> = {
     iris:  ['#240F04', '#4A2208', '#7A3F12', '#B0701C'],  // amber LED core
     stroke:'#0F2A36',
     padAccent: '#FFC23D',   // amber LED glow
+  },
+  clementine: {
+    // Clementine Cub — buttercream bee-striped cub. Hero hue #F5C842.
+    body:  ['#FFF0B8', '#FCDE82', '#F5C842', '#D9A72A', '#A07A16'],
+    belly: ['#FFF9DC', '#F8E5A8', '#E8C878', '#C8A04A'],
+    cheek: '#FF9FB8',
+    iris:  ['#1A0F02', '#3A220A', '#5C3A14', '#7E5420'],
+    stroke:'#4A2810',
+    padAccent: '#C2763A',   // Honeycomb Abacus copper
+  },
+  jax: {
+    // Jax Fox — ember orange wedge silhouette. Hero hue #D94F2A.
+    body:  ['#FFC2AA', '#F08560', '#D94F2A', '#A83416', '#6E1F0A'],
+    belly: ['#FFF2E4', '#F8D8B8', '#E4B080', '#C4854C'],
+    cheek: '#FF8A78',
+    iris:  ['#0A0503', '#24100A', '#3E2010', '#5C331A'],
+    stroke:'#2A0C04',
+    padAccent: '#B8862E',   // Split-Blade brass
+  },
+  vex: {
+    // Vex Bat — deep violet cloak. Hero hue #6B4FA8.
+    body:  ['#C9B6E8', '#9D82C8', '#6B4FA8', '#4B357A', '#2E1E52'],
+    belly: ['#ECE2F5', '#CDBDE2', '#A58FC5', '#7A60A0'],
+    cheek: '#D494C0',
+    iris:  ['#08040F', '#1C0E28', '#341C48', '#4E2E68'],
+    stroke:'#1A0E30',
+    padAccent: '#BFC4CC',   // Scale Pendulum silver
+  },
+  moss: {
+    // Moss Turtle — sage moss green. Hero hue #7B9B5E.
+    body:  ['#D8E6B8', '#AEC488', '#7B9B5E', '#557240', '#344826'],
+    belly: ['#FBF3D6', '#ECDCA4', '#D4BE7A', '#A6904A'],
+    cheek: '#F5A89C',
+    iris:  ['#0A0F04', '#1E2A10', '#35451E', '#4E6030'],
+    stroke:'#243418',
+    padAccent: '#9B6B3A',   // Stacking Stones copper
+  },
+  glitch: {
+    // Glitch Sprite — pearl white + rainbow flecks. Hero hue #E8ECF2.
+    body:  ['#FFFFFF', '#F4F6FA', '#E8ECF2', '#BFC6D2', '#7E8496'],
+    belly: ['#FFFFFF', '#F0F4FA', '#D8E0EC', '#B8C2D2'],
+    cheek: '#FFB3D6',
+    iris:  ['#080820', '#1A1A3C', '#2E2E5C', '#4A4A7E'],
+    stroke:'#1A1A2E',
+    padAccent: '#A78BFA',   // holographic prism
+  },
+  coralie: {
+    // Coralie Axolotl — sea teal flowing. Hero hue #3FA8A0.
+    body:  ['#C2ECE8', '#7ED0C8', '#3FA8A0', '#2A7E78', '#155450'],
+    belly: ['#FFF4F0', '#FADDD0', '#EEC0AC', '#D99B7A'],
+    cheek: '#FF9FB8',
+    iris:  ['#04120F', '#0E2A24', '#18423A', '#265A50'],
+    stroke:'#0E2E2A',
+    padAccent: '#D99B7A',   // rose-gold Slice Shell
   },
 };

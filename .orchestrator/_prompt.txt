@@ -1,7 +1,7 @@
 You are QA (QA Engineer). Make this specific change:
 
-Open index.html in a browser and visually verify every pal illustration and label matches the current in-app pal designs. Confirm no stale names (e.g. 'Rex Dino'), no broken SVGs, and no layout regressions on desktop and mobile widths. Report any mismatches with a screenshot or precise description.
+Open landing/index.html in a browser and verify: (1) hero section shows the new pals correctly, (2) 'Meet the Pals' section lists all 6 new pals with correct names, SVGs, and descriptions matching character_bible.md, (3) no stale references to old pal names remain anywhere on the page, (4) layout/responsiveness is not broken on mobile and desktop widths.
 
-Context: The user asked for: simple fix the index html pals are the old and not updated ones
+Context: The user asked for: update the landing page meet the pals and the hero section with the new pals
 
 Read the relevant source files, make targeted edits, and run `npm run build` to verify.

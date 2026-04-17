@@ -14,7 +14,7 @@ import { gradients } from '../styles/theme';
  */
 
 const objectTypes: ObjectType[] = ['apple', 'star', 'heart', 'balloon', 'fish'];
-const ALL_CHARACTERS: CharacterName[] = ['bloo', 'sunny', 'rosie', 'milo', 'pip', 'rex'];
+const ALL_CHARACTERS: CharacterName[] = ['bloo', 'sunny', 'rosie', 'milo', 'pip', 'rex', 'clementine', 'jax', 'vex', 'moss', 'glitch', 'coralie'];
 
 function pickRandom<T>(arr: readonly T[]): T {
   return arr[Math.floor(Math.random() * arr.length)];

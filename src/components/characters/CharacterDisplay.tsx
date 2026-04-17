@@ -7,6 +7,12 @@ import RosieOwl from './RosieOwl';
 import MiloFrog from './MiloFrog';
 import PipZebra from './PipZebra';
 import RexRobot from './RexRobot';
+import ClementineCub from './ClementineCub';
+import JaxFox from './JaxFox';
+import VexBat from './VexBat';
+import MossTurtle from './MossTurtle';
+import GlitchSprite from './GlitchSprite';
+import CoralieAxolotl from './CoralieAxolotl';
 
 interface CharacterDisplayProps {
   character: CharacterName;
@@ -24,6 +30,12 @@ const characterMap: Record<CharacterName, typeof BlooBear> = {
   pip: PipZebra,
   rex: RexRobot,
   robo: RexRobot,
+  clementine: ClementineCub,
+  jax: JaxFox,
+  vex: VexBat,
+  moss: MossTurtle,
+  glitch: GlitchSprite,
+  coralie: CoralieAxolotl,
 };
 
 // Head-shake: rotates the character left-right like shaking "no"

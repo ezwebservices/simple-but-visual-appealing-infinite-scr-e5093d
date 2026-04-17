@@ -3,7 +3,7 @@ import CharacterDisplay from './characters/CharacterDisplay';
 import { colors, fontStack } from '../styles/theme';
 import type { CharacterName } from '../types';
 
-const characters: CharacterName[] = ['bloo', 'sunny', 'rosie', 'milo', 'pip', 'rex'];
+const characters: CharacterName[] = ['bloo', 'clementine', 'rosie', 'jax', 'milo', 'vex', 'pip', 'moss', 'rex', 'glitch', 'coralie', 'sunny'];
 
 export default function LoadingScreen() {
   return (

@@ -2,7 +2,20 @@ export type Operator = 'plus' | 'minus';
 
 export type ObjectType = 'apple' | 'star' | 'heart' | 'balloon' | 'fish';
 
-export type CharacterName = 'bloo' | 'sunny' | 'rosie' | 'milo' | 'pip' | 'rex' | 'robo';
+export type CharacterName =
+  | 'bloo'
+  | 'sunny'
+  | 'rosie'
+  | 'milo'
+  | 'pip'
+  | 'rex'
+  | 'robo'
+  | 'clementine'
+  | 'jax'
+  | 'vex'
+  | 'moss'
+  | 'glitch'
+  | 'coralie';
 
 export type CharacterMood = 'happy' | 'excited' | 'thinking' | 'encouraging' | 'headShake';
 
@@ -151,16 +164,22 @@ export interface ChildProfile {
 }
 
 /** Unlock thresholds — how many sub-concepts must be mastered to unlock each reward */
-export const CHARACTER_UNLOCK_ORDER: CharacterName[] = ['bloo', 'sunny', 'rosie', 'milo', 'pip', 'rex'];
+export const CHARACTER_UNLOCK_ORDER: CharacterName[] = ['bloo', 'clementine', 'rosie', 'jax', 'milo', 'vex', 'pip', 'moss', 'rex', 'glitch', 'coralie', 'sunny'];
 
 /** masteredCount → which characters are unlocked. Index = masteredCount needed. */
 export const CHARACTER_UNLOCK_THRESHOLDS: Record<CharacterName, number> = {
   bloo: 0,    // starter
-  sunny: 1,   // unlocks after first mastery
+  clementine: 1,
   rosie: 3,
-  milo: 6,
-  pip: 10,
-  rex: 14,
+  jax: 5,
+  milo: 7,
+  vex: 9,
+  pip: 11,
+  moss: 13,
+  rex: 15,
+  glitch: 17,
+  coralie: 19,
+  sunny: 21,
   robo: 999,  // legacy alias, never auto-unlocked
 };
 
