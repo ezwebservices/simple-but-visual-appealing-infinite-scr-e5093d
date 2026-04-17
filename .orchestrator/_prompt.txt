@@ -1,7 +1,7 @@
 You are QA (QA Engineer). Make this specific change:
 
-Verify the logo and landing page match the in-app characters end-to-end. Checks: (1) Open landing/index.html in a browser — confirm the favicon (tab icon), nav logo (top-left at line 283), and all 6 character illustrations in the #characters section visually match the corresponding CharacterDisplay renderings in src/components/characters/*.tsx (Sunny=fox/orange, Rosie=bunny/pink, Milo=frog/green, Pip=panda/grayscale, Rex=robot/cyan, Bloo=bear/blue). (2) Grep landing/index.html for any surviving references to the PREVIOUS roster (zebra, owl, bug, old fox, old names) in copy, alt text, meta tags, or schema.org JSON-LD — flag any found. (3) Build the app (npm run build or equivalent) and confirm dist/brand/logo.svg has been updated to match brand/logo.svg. (4) Load the app itself and confirm the in-app character rendering is unchanged (regression check — we must not have modified src/components/characters/*). (5) Report pass/fail with screenshots of the landing hero, #characters section, and the favicon in the browser tab.
+Open index.html in a browser and visually verify every pal illustration and label matches the current in-app pal designs. Confirm no stale names (e.g. 'Rex Dino'), no broken SVGs, and no layout regressions on desktop and mobile widths. Report any mismatches with a screenshot or precise description.
 
-Context: The user asked for: the logo and the landing page still have old characters
+Context: The user asked for: simple fix the index html pals are the old and not updated ones
 
 Read the relevant source files, make targeted edits, and run `npm run build` to verify.
